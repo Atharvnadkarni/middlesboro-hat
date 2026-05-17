@@ -1,4 +1,4 @@
-from models import Student, Subject, Mark
+from .models import Student, Subject, Mark
 
 class StudentSerializer:
     class Meta:
