@@ -1,11 +1,14 @@
-import { AppBar, Toolbar, Typography } from "@mui/material";
+import { AppBar, Container, Toolbar, Typography } from "@mui/material";
 import { CalendarMonth } from "@mui/icons-material";
 const Header = () => {
   return (
     <AppBar position="static">
-      <Toolbar disableGutters>
-        <CalendarMonth />
-      </Toolbar>
+      <Container>
+        <Toolbar disableGutters>
+          <CalendarMonth />
+          <Typography variant="h6">Marksheet</Typography>
+        </Toolbar>
+      </Container>
     </AppBar>
   );
 };
