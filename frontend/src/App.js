@@ -2,14 +2,15 @@ import { Container } from "@mui/material";
 import Header from "./components/Header";
 import SubjectList from "./components/SubjectList";
 import { useState } from "react";
+import Dropdown from "./components/Dropdown";
 
 const App = () => {
-  const [classe, setClass] = useState()
+  const [classe, setClass] = useState();
   return (
     <div>
       <Header />
-      <Dropdown setClass={setClass} />
-      <Container sx={{ marginTop: 3 }}>
+      <Container sx={{ marginTop: 3, position: "relative" }}>
+        <Dropdown setClass={setClass} />
         <SubjectList class={classe} />
       </Container>
     </div>
