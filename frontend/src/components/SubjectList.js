@@ -1,5 +1,5 @@
 import { DataGrid } from "@mui/x-data-grid";
-const SubjectList = () => {
+const SubjectList = ({class:classe}) => {
   const columns = [
     { field: "roll_no", headerName: "Roll No", width: 20 },
     { field: "name", headerName: "Name", width: 200, editable: true },
