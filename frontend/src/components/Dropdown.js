@@ -1,13 +1,26 @@
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 
 const Dropdown = ({ setClass }) => {
   return (
-    <div style={{width: "100vw"}}>
-      <div className="spacer flex-1"></div>
-      <FormControl fullWidth sx={{ right: 0 }}>
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
+      {/* <div className="spacer flex-1"></div> */}
+      <FormControl sx={{ right: 0 }}>
         <InputLabel id="demo-simple-select-label">Class</InputLabel>
         <Select
-        defaultValue={"A"}
+          defaultValue={"A"}
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           // value={age}
@@ -19,6 +32,7 @@ const Dropdown = ({ setClass }) => {
           <MenuItem value={"C"}>10C</MenuItem>
         </Select>
       </FormControl>
+      <Button variant="contained">Submit XLSX Data</Button>
     </div>
   );
 };
