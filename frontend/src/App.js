@@ -5,21 +5,21 @@ import { useEffect, useState } from "react";
 import Dropdown from "./components/Dropdown";
 import UploadModal from "./components/UploadModal";
 import Tabs from "./components/Tabs";
+import { BrowserRouter, Route, Routes } from "react-router";
+import Home from "./pages/home";
+import Teachers from "./pages/teachers";
 
 const App = () => {
-  const [classe, setClass] = useState();
-  useEffect(() => {
-    localStorage.setItem("class", classe);
-  }, [classe]);
+  
   return (
     <div>
       <Header />
-      <Container sx={{ marginTop: 3, position: "relative" }}>
-        <Tabs />
-        <Dropdown setClass={setClass} />
-        <SubjectList class={classe} />
-      </Container>
-      {/* <UploadModal visibility={true} /> */}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/teachers" element={<Teachers />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 };
