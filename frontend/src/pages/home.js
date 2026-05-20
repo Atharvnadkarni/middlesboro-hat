@@ -11,7 +11,6 @@ const Home = () => {
   }, [classe]);
   return (
     <Container sx={{ marginTop: 3, position: "relative" }}>
-      <Tabs />
       <Dropdown setClass={setClass} />
       <SubjectList class={classe} />
     </Container>

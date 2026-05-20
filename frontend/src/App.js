@@ -14,6 +14,7 @@ const App = () => {
   return (
     <div>
       <Header />
+      <Tabs />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
