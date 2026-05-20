@@ -1,4 +1,4 @@
-from .models import Student, Subject, Mark, Teacher, Class, Role
+from .models import Student, Subject, Mark
 from rest_framework import serializers
 
 
@@ -35,29 +35,3 @@ class StudentMarksSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ("id", "first_name", "surname", "roll_no", "class_div", "marks")
-        
-class TeacherSerializer(serializers.ModelSerializer):
-    # marks = MarksStudentsSerializer(many=True, read_only=True)
-    class Meta:
-        model = Teacher
-        fields = ("id", "first_name", "surname", "subject", "sub_classes", "role", "class_tr")
-
-class RoleSerializer(serializers.ModelSerializer):
-    # marks = MarksStudentsSerializer(many=True, read_only=True)
-    class Meta:
-        model = Role
-        fields = ("id", "role")
-        
-
-class ClassSerializer(serializers.ModelSerializer):
-    # marks = MarksStudentsSerializer(many=True, read_only=True)
-    class Meta:
-        model = Class
-        fields = ("id", "grade", "division")
-        
-class SubjectSerializer(serializers.ModelSerializer):
-    # marks = MarksStudentsSerializer(many=True, read_only=True)
-    class Meta:
-        model = Subject
-        fields = ("id", "sub")
-
