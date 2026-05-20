@@ -10,18 +10,15 @@ import Home from "./pages/home";
 import Teachers from "./pages/teachers";
 
 const App = () => {
-  
   return (
-    <div>
+    <BrowserRouter>
       <Header />
       <Tabs />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/teachers" element={<Teachers />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/teachers" element={<Teachers />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
