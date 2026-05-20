@@ -10,10 +10,10 @@ const Home = () => {
     localStorage.setItem("class", classe);
   }, [classe]);
   return (
-    <Container sx={{ marginTop: 3, position: "relative" }}>
+
       <Dropdown setClass={setClass} />
       <SubjectList class={classe} />
-    </Container>
+
   );
 };
 export default Home;
