@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import SubjectList from "./components/SubjectList";
 import { useEffect, useState } from "react";
 import Dropdown from "./components/Dropdown";
+import UploadModal from "./components/UploadModal";
 
 const App = () => {
   const [classe, setClass] = useState();
@@ -14,6 +15,7 @@ const App = () => {
         <Dropdown setClass={setClass} />
         <SubjectList class={classe} />
       </Container>
+      {/* <UploadModal visibility={true} /> */}
     </div>
   );
 };
