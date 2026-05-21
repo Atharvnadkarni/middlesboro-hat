@@ -1,7 +1,8 @@
-import { Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import TeacherCard from "../components/TeacherCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { PersonAdd } from "@mui/icons-material";
 
 const Teachers = () => {
   const [teachers, setTeachers] = useState([]);
@@ -9,13 +10,21 @@ const Teachers = () => {
     (async () => {
       const res = await axios.get("/api/teacher");
       const data = await res.data;
-      setTeachers(data)
+      setTeachers(data);
     })();
   }, []);
   return (
-    <Grid container spacing={2}>
-      {teachers.map(teacher => <TeacherCard teacher={teacher} />)}
-    </Grid>
+    <>
+      <div style={{ display: "flex", marginBottom:20 }}>
+        <div className="spacer" style={{ flex: 1 }} />
+        <Button variant="contained" startIcon={<PersonAdd />}>Add Teacher</Button>
+      </div>
+      <Grid container spacing={2}>
+        {teachers.map((teacher) => (
+          <TeacherCard teacher={teacher} />
+        ))}
+      </Grid>
+    </>
   );
 };
 export default Teachers;
