@@ -1,25 +1,18 @@
 from django.shortcuts import render
-from rest_framework import generics
-from .models import Student, Mark
-from .serializers import StudentDetailsSerializer, MarksSerializer, StudentMarksSerializer
+from rest_framework import generics, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import Teacher
+from .serializers import TeacherSerializer
 
 # Create your views here.
 
 
-class CreateStudentView(generics.ListCreateAPIView):
-    queryset = Student.objects.all()
-    serializer_class = StudentDetailsSerializer
+class GetTeachers(APIView):
+    serializer_class = TeacherSerializer
 
+    def get(self, request, format=None):
+        queryset = Teacher.objects.all()
+        serializer_data = self.serializer_class(queryset, many=True)
+        return Response(data=serializer_data.data, status=status.HTTP_200_OK)
 
-class StudentMarkListView(generics.ListAPIView):
-    queryset = Student.objects.all()
-    serializer_class = StudentMarksSerializer
-
-
-class MarkUpdateView(generics.CreateAPIView):
-    serializer_class = MarksSerializer
-
-    def get_queryset(self):
-        student_id = self.request.query_params.get("student")
-
-        return Mark.objects.filter(student_id=student_id)
