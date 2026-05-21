@@ -1,6 +1,18 @@
+import { Grid } from "@mui/material";
+import TeacherCard from "../components/TeacherCard";
+
 const Teachers = () => {
   return (
-    <div>teachers</div>
-  )
-}
-export default Teachers
+    <Grid container spacing={2}>
+      <TeacherCard />
+      <TeacherCard />
+      <TeacherCard />
+      <TeacherCard />
+      <TeacherCard />
+      <TeacherCard />
+      <TeacherCard />
+      <TeacherCard />
+    </Grid>
+  );
+};
+export default Teachers;
