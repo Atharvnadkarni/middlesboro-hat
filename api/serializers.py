@@ -36,11 +36,7 @@ class StudentMarksSerializer(serializers.ModelSerializer):
         model = Student
         fields = ("id", "first_name", "surname", "roll_no", "class_div", "marks")
         
-class TeacherSerializer(serializers.ModelSerializer):
-    # marks = MarksStudentsSerializer(many=True, read_only=True)
-    class Meta:
-        model = Teacher
-        fields = ("id", "first_name", "surname", "subject", "sub_classes", "role", "class_tr")
+
 
 class RoleSerializer(serializers.ModelSerializer):
     # marks = MarksStudentsSerializer(many=True, read_only=True)
@@ -61,3 +57,13 @@ class SubjectSerializer(serializers.ModelSerializer):
         model = Subject
         fields = ("id", "sub")
 
+
+class TeacherSerializer(serializers.ModelSerializer):
+    role = RoleSerializer()
+    subject = SubjectSerializer(many=True)
+    sub_classes = ClassSerializer(many=True)
+    class_tr = ClassSerializer()
+    # marks = MarksStudentsSerializer(many=True, read_only=True)
+    class Meta:
+        model = Teacher
+        fields = ("id", "first_name", "surname", "subject", "sub_classes", "role", "class_tr")
