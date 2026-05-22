@@ -2,5 +2,6 @@
 node_modules/
 migrations/
 __pycache__/
+.vscode/
 # frontend/static/index.js
 frontend/static/index.js
