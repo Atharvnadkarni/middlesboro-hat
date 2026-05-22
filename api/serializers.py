@@ -1,4 +1,4 @@
-from .models import Student, Subject, Mark, Teacher, Class, Role
+from .models import Student, Subject, Mark, Teacher, Class, Role, TeacherSubjectClass
 from rest_framework import serializers
 
 
@@ -12,6 +12,7 @@ class MarksSerializer(serializers.ModelSerializer):
 
     def get_student_name(self, obj):
         return f"{obj.student.first_name} {obj.student.last_name}"
+
 
 class MarksStudentsSerializer(serializers.ModelSerializer):
     # student_name = serializers.SerializerMethodField()
@@ -30,12 +31,14 @@ class StudentDetailsSerializer(serializers.ModelSerializer):
         model = Student
         fields = ("id", "first_name", "surname", "roll_no", "class_div")
 
+
 class StudentMarksSerializer(serializers.ModelSerializer):
     marks = MarksStudentsSerializer(many=True, read_only=True)
+
     class Meta:
         model = Student
-        fields = ("id", "first_name", "surname", "roll_no", "class_div", "marks")
-        
+        fields = ("id", "first_name", "surname",
+                  "roll_no", "class_div", "marks")
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -43,14 +46,15 @@ class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
         fields = ("id", "role")
-        
+
 
 class ClassSerializer(serializers.ModelSerializer):
     # marks = MarksStudentsSerializer(many=True, read_only=True)
     class Meta:
         model = Class
         fields = ("id", "grade", "division")
-        
+
+
 class SubjectSerializer(serializers.ModelSerializer):
     # marks = MarksStudentsSerializer(many=True, read_only=True)
     class Meta:
@@ -58,12 +62,19 @@ class SubjectSerializer(serializers.ModelSerializer):
         fields = ("id", "sub")
 
 
-class TeacherSerializer(serializers.ModelSerializer):
-    role = RoleSerializer()
-    subject = SubjectSerializer(many=True)
-    sub_classes = ClassSerializer(many=True)
-    class_tr = ClassSerializer()
-    # marks = MarksStudentsSerializer(many=True, read_only=True)
+class TSCSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teacher
-        fields = ("id", "first_name", "surname", "subject", "sub_classes", "role", "class_tr")
+        fields = "__all__"
+
+
+class TeacherSerializer(serializers.ModelSerializer):
+    role = RoleSerializer()
+    subject = TSCSerializer()
+    class_tr = ClassSerializer()
+    # marks = MarksStudentsSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Teacher
+        fields = ("id", "first_name", "surname",
+                  "subject_classes", "role", "class_tr")

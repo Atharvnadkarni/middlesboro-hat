@@ -44,7 +44,24 @@ class Role(models.Model):
 class Teacher(models.Model):
     first_name = models.CharField(max_length=100)
     surname = models.CharField(max_length=100)
-    subject = models.ManyToManyField(to=Subject, null=True, blank=True)
-    sub_classes = models.ManyToManyField(to="Class", related_name="subject_classes", null=True, blank=True)
+    # subject = models.ManyToManyField(to=Subject, null=True, blank=True)
+    # sub_classes = models.ManyToManyField(to="Class", related_name="subject_classes", null=True, blank=True)
     role = models.ForeignKey(to=Role, on_delete=models.SET_NULL, null=True)
     class_tr = models.ForeignKey(to="Class", on_delete=models.SET_NULL, null=True, blank=True, related_name="teacher_class")
+
+class TeacherSubjectClass(models.Model):
+    teacher = models.ForeignKey(
+        Teacher,
+        on_delete=models.CASCADE,
+        related_name="subject_classes"
+    )
+
+    subject = models.ForeignKey(
+        Subject,
+        on_delete=models.CASCADE
+    )
+
+    student_class = models.ForeignKey(
+        "Class",
+        on_delete=models.CASCADE
+    )
