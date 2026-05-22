@@ -3,6 +3,7 @@ import TeacherCard from "../components/TeacherCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { PersonAdd } from "@mui/icons-material";
+import AddEditTeacher from "../components/AddEditTeacher";
 
 const Teachers = () => {
   const [teachers, setTeachers] = useState([]);
@@ -24,6 +25,7 @@ const Teachers = () => {
           <TeacherCard teacher={teacher} />
         ))}
       </Grid>
+      <AddEditTeacher />
     </>
   );
 };
