@@ -47,7 +47,9 @@ class Teacher(models.Model):
     # subject = models.ManyToManyField(to=Subject, null=True, blank=True)
     # sub_classes = models.ManyToManyField(to="Class", related_name="subject_classes", null=True, blank=True)
     role = models.ForeignKey(to=Role, on_delete=models.SET_NULL, null=True)
-    class_tr = models.ForeignKey(to="Class", on_delete=models.SET_NULL, null=True, blank=True, related_name="teacher_class")
+    class_tr = models.ForeignKey(to="Class", on_delete=models.SET_NULL, null=True, blank=True, related_name="teacher_class", unique=True)
+    def __str__(self) -> str:
+        return f"{self.first_name} {self.surname}"
 
 class TeacherSubjectClass(models.Model):
     teacher = models.ForeignKey(
@@ -61,7 +63,7 @@ class TeacherSubjectClass(models.Model):
         on_delete=models.CASCADE
     )
 
-    student_class = models.ForeignKey(
+    classes = models.ManyToManyField(
         "Class",
-        on_delete=models.CASCADE
+        # on_delete=models.CASCADE
     )

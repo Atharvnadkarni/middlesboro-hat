@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Teacher
-from .serializers import TeacherSerializer
+from .models import Teacher, TeacherSubjectClass, Role, Class, Subject
+from .serializers import TeacherSerializer, TSCSerializer, CreateTeacherSerializer, RoleSerializer, ClassSerializer, SubjectSerializer
 
 # Create your views here.
 
@@ -15,4 +15,33 @@ class GetTeachers(APIView):
         queryset = Teacher.objects.all()
         serializer_data = self.serializer_class(queryset, many=True)
         return Response(data=serializer_data.data, status=status.HTTP_200_OK)
+    
+class AddTeacher(generics.ListCreateAPIView):
+    queryset = Teacher.objects.all()
+    serializer_class = CreateTeacherSerializer
+    
+class AddRole(generics.ListCreateAPIView):
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
 
+class AddClass(generics.ListCreateAPIView):
+    queryset = Class.objects.all()
+    serializer_class = ClassSerializer
+
+class AddSub(generics.ListCreateAPIView):
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
+
+    # def get(self, request, format=None):
+    #     queryset = Teacher.objects.all()
+    #     serializer_data = self.serializer_class(queryset, many=True)
+    #     return Response(data=serializer_data.data, status=status.HTTP_200_OK)
+
+class AddTSC(generics.ListCreateAPIView):
+    queryset = TeacherSubjectClass.objects.all()
+    serializer_class = TSCSerializer
+
+    # def get(self, request, format=None):
+    #     queryset = Teacher.objects.all()
+    #     serializer_data = self.serializer_class(queryset, many=True)
+    #     return Response(data=serializer_data.data, status=status.HTTP_200_OK)
