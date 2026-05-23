@@ -16,21 +16,7 @@ class GetTeachers(APIView):
         serializer_data = self.serializer_class(queryset, many=True)
         return Response(data=serializer_data.data, status=status.HTTP_200_OK)
     
-class AddTeacher(generics.ListCreateAPIView):
-    queryset = Teacher.objects.all()
-    serializer_class = CreateTeacherSerializer
-    
-class AddRole(generics.ListCreateAPIView):
-    queryset = Role.objects.all()
-    serializer_class = RoleSerializer
 
-class AddClass(generics.ListCreateAPIView):
-    queryset = Class.objects.all()
-    serializer_class = ClassSerializer
-
-class AddSub(generics.ListCreateAPIView):
-    queryset = Subject.objects.all()
-    serializer_class = SubjectSerializer
 
     # def get(self, request, format=None):
     #     queryset = Teacher.objects.all()
