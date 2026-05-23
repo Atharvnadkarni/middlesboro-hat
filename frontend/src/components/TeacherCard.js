@@ -24,23 +24,12 @@ const TeacherCard = ({ teacher }) => {
           <Typography variant="h5" color="body1">
             {teacher.first_name} {teacher.surname}
           </Typography>
-          {teacher.role.role == "Teacher" ? (
-            <>
-              <Typography variant="body1" color="textSecondary">
-                {teacher.subject.length
-                  ? `Teaches ${teacher.subject.map((sub) => sub.sub).join(", ")}`
-                  : ""}
-              </Typography>
-              <Typography variant="body1" color="textSecondary">
-                {teacher.class_tr
-                  ? `Class Teacher of ${teacher.class_tr.grade}${teacher.class_tr.division}`
-                  : ""}
-              </Typography>
-            </>
+          {teacher.role.id == 2 ? (
+            teacher.subject_classes.map((sub) => (
+              <Typography variant="body1">Teaches {sub.subject.sub} in 10{sub.classes.map(cl => cl.division)}</Typography>
+            ))
           ) : (
-            <Typography variant="body1" color="textSecondary">
-              {teacher.role.role}
-            </Typography>
+            <Typography variant="body1">{teacher.role.role}</Typography>
           )}
 
           <Typography variant="body1" color="textSecondary"></Typography>

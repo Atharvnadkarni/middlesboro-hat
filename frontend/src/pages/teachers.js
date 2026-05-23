@@ -25,7 +25,7 @@ const Teachers = () => {
           <TeacherCard teacher={teacher} />
         ))}
       </Grid>
-      <AddEditTeacher />
+      {/* <AddEditTeacher /> */}
     </>
   );
 };
