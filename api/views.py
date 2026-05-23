@@ -23,11 +23,3 @@ class GetTeachers(APIView):
     #     serializer_data = self.serializer_class(queryset, many=True)
     #     return Response(data=serializer_data.data, status=status.HTTP_200_OK)
 
-class AddTSC(generics.ListCreateAPIView):
-    queryset = TeacherSubjectClass.objects.all()
-    serializer_class = TSCSerializer
-
-    # def get(self, request, format=None):
-    #     queryset = Teacher.objects.all()
-    #     serializer_data = self.serializer_class(queryset, many=True)
-    #     return Response(data=serializer_data.data, status=status.HTTP_200_OK)
