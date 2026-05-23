@@ -60,12 +60,17 @@ class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
         fields = ("id", "sub")
+        
+
+
 
 
 class TSCSerializer(serializers.ModelSerializer):
+    subject = SubjectSerializer()
+    classes = ClassSerializer(many=True)
     class Meta:
         model = TeacherSubjectClass
-        fields = "__all__"
+        fields = ("id", "subject", "classes")
 
 
 class TeacherSerializer(serializers.ModelSerializer):
