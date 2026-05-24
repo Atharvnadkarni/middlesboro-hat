@@ -59,9 +59,10 @@ const AddEditTeacher = () => {
   });
 
   const handleSubmit = async () => {
-    const res = await request("post", "/api/teacher", {firstName, surname, classTr, subjects, role})
+    const res = await request("post", "/api/teachers", {firstName, surname, classTr, subjects, role})
   
     location.reload();
+
   };
   return (
     <Dialog open={true}>
