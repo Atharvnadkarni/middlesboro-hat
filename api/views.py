@@ -32,12 +32,13 @@ class HandleTeacher(APIView):
             role = serializer.validated_data.get("role")
             class_tr = serializer.validated_data.get("class_tr")
             # convert class_tr like "10B" into [10, "B"]
-            division = class_tr[-1] if class_tr else None
+            division = class_tr[-1] if class_tr != 'No' else None
+            print(division)
 
             subjects = serializer.validated_data.get("subjects")
 
             role_obj = Role.objects.get(role=role)
-            class_tr_obj = Class.objects.get(grade=10, division=division)
+            class_tr_obj = Class.objects.get(grade=10, division=division) if division else None
 
             teacher = Teacher(first_name=first_name,
                               surname=surname, role=role_obj, class_tr=class_tr_obj)
@@ -49,8 +50,8 @@ class HandleTeacher(APIView):
                         subject, dict) else getattr(subject, "subject", None)
                 )
                 subject_class = (
-                    subject.get("class") if isinstance(
-                        subject, dict) else getattr(subject, "class", None)
+                    subject.get("classes") if isinstance(
+                        subject, dict) else getattr(subject, "classes", None)
                 )
                 subject_class_letters = list(
                     subject_class[2:]) if subject_class else []
