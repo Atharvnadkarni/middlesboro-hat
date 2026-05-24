@@ -16,6 +16,7 @@ import {
 import { Add } from "@mui/icons-material";
 import { useId, useState } from "react";
 import axios from "axios";
+import { useRequest } from "../hooks/useRequest";
 
 const AddEditTeacher = () => {
   const subjectList = [
@@ -50,19 +51,16 @@ const AddEditTeacher = () => {
   const [classTr, setClassTr] = useState("No");
   const [role, setRole] = useState("Teacher");
   const [subjects, setSubjects] = useState([]);
+  const {request, isLoading, error} = useRequest()
 
   const [formData, setFormData] = useState({
     selectValue: subjectList[0],
     classValue: "10ABC",
   });
+
   const handleSubmit = async () => {
-    const res = await axios.post("http://localhost:8000/api/teacher/",{
-      firstName,
-      surname,
-      classTr,
-      subjects,
-      role,
-    });
+    const res = await request("post", "/api/teacher", {firstName, surname, classTr, subjects, role})
+  
     location.reload();
   };
   return (

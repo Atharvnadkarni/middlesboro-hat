@@ -16,7 +16,7 @@ export const useRequest = () => {
       setError(null);
       const res = await axios({
         method,
-        url: `${config.BASE_URL}/${url}/`,
+        url: `${config.BASE_URL}${url}/`,
         data,
         headers,
       });
