@@ -15,11 +15,3 @@ class GetTeachers(APIView):
         queryset = Teacher.objects.all()
         serializer_data = self.serializer_class(queryset, many=True)
         return Response(data=serializer_data.data, status=status.HTTP_200_OK)
-    
-
-
-    # def get(self, request, format=None):
-    #     queryset = Teacher.objects.all()
-    #     serializer_data = self.serializer_class(queryset, many=True)
-    #     return Response(data=serializer_data.data, status=status.HTTP_200_OK)
-
