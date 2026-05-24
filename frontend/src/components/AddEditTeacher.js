@@ -51,6 +51,12 @@ const AddEditTeacher = () => {
   const [classTr, setClassTr] = useState("No");
   const [role, setRole] = useState("Teacher");
   const [subjects, setSubjects] = useState([]);
+
+  const [formErrors, setFormErrors] = useState({
+    firstName: null,
+    surname: null,
+    role: null,
+  })
   const {request, isLoading, error} = useRequest()
 
   const [formData, setFormData] = useState({
@@ -59,8 +65,11 @@ const AddEditTeacher = () => {
   });
 
   const handleSubmit = async () => {
+    if (!firstName) setFormErrors(ofe => ({...ofe, firstName: "Required"}))
+    if (!surname) setFormErrors(ofe => ({...ofe, surname: "Required"}))
+    if (!role) setFormErrors(ofe => ({...ofe, role: "Required"}))
+
     const res = await request("post", "/api/teacher", {first_name:firstName, surname, class_tr:classTr, subjects, role})
-  
     location.reload();
 
   };
@@ -72,7 +81,10 @@ const AddEditTeacher = () => {
           <Grid size={{ xs: 6 }}>
             <TextField
               fullWidth
+              required
               label="First Name"
+              error={formErrors.firstName}
+              helperText={formErrors.firstName}
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
             />
@@ -80,7 +92,10 @@ const AddEditTeacher = () => {
           <Grid size={{ xs: 6 }}>
             <TextField
               fullWidth
+              required
               label="Surname"
+              error={formErrors.surname}
+              helperText={formErrors.surname}
               value={surname}
               onChange={(e) => setSurname(e.target.value)}
             />
