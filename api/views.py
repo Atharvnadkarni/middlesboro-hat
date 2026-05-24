@@ -27,14 +27,14 @@ class HandleTeacher(APIView):
     def post(self, request, format=None):
         serializer = self.create_serializer_class(data=request.data)
         if serializer.is_valid():
-            first_name = serializer.data.get("first_name")
-            surname = serializer.data.get("surname")
-            role = serializer.data.get("role")
-            class_tr = serializer.data.get("class_tr")
+            first_name = serializer.validated_data.get("first_name")
+            surname = serializer.validated_data.get("surname")
+            role = serializer.validated_data.get("role")
+            class_tr = serializer.validated_data.get("class_tr")
             # convert class_tr like "10B" into [10, "B"]
             division = class_tr[-1] if class_tr else None
 
-            subjects = serializer.data.get("subjects")
+            subjects = serializer.validated_data.get("subjects")
 
             role_obj = Role.objects.get(role=role)
             class_tr_obj = Class.objects.get(grade=10, division=division)
@@ -56,8 +56,9 @@ class HandleTeacher(APIView):
                     subject_class[2:]) if subject_class else []
                 classes = [Class.objects.get(division=letter)
                            for letter in subject_class_letters]
-                TeacherSubjectClass.objects.create(
-                    teacher=teacher, subject=sub_id, classes=classes)
+                tsc = TeacherSubjectClass.objects.create(
+                    teacher=teacher, subject=sub_id)
+                tsc.classes.set(classes)
             
             serialize_tr = self.response_serializer_class(teacher)
             return Response(data=serialize_tr.data, status=status.HTTP_201_CREATED)
