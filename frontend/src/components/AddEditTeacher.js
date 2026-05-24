@@ -56,7 +56,7 @@ const AddEditTeacher = () => {
     classValue: "10ABC",
   });
   const handleSubmit = async () => {
-    const res = await axios.post("http://localhost:8000/api/teachers",{
+    const res = await axios.post("http://localhost:8000/api/teacher",{
       firstName,
       surname,
       classTr,
