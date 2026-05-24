@@ -47,8 +47,8 @@ const AddEditTeacher = () => {
 
   const [firstName, setFirstName] = useState("");
   const [surname, setSurname] = useState("");
-  const [classTr, setClassTr] = useState("");
-  const [role, setRole] = useState("");
+  const [classTr, setClassTr] = useState("No");
+  const [role, setRole] = useState("Teacher");
   const [subjects, setSubjects] = useState([]);
 
   const [formData, setFormData] = useState({
