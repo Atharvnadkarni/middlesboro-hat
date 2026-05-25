@@ -22,7 +22,7 @@ const TeacherCard = ({ teacher }) => {
             <IconButton onClick={() => setModalOpen(true)}>
               <Edit />
             </IconButton>
-            <IconButton>
+            <IconButton onClick={() => setDeleteModalOpen(true)}>
               <Delete />
             </IconButton>
           </CardActions>
