@@ -13,6 +13,7 @@ const DeleteModal = ({ teacher, open, setOpen }) => {
   const { request, isLoading, error } = useRequest();
   const handleDelete = async () => {
     const res = await request("delete", `/api/teacher/${teacher.id}`);
+    location.reload();
   };
   return (
     <Dialog
