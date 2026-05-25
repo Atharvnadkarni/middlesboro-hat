@@ -88,7 +88,7 @@ class SubjectClassInputSerializer(serializers.Serializer):
     subject = serializers.CharField()
     classes = serializers.CharField()
 
-class CreateTeacherSerializer(serializers.Serializer):
+class CreateUpdateTeacherSerializer(serializers.Serializer):
     first_name = serializers.CharField()
     surname = serializers.CharField()
     role = serializers.CharField()
