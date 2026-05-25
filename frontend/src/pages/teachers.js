@@ -14,18 +14,19 @@ const Teachers = () => {
       setTeachers(data);
     })();
   }, []);
+  const [modalOpen, setModalOpen] = useState(false)
   return (
     <>
       <div style={{ display: "flex", marginBottom:20 }}>
         <div className="spacer" style={{ flex: 1 }} />
-        <Button variant="contained" startIcon={<PersonAdd />}>Add Teacher</Button>
+        <Button variant="contained" startIcon={<PersonAdd />} onClick={() => {setModalOpen(true)}}>Add Teacher</Button>
       </div>
       <Grid container spacing={2}>
         {teachers.map((teacher) => (
           <TeacherCard teacher={teacher} />
         ))}
       </Grid>
-      <AddEditTeacher />
+      <AddEditTeacher open={modalOpen} setOpen={setModalOpen} />
     </>
   );
 };

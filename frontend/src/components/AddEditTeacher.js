@@ -1,11 +1,14 @@
 import {
+  Box,
   Button,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
   FormHelperText,
   Grid,
+  Grow,
   IconButton,
   InputLabel,
   MenuItem,
@@ -13,12 +16,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Add } from "@mui/icons-material";
+import { Add, Close } from "@mui/icons-material";
 import { useId, useState } from "react";
 import axios from "axios";
 import { useRequest } from "../hooks/useRequest";
 
-const AddEditTeacher = () => {
+const AddEditTeacher = ({ open, setOpen }) => {
   const subjectList = [
     "Math",
     "English",
@@ -56,8 +59,8 @@ const AddEditTeacher = () => {
     firstName: null,
     surname: null,
     role: null,
-  })
-  const {request, isLoading, error} = useRequest()
+  });
+  const { request, isLoading, error } = useRequest();
 
   const [formData, setFormData] = useState({
     selectValue: subjectList[0],
@@ -65,17 +68,41 @@ const AddEditTeacher = () => {
   });
 
   const handleSubmit = async () => {
-    if (!firstName) setFormErrors(ofe => ({...ofe, firstName: "Required"}))
-    if (!surname) setFormErrors(ofe => ({...ofe, surname: "Required"}))
-    if (!role) setFormErrors(ofe => ({...ofe, role: "Required"}))
+    if (!firstName) setFormErrors((ofe) => ({ ...ofe, firstName: "Required" }));
+    if (!surname) setFormErrors((ofe) => ({ ...ofe, surname: "Required" }));
+    if (!role) setFormErrors((ofe) => ({ ...ofe, role: "Required" }));
 
-    const res = await request("post", "/api/teacher", {first_name:firstName, surname, class_tr:classTr, subjects, role})
+    const res = await request("post", "/api/teacher", {
+      first_name: firstName,
+      surname,
+      class_tr: classTr,
+      subjects,
+      role,
+    });
     location.reload();
-
   };
   return (
-    <Dialog open={true}>
-      <DialogTitle>Add Teacher</DialogTitle>
+    <Dialog
+    keepMounted
+      open={open}
+      onClose={() => setOpen(false)}
+      slots={{transition: Grow}}
+    >
+      <Box sx={{ justifyContent: "space-between" }}>
+        <DialogTitle>Add Teacher</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={() => setOpen(false)}
+          sx={(theme) => ({
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: theme.palette.grey[500],
+          })}
+        >
+          <Close />
+        </IconButton>
+      </Box>
       <DialogContent>
         <Grid container spacing={2} sx={{ padding: 2 }}>
           <Grid size={{ xs: 6 }}>
@@ -215,12 +242,12 @@ const AddEditTeacher = () => {
             </FormControl>
           </Grid>
         </Grid>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button variant="contained" onClick={handleSubmit}>
-            Add Teacher
-          </Button>
-        </div>
       </DialogContent>
+      <DialogActions sx={{paddingLeft:2,paddingRight:2,paddingBottom:2, paddingTop: 0}}>
+        <Button variant="contained" onClick={handleSubmit}>
+          Add Teacher
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };
