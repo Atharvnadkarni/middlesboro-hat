@@ -83,11 +83,11 @@ class HandleTeacherIndividual(APIView):
             return Response({"Error": "Teacher ID Does Not Exist"}, status=status.HTTP_404_NOT_FOUND)
 
         teacher = teacher_qs[0]
-        first_name = serializer.validated_data.first_name
-        surname = serializer.validated_data.surname
-        role = serializer.validated_data.role
-        class_tr = serializer.validated_data.class_tr
-        subjects = serializer.validated_data.subjects
+        first_name = serializer.validated_data.get("first_name")
+        surname = serializer.validated_data.get("surname")
+        role = serializer.validated_data.get("role")
+        class_tr = serializer.validated_data.get("class_tr")
+        subjects = serializer.validated_data.get("subjects")
 
         division = class_tr[-1] if class_tr != 'No' else None
 
