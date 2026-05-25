@@ -22,7 +22,7 @@ const DeleteModal = ({ teacher, open, setOpen }) => {
     <Dialog
       keepMounted
       slots={{ transition: Grow }}
-      open={!!teacher}
+      open={open}
       onClose={() => setOpen(false)}
     >
       <Box sx={{ justifyContent: "space-between" }}>
