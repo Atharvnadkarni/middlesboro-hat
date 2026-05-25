@@ -9,9 +9,11 @@ import {
 } from "@mui/material";
 import { memo, useState } from "react";
 import AddEditTeacher from "./AddEditTeacher";
+import DeleteModal from "./DeleteModal";
 
-const TeacherCard = ({ teacher, }) => {
+const TeacherCard = ({ teacher }) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   return (
     <>
       <Grid size={{ md: 3, sm: 6, xs: 12 }}>
@@ -43,7 +45,16 @@ const TeacherCard = ({ teacher, }) => {
           </CardContent>
         </Card>
       </Grid>
-      <AddEditTeacher open={modalOpen} setOpen={setModalOpen} mode={{mode: 'edit', teacher}} />
+      <DeleteModal
+        teacher={teacher}
+        open={deleteModalOpen}
+        setOpen={setDeleteModalOpen}
+      />
+      <AddEditTeacher
+        open={modalOpen}
+        setOpen={setModalOpen}
+        mode={{ mode: "edit", teacher }}
+      />
     </>
   );
 };
