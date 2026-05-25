@@ -10,6 +10,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { useRequest } from "../hooks/useRequest";
+import { Close } from "@mui/icons-material";
 
 const DeleteModal = ({ teacher, open, setOpen }) => {
   const { request, isLoading, error } = useRequest();
