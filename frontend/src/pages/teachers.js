@@ -7,6 +7,7 @@ import AddEditTeacher from "../components/AddEditTeacher";
 
 const Teachers = () => {
   const [teachers, setTeachers] = useState([]);
+  const [editingTeacher, setEditingTeacher] = useState({});
   useEffect(() => {
     (async () => {
       const res = await axios.get("/api/teacher");
@@ -23,10 +24,10 @@ const Teachers = () => {
       </div>
       <Grid container spacing={2}>
         {teachers.map((teacher) => (
-          <TeacherCard teacher={teacher} />
+          <TeacherCard key={teacher.id} teacher={teacher} onSetEdit={setEditingTeacher} />
         ))}
       </Grid>
-      <AddEditTeacher open={modalOpen} setOpen={setModalOpen} />
+      <AddEditTeacher open={modalOpen} setOpen={setModalOpen} mode={{mode: "add"}} />
     </>
   );
 };

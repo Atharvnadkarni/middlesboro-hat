@@ -16,12 +16,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Add, Close } from "@mui/icons-material";
-import { useId, useState } from "react";
+import { Add, Close, Remove } from "@mui/icons-material";
+import { useEffect, useId, useState } from "react";
 import axios from "axios";
 import { useRequest } from "../hooks/useRequest";
+import { useNavigate } from "react-router";
 
-const AddEditTeacher = ({ open, setOpen }) => {
+const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
+  const navigate = useNavigate();
   const subjectList = [
     "Math",
     "English",
@@ -54,6 +56,25 @@ const AddEditTeacher = ({ open, setOpen }) => {
   const [classTr, setClassTr] = useState("No");
   const [role, setRole] = useState("Teacher");
   const [subjects, setSubjects] = useState([]);
+  useEffect(() => {
+    console.log(teacher);
+    if (teacher) {
+      setFirstName(teacher?.first_name ?? "");
+      setSurname(teacher?.surname ?? "");
+      if (teacher?.classTr) setClassTr(`10${teacher?.class_tr?.division}`);
+      else setClassTr("No");
+      setRole(`${teacher?.role?.role}` ?? "Teacher");
+      setSubjects(
+        teacher?.subject_classes?.map(
+          (sub) =>
+            ({
+              subject: sub.subject.sub,
+              classes: "10" + sub?.classes?.map((cl) => cl?.division).join(""),
+            }) ?? [],
+        ),
+      );
+    }
+  }, []);
 
   const [formErrors, setFormErrors] = useState({
     firstName: null,
@@ -66,11 +87,15 @@ const AddEditTeacher = ({ open, setOpen }) => {
     selectValue: subjectList[0],
     classValue: "10ABC",
   });
+  useEffect(() => {
+    setFormErrors((ofe) => ({ ...ofe, masterError: error }));
+  }, [error]);
 
   const handleSubmit = async () => {
     if (!firstName) setFormErrors((ofe) => ({ ...ofe, firstName: "Required" }));
     if (!surname) setFormErrors((ofe) => ({ ...ofe, surname: "Required" }));
     if (!role) setFormErrors((ofe) => ({ ...ofe, role: "Required" }));
+    if (!firstName || !surname || !role) return;
 
     const res = await request("post", "/api/teacher", {
       first_name: firstName,
@@ -79,17 +104,34 @@ const AddEditTeacher = ({ open, setOpen }) => {
       subjects,
       role,
     });
-    location.reload();
+    if (res) navigate(0);
+  };
+  const handleUpdateSubmit = async () => {
+    if (!firstName) setFormErrors((ofe) => ({ ...ofe, firstName: "Required" }));
+    if (!surname) setFormErrors((ofe) => ({ ...ofe, surname: "Required" }));
+    if (!role) setFormErrors((ofe) => ({ ...ofe, role: "Required" }));
+    if (!firstName || !surname || !role) return;
+
+    const res = await request("patch", `/api/teacher/${teacher.id}`, {
+      first_name: firstName,
+      surname,
+      class_tr: classTr,
+      subjects,
+      role,
+    });
+    if (res) navigate(0);
   };
   return (
     <Dialog
-    keepMounted
+      keepMounted
       open={open}
       onClose={() => setOpen(false)}
-      slots={{transition: Grow}}
+      slots={{ transition: Grow }}
     >
       <Box sx={{ justifyContent: "space-between" }}>
-        <DialogTitle>Add Teacher</DialogTitle>
+        <DialogTitle>
+          {mode == "edit" ? "Edit Teacher" : "Add Teacher"}
+        </DialogTitle>
         <IconButton
           aria-label="close"
           onClick={() => setOpen(false)}
@@ -187,17 +229,27 @@ const AddEditTeacher = ({ open, setOpen }) => {
             </IconButton>
           </Grid>
         </Grid>
-        {subjects.map((sub) => (
+        {subjects.map((sub, i) => (
           <Grid
             container
+            key={`${sub.subject}-${sub.classes}-${i}`}
             spacing={2}
             sx={{ paddingInline: 2, alignItems: "center" }}
           >
             <Grid size={{ xs: 6 }}>
               <Typography variant="body1">{sub.subject}</Typography>
             </Grid>
-            <Grid size={{ xs: 6 }}>
+            <Grid size={{ xs: 4 }}>
               <Typography variant="body1">{sub.classes}</Typography>
+            </Grid>
+            <Grid size={{ xs: 2 }}>
+              <IconButton
+                onClick={() =>
+                  setSubjects((old) => old.filter((_, idx) => idx !== i))
+                }
+              >
+                <Remove />
+              </IconButton>
             </Grid>
           </Grid>
         ))}
@@ -242,10 +294,20 @@ const AddEditTeacher = ({ open, setOpen }) => {
             </FormControl>
           </Grid>
         </Grid>
+        <Typography variant="body1" color="error">
+          {formErrors.masterError}
+        </Typography>
       </DialogContent>
-      <DialogActions sx={{paddingLeft:2,paddingRight:2,paddingBottom:2, paddingTop: 0}}>
-        <Button variant="contained" onClick={handleSubmit}>
-          Add Teacher
+      <DialogActions
+        sx={{
+          paddingLeft: 2,
+          paddingRight: 2,
+          paddingBottom: 2,
+          paddingTop: 0,
+        }}
+      >
+        <Button variant="contained" onClick={mode == "edit" ? handleUpdateSubmit : handleSubmit}>
+          {mode == "edit" ? "Edit Teacher" : "Add Teacher"}
         </Button>
       </DialogActions>
     </Dialog>

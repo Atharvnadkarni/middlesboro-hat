@@ -22,7 +22,8 @@ export const useRequest = () => {
       });
       return res.data;
     } catch (err) {
-      setError(err.message);
+      console.dir(err)
+      setError(`${err.response.statusText} - ${err.response.data["Error"]}`);
       throw err;
     } finally {
       setIsLoading(false);
