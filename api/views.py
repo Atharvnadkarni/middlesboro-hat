@@ -149,3 +149,9 @@ class HandleTeacherIndividual(APIView):
         serialize_tr = self.response_serializer_class(teacher)
                 
         return Response(serialize_tr.data, status=status.HTTP_200_OK)
+
+
+    def delete(self, request, id, format=None):
+        teacher = Teacher.objects.get(id=id)
+        teacher.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
