@@ -11,18 +11,24 @@ import { memo, useState } from "react";
 import AddEditTeacher from "./AddEditTeacher";
 import DeleteModal from "./DeleteModal";
 
-const TeacherCard = ({ teacher }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+const TeacherCard = ({ teacher, setEdit, setEditModalOpen, setDeleteModalOpen }) => {
   return (
     <>
       <Grid size={{ md: 3, sm: 6, xs: 12 }}>
         <Card sx={{ position: "relative", padding: 0 }}>
           <CardActions sx={{ position: "absolute", right: 0 }}>
-            <IconButton onClick={() => setModalOpen(true)}>
+            <IconButton onClick={() => {
+                setEditModalOpen(true);
+                setEdit(teacher);
+              }}>
               <Edit />
             </IconButton>
-            <IconButton onClick={() => setDeleteModalOpen(true)}>
+            <IconButton
+              onClick={() => {
+                setDeleteModalOpen(true);
+                setEdit(teacher);
+              }}
+            >
               <Delete />
             </IconButton>
           </CardActions>
@@ -45,16 +51,6 @@ const TeacherCard = ({ teacher }) => {
           </CardContent>
         </Card>
       </Grid>
-      <DeleteModal
-        teacher={teacher}
-        open={deleteModalOpen}
-        setOpen={setDeleteModalOpen}
-      />
-      <AddEditTeacher
-        open={modalOpen}
-        setOpen={setModalOpen}
-        mode={{ mode: "edit", teacher }}
-      />
     </>
   );
 };

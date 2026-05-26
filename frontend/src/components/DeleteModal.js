@@ -25,7 +25,7 @@ const DeleteModal = ({ teacher, open, setOpen }) => {
       open={open}
       onClose={() => setOpen(false)}
     >
-      <Box sx={{ justifyContent: "space-between" }}>
+      <Box sx={{ justifyContent: "space-between", paddingBottom: 0 }}>
         <DialogTitle>Delete Teacher?</DialogTitle>
         <IconButton
           aria-label="close"
@@ -51,7 +51,7 @@ const DeleteModal = ({ teacher, open, setOpen }) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button variant="standard" onClick={handleDelete}>
+        <Button variant="standard" color="primary" onClick={handleDelete}>
           Delete Teacher
         </Button>
       </DialogActions>
