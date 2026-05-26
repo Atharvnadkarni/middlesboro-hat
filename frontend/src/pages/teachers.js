@@ -18,20 +18,39 @@ const Teachers = () => {
       setTeachers(data);
     })();
   }, []);
-  const [modalOpen, setModalOpen] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     <>
-      <div style={{ display: "flex", marginBottom:20 }}>
+      <Tabs />
+      <div style={{ display: "flex", marginBottom: 20 }}>
         <div className="spacer" style={{ flex: 1 }} />
-        <Button variant="contained" startIcon={<PersonAdd />} onClick={() => {setModalOpen(true)}}>Add Teacher</Button>
+        <Button
+          variant="contained"
+          startIcon={<PersonAdd />}
+          onClick={() => {
+            setModalOpen(true);
+          }}
+        >
+          Add Teacher
+        </Button>
       </div>
       <Grid container spacing={2}>
         {teachers.map((teacher) => (
-          <TeacherCard key={teacher.id} teacher={teacher} setEdit={setEditingTeacher} setEditModalOpen={setEditModalOpen} setDeleteModalOpen={setDeleteModalOpen} />
+          <TeacherCard
+            key={teacher.id}
+            teacher={teacher}
+            setEdit={setEditingTeacher}
+            setEditModalOpen={setEditModalOpen}
+            setDeleteModalOpen={setDeleteModalOpen}
+          />
         ))}
       </Grid>
-      <AddEditTeacher open={modalOpen} setOpen={setModalOpen} mode={{mode: "add"}} />
-<DeleteModal
+      <AddEditTeacher
+        open={modalOpen}
+        setOpen={setModalOpen}
+        mode={{ mode: "add" }}
+      />
+      <DeleteModal
         teacher={editingTeacher}
         open={deleteModalOpen}
         setOpen={setDeleteModalOpen}

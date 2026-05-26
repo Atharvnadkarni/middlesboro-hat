@@ -11,6 +11,8 @@ const Home = () => {
   }, [classe]);
   return (
     <>
+            <Tabs />
+    
       <Dropdown setClass={setClass} />
       <SubjectList class={classe} />
     </>
