@@ -8,6 +8,7 @@ import Tabs from "./components/Tabs";
 import { BrowserRouter, Route, Routes } from "react-router";
 import Home from "./pages/home";
 import Teachers from "./pages/teachers";
+import LoginPage from "./pages/login";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/teachers" element={<Teachers />} />
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </Container>
     </BrowserRouter>
