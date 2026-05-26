@@ -39,7 +39,7 @@ export default function LoginPage() {
     setFormErrors({});
 
     try {
-      const res = await request("post", "/api/login/", {
+      const res = await request("post", "/api/login", {
         username: formData.username,
         password: formData.password,
       });
@@ -71,27 +71,7 @@ export default function LoginPage() {
       }}
     >
       {/* Left Side */}
-      <Grid
-        size={{ xs: 0, md: 6 }}
-        sx={{
-          display: { xs: "none", md: "flex" },
-          alignItems: "center",
-          justifyContent: "center",
-          bgcolor: "primary.main",
-          color: "white",
-          p: 4,
-        }}
-      >
-        <Box textAlign="center">
-          <Typography variant="h3" fontWeight="bold" gutterBottom>
-            Welcome Back
-          </Typography>
-
-          <Typography variant="h6">
-            Sign in to continue to your dashboard
-          </Typography>
-        </Box>
-      </Grid>
+      
 
       {/* Right Side */}
       <Grid
