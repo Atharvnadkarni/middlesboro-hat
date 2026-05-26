@@ -93,4 +93,6 @@ class CreateUpdateTeacherSerializer(serializers.Serializer):
     surname = serializers.CharField()
     role = serializers.CharField()
     class_tr = serializers.CharField(required=False)
+    username = serializers.CharField(required=False)
+    password = serializers.CharField(required=False)
     subjects = SubjectClassInputSerializer(many=True)
