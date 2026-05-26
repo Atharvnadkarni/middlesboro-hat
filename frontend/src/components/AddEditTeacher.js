@@ -53,6 +53,8 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
 
   const [firstName, setFirstName] = useState("");
   const [surname, setSurname] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [classTr, setClassTr] = useState("No");
   const [role, setRole] = useState("Teacher");
   const [subjects, setSubjects] = useState([]);
@@ -95,7 +97,9 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
     if (!firstName) setFormErrors((ofe) => ({ ...ofe, firstName: "Required" }));
     if (!surname) setFormErrors((ofe) => ({ ...ofe, surname: "Required" }));
     if (!role) setFormErrors((ofe) => ({ ...ofe, role: "Required" }));
-    if (!firstName || !surname || !role) return;
+    if (!username) setFormErrors((ofe) => ({ ...ofe, username: "Required" }));
+    if (!password) setFormErrors((ofe) => ({ ...ofe, password: "Required" }));
+    if (!firstName || !surname || !role || !username ||!password) return;
 
     const res = await request("post", "/api/teacher", {
       first_name: firstName,
@@ -103,6 +107,7 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
       class_tr: classTr,
       subjects,
       role,
+      username,password
     });
     if (res) navigate(0);
   };
@@ -292,6 +297,30 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
               </Select>
               <FormHelperText>Class teacher?</FormHelperText>
             </FormControl>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2} sx={{ padding: 2 }}>
+          <Grid size={{ xs: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label="Username"
+              error={formErrors.username}
+              helperText={formErrors.username}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </Grid>
+          <Grid size={{ xs: 6 }}>
+            <TextField
+              fullWidth
+              required
+              label="Password"
+              error={formErrors.password}
+              helperText={formErrors.password}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </Grid>
         </Grid>
         <Typography variant="body1" color="error">
