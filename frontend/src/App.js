@@ -15,7 +15,6 @@ const App = () => {
     <BrowserRouter>
       <Header />
       <Container sx={{ marginTop: 3, position: "relative" }}>
-        <Tabs />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/teachers" element={<Teachers />} />
