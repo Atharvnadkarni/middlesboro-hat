@@ -1,4 +1,4 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, Tabs } from "@mui/material";
 import TeacherCard from "../components/TeacherCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
