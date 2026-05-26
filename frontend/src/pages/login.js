@@ -6,26 +6,60 @@ import {
   TextField,
   Typography,
   Link,
+  Alert,
 } from "@mui/material";
 import { useState } from "react";
+import { useRequest } from "../hooks/useRequest";
 
 export default function LoginPage() {
+  const { request, isLoading, error } = useRequest();
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
+
+  const [formErrors, setFormErrors] = useState({});
 
   const handleChange = (e) => {
     setFormData((ofd) => ({
       ...ofd,
       [e.target.name]: e.target.value,
     }));
+
+    setFormErrors((ofe) => ({
+      ...ofe,
+      [e.target.name]: "",
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    setFormErrors({});
+
+    try {
+      const res = await request("post", "/api/login/", {
+        username: formData.username,
+        password: formData.password,
+      });
+
+      console.log("Logged in:", res.data);
+
+      // redirect here
+      // navigate("/dashboard");
+
+    } catch (err) {
+      console.log(err);
+
+      if (err.response?.data) {
+        setFormErrors(err.response.data);
+      } else {
+        setFormErrors({
+          masterError: "Something went wrong.",
+        });
+      }
+    }
   };
 
   return (
@@ -33,14 +67,35 @@ export default function LoginPage() {
       container
       sx={{
         minHeight: "100vh",
+        bgcolor: "#f5f5f5",
       }}
     >
       {/* Left Side */}
-      
+      <Grid
+        size={{ xs: 0, md: 6 }}
+        sx={{
+          display: { xs: "none", md: "flex" },
+          alignItems: "center",
+          justifyContent: "center",
+          bgcolor: "primary.main",
+          color: "white",
+          p: 4,
+        }}
+      >
+        <Box textAlign="center">
+          <Typography variant="h3" fontWeight="bold" gutterBottom>
+            Welcome Back
+          </Typography>
+
+          <Typography variant="h6">
+            Sign in to continue to your dashboard
+          </Typography>
+        </Box>
+      </Grid>
 
       {/* Right Side */}
       <Grid
-        size={{ xs: 12, md: 12 }}
+        size={{ xs: 12, md: 6 }}
         sx={{
           display: "flex",
           alignItems: "center",
@@ -75,6 +130,12 @@ export default function LoginPage() {
             Enter your credentials below
           </Typography>
 
+          {formErrors.masterError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {formErrors.masterError}
+            </Alert>
+          )}
+
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
               fullWidth
@@ -83,6 +144,8 @@ export default function LoginPage() {
               margin="normal"
               value={formData.username}
               onChange={handleChange}
+              error={!!formErrors.username}
+              helperText={formErrors.username}
             />
 
             <TextField
@@ -93,6 +156,8 @@ export default function LoginPage() {
               margin="normal"
               value={formData.password}
               onChange={handleChange}
+              error={!!formErrors.password}
+              helperText={formErrors.password}
             />
 
             <Button
@@ -100,13 +165,14 @@ export default function LoginPage() {
               variant="contained"
               type="submit"
               size="large"
+              disabled={isLoading}
               sx={{
                 mt: 3,
                 py: 1.5,
                 borderRadius: 2,
               }}
             >
-              Sign In
+              {isLoading ? "Signing In..." : "Sign In"}
             </Button>
 
             <Box
