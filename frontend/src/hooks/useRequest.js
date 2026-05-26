@@ -1,9 +1,36 @@
 import { useCallback, useState } from "react";
 import axios from "axios";
 
+const getCookie = (name) => {
+  let cookieValue = null;
+
+  if (document.cookie && document.cookie !== "") {
+
+    const cookies = document.cookie.split(";");
+
+    for (let cookie of cookies) {
+
+      cookie = cookie.trim();
+
+      if (cookie.startsWith(name + "=")) {
+
+        cookieValue = decodeURIComponent(
+          cookie.substring(name.length + 1)
+        );
+
+        break;
+      }
+    }
+  }
+
+  return cookieValue;
+};
+
 export const useRequest = () => {
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
   const request = useCallback(async (
     method,
     url,
@@ -11,24 +38,53 @@ export const useRequest = () => {
     headers = {},
     config = { BASE_URL: "http://localhost:8000" },
   ) => {
+
     try {
+
       setIsLoading(true);
       setError(null);
+
+      const csrfToken = getCookie("csrftoken");
+
       const res = await axios({
         method,
         url: `${config.BASE_URL}${url}/`,
         data,
-        headers,
+
+        withCredentials: true,
+
+        headers: {
+          "X-CSRFToken": csrfToken,
+          ...headers,
+        },
       });
+
       return res.data;
+
     } catch (err) {
-      console.dir(err)
-      setError(`${err.response.statusText} - ${err.response.data["Error"]}`);
+
+      console.dir(err);
+
+      const errorMessage =
+        err.response?.data?.Error ||
+        err.response?.data?.error ||
+        err.response?.statusText ||
+        "Something went wrong";
+
+      setError(errorMessage);
+
       throw err;
+
     } finally {
+
       setIsLoading(false);
     }
+
   }, []);
 
-  return { request, isLoading, error };
+  return {
+    request,
+    isLoading,
+    error,
+  };
 };
