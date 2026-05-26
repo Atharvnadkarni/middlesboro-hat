@@ -33,35 +33,14 @@ export default function LoginPage() {
       container
       sx={{
         minHeight: "100vh",
-        bgcolor: "#f5f5f5",
       }}
     >
       {/* Left Side */}
-      <Grid
-        size={{ xs: 0, md: 6 }}
-        sx={{
-          display: { xs: "none", md: "flex" },
-          alignItems: "center",
-          justifyContent: "center",
-          bgcolor: "primary.main",
-          color: "white",
-          p: 4,
-        }}
-      >
-        <Box textAlign="center">
-          <Typography variant="h3" fontWeight="bold" gutterBottom>
-            Welcome Back
-          </Typography>
-
-          <Typography variant="h6">
-            Sign in to continue to your dashboard
-          </Typography>
-        </Box>
-      </Grid>
+      
 
       {/* Right Side */}
       <Grid
-        size={{ xs: 12, md: 6 }}
+        size={{ xs: 12, md: 12 }}
         sx={{
           display: "flex",
           alignItems: "center",
