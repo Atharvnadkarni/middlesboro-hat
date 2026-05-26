@@ -4,7 +4,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Teacher, TeacherSubjectClass, Role, Class, Subject
 from .serializers import TeacherSerializer, TSCSerializer, CreateUpdateTeacherSerializer
-import re
+from django.contrib.auth.models import User
+from rest_framework.permissions import AllowAny
+from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 
@@ -32,6 +36,15 @@ class HandleTeacher(APIView):
         surname = serializer.validated_data.get("surname")
         role = serializer.validated_data.get("role")
         class_tr = serializer.validated_data.get("class_tr")
+        username = serializer.validated_data.get("username")
+        password = serializer.validated_data.get("password")
+        
+        qs = User.objects.filter(username=username, password=password)
+        if qs.exists():
+            return Response({"Error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        User.objects.create_user(username=username,password=password)
+        
         # convert class_tr like "10B" into [10, "B"]
         division = class_tr[-1] if class_tr != 'No' else None
         print(division)
@@ -155,3 +168,59 @@ class HandleTeacherIndividual(APIView):
         teacher = Teacher.objects.get(id=id)
         teacher.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+#auth
+
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class CSRFView(APIView):
+
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response({"message": "CSRF cookie set"})
+    
+class LoginView(APIView):
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        if user is None:
+            return Response(
+                {"error": "Invalid credentials"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        login(request, user)
+
+        return Response({
+            "message": "Logged in",
+            "username": user.username
+        })
+    
+class LogoutView(APIView):
+
+    def post(self, request):
+
+        logout(request)
+
+        return Response({
+            "message": "Logged out"
+        })
+        
+class MeView(APIView):
+
+    def get(self, request):
+
+        return Response({
+            "username": request.user.username
+        })
