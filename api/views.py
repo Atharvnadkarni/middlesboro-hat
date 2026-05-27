@@ -39,7 +39,7 @@ class HandleTeacher(APIView):
         username = serializer.validated_data.get("username")
         password = serializer.validated_data.get("password")
         
-        qs = User.objects.filter(username=username, password=password)
+        qs = User.objects.filter(username=username)
         if qs.exists():
             return Response({"Error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
         
