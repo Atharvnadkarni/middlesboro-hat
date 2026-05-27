@@ -307,6 +307,7 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
               fullWidth
               required
               label="Username"
+              autoComplete={false}
               error={formErrors.username}
               helperText={formErrors.username}
               value={username}
@@ -319,7 +320,8 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
                 fullWidth
                 required
                 label={mode == "edit" ? "New Password" : "Password"}
-                type="password" 
+                type="password"
+                autoComplete={false}
                 error={formErrors.password}
                 helperText={formErrors.password}
                 value={password}
