@@ -77,8 +77,10 @@ class TeacherSerializer(serializers.ModelSerializer):
     role = RoleSerializer()
     subject_classes = TSCSerializer(many=True)
     class_tr = ClassSerializer()
-    username = serializers.CharField(source="user.username")
-    password = serializers.CharField(source="user.password")
+    username = serializers.CharField(source="user.username",read_only=True,
+    allow_null=True)
+    password = serializers.CharField(source="user.password",read_only=True,
+    allow_null=True)
     # marks = MarksStudentsSerializer(many=True, read_only=True)
 
     class Meta:
