@@ -59,7 +59,7 @@ export const useRequest = () => {
         },
       });
 
-      return res.data;
+      return res;
 
     } catch (err) {
 
