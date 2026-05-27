@@ -236,7 +236,7 @@ class MeView(APIView):
 
     def get(self, request):
         user = request.user
-        teacher = user.teacher_profile
+        teacher = user.profile
 
         return Response({
             "id": teacher.id,
