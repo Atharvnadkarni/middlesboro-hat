@@ -66,6 +66,7 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
       if (teacher?.classTr) setClassTr(`10${teacher?.class_tr?.division}`);
       else setClassTr("No");
       setRole(`${teacher?.role?.role}` ?? "Teacher");
+      setUsername(`${teacher?.username}` ?? "");
       setSubjects(
         teacher?.subject_classes?.map(
           (sub) =>
@@ -99,7 +100,7 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
     if (!role) setFormErrors((ofe) => ({ ...ofe, role: "Required" }));
     if (!username) setFormErrors((ofe) => ({ ...ofe, username: "Required" }));
     if (!password) setFormErrors((ofe) => ({ ...ofe, password: "Required" }));
-    if (!firstName || !surname || !role || !username ||!password) return;
+    if (!firstName || !surname || !role || !username || !password) return;
 
     const res = await request("post", "/api/teacher", {
       first_name: firstName,
@@ -107,7 +108,8 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
       class_tr: classTr,
       subjects,
       role,
-      username,password
+      username,
+      password,
     });
     if (res) navigate(0);
   };
@@ -312,16 +314,18 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
             />
           </Grid>
           <Grid size={{ xs: 6 }}>
-            <TextField
-              fullWidth
-              required
-              label="Password"
-              type="password"
-              error={formErrors.password}
-              helperText={formErrors.password}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <FormControl>
+              <TextField
+                fullWidth
+                required
+                label={mode == "edit" ? "New Password" : "Password"}
+                type="password" 
+                error={formErrors.password}
+                helperText={formErrors.password}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </FormControl>
           </Grid>
         </Grid>
         <Typography variant="body1" color="error">
@@ -336,7 +340,10 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
           paddingTop: 0,
         }}
       >
-        <Button variant="contained" onClick={mode == "edit" ? handleUpdateSubmit : handleSubmit}>
+        <Button
+          variant="contained"
+          onClick={mode == "edit" ? handleUpdateSubmit : handleSubmit}
+        >
           {mode == "edit" ? "Edit Teacher" : "Add Teacher"}
         </Button>
       </DialogActions>
