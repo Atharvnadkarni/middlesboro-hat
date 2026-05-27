@@ -4,13 +4,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { PersonAdd } from "@mui/icons-material";
 import AddEditTeacher from "../components/AddEditTeacher";
-import DeleteModal from "../components/DeleteModal";
 
 const Teachers = () => {
   const [teachers, setTeachers] = useState([]);
   const [editingTeacher, setEditingTeacher] = useState({});
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   useEffect(() => {
     (async () => {
       const res = await axios.get("/api/teacher");
@@ -36,13 +33,7 @@ const Teachers = () => {
       </div>
       <Grid container spacing={2}>
         {teachers.map((teacher) => (
-          <TeacherCard
-            key={teacher.id}
-            teacher={teacher}
-            setEdit={setEditingTeacher}
-            setEditModalOpen={setEditModalOpen}
-            setDeleteModalOpen={setDeleteModalOpen}
-          />
+          <TeacherCard key={teacher.id} teacher={teacher} onSetEdit={setEditingTeacher} />
         ))}
       </Grid>
       <AddEditTeacher
