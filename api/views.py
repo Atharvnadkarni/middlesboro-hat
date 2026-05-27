@@ -43,7 +43,9 @@ class HandleTeacher(APIView):
         if qs.exists():
             return Response({"Error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
         
-        User.objects.create_user(username=username,password=password)
+        user = User(username=username)
+        user.set_password(password)
+        user.save()
         
         # convert class_tr like "10B" into [10, "B"]
         division = class_tr[-1] if class_tr != 'No' else None
@@ -53,7 +55,7 @@ class HandleTeacher(APIView):
         class_tr_obj = Class.objects.get(
             grade=10, division=division) if division else None
         teacher = Teacher(first_name=first_name,
-                          surname=surname, role=role_obj, class_tr=class_tr_obj)
+                          surname=surname, role=role_obj, class_tr=class_tr_obj, user=user)
         teacher.save()
         for subject in subjects:
             sub_id = Subject.objects.get(
