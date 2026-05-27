@@ -45,7 +45,7 @@ export default function LoginPage() {
       });
 
       console.log("Logged in:", res.data);
-      const meres = await request("get", "/api/me/");
+      const meres = await request("get", "/api/me");
 
       localStorage.setItem("profile", JSON.stringify(meres.data));
       // redirect here
