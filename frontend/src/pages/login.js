@@ -65,17 +65,14 @@ export default function LoginPage() {
   return (
     <Grid
       container
-      sx={{
-        minHeight: "100vh",
-        bgcolor: "#f5f5f5",
-      }}
+      sx={{height: "100vh"}}
     >
       {/* Left Side */}
       
 
       {/* Right Side */}
       <Grid
-        size={{ xs: 12, md: 6 }}
+        size={{ xs: 12 }}
         sx={{
           display: "flex",
           alignItems: "center",
