@@ -124,7 +124,8 @@ class HandleTeacherIndividual(APIView):
             return Response({"Error": "User doesnt exist"})
         
         user = user_qs[0]
-        if password:
+        if username and password:
+            user.username = username
             user.set_password(password)
             user.save(update_fields=["password"])
 
