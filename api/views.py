@@ -232,9 +232,20 @@ class LogoutView(APIView):
         })
         
 class MeView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        user = request.user
+        teacher = user.teacher_profile
 
         return Response({
-            "username": request.user.username
+            "id": teacher.id,
+            "username": user.username,
+            "first_name": teacher.first_name,
+            "surname": teacher.surname,
+            "role": teacher.role.role if teacher.role else None,
+            "class_tr": (
+                f"{teacher.class_tr.grade}-{teacher.class_tr.division}"
+                if teacher.class_tr else None
+            )
         })

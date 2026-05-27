@@ -45,10 +45,11 @@ export default function LoginPage() {
       });
 
       console.log("Logged in:", res.data);
+      const meres = await request("get", "/api/me/");
 
+      localStorage.setItem("profile", JSON.stringify(meres.data));
       // redirect here
       // navigate("/dashboard");
-
     } catch (err) {
       console.log(err);
 
@@ -63,12 +64,8 @@ export default function LoginPage() {
   };
 
   return (
-    <Grid
-      container
-      sx={{height: "100vh"}}
-    >
+    <Grid container sx={{ height: "100vh" }}>
       {/* Left Side */}
-      
 
       {/* Right Side */}
       <Grid
