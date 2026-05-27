@@ -316,6 +316,7 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
               fullWidth
               required
               label="Password"
+              type="password"
               error={formErrors.password}
               helperText={formErrors.password}
               value={password}
