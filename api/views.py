@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from .models import Teacher, TeacherSubjectClass, Role, Class, Subject
 from .serializers import TeacherSerializer, TSCSerializer, CreateUpdateTeacherSerializer
 from django.contrib.auth.models import User
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
