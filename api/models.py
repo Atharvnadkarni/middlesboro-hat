@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -47,7 +48,8 @@ class Teacher(models.Model):
     # subject = models.ManyToManyField(to=Subject, null=True, blank=True)
     # sub_classes = models.ManyToManyField(to="Class", related_name="subject_classes", null=True, blank=True)
     role = models.ForeignKey(to=Role, on_delete=models.SET_NULL, null=True)
-    class_tr = models.ForeignKey(to="Class", on_delete=models.SET_NULL, null=True, blank=True, related_name="teacher_class", unique=True)
+    class_tr = models.OneToOneField(to="Class", on_delete=models.SET_NULL, null=True, blank=True, related_name="class_tr")
+    user = models.OneToOneField(to=User, on_delete=models.SET_NULL, null=True, related_name="profile")
     def __str__(self) -> str:
         return f"{self.first_name} {self.surname}"
 
