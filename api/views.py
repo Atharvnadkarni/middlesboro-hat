@@ -101,6 +101,8 @@ class HandleTeacherIndividual(APIView):
         role = serializer.validated_data.get("role")
         class_tr = serializer.validated_data.get("class_tr")
         subjects = serializer.validated_data.get("subjects")
+        username = serializer.validated_data.get("username")
+        password = serializer.validated_data.get("password")
 
         division = class_tr[-1] if class_tr != 'No' else None
 
@@ -114,6 +116,15 @@ class HandleTeacherIndividual(APIView):
         teacher.class_tr = class_tr_obj
         teacher.save(update_fields=(
             'first_name', 'surname', 'role', 'class_tr'))
+        
+        user_qs = User.objects.filter(username=username)
+        if not user_qs.exists():
+            return Response({"Error": "User doesnt exist"})
+        
+        user = user_qs[0]
+        if password:
+            user.set_password(password)
+            user.save(update_fields=["password"])
 
         # handling subjects
         new_subjects = []
