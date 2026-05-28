@@ -10,9 +10,11 @@ const Header = () => {
             <CalendarMonth />
             <Typography variant="h6">Marksheet</Typography>
           </Box>
-          <Box>
-            <HelloTr />
-          </Box>
+          {localStorage.getItem("profile") && (
+            <Box>
+              <HelloTr />
+            </Box>
+          )}
         </Toolbar>
       </Container>
     </AppBar>

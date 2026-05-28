@@ -14,6 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 const HelloTr = () => {
   const [profile, setProfile] = useState("");
@@ -21,16 +22,20 @@ const HelloTr = () => {
   const handleOpen = (e) => setAnchorEl(e.currentTarget);
   const handleClose = (e) => setAnchorEl(null);
   const { request, isLoading, error } = useRequest();
+  const navigate = useNavigate()
   const logout = async () => {
     await request("post", "/api/logout");
     localStorage.removeItem("profile");
+    handleClose();
+    navigate("/login");
   };
   useEffect(() => {
+    console.log("hello")
     if (localStorage.getItem("profile")) {
       const profile = JSON.parse(localStorage.getItem("profile"));
       setProfile(profile);
     }
-  }, []);
+  }, [localStorage, localStorage.getItem("profile"), document.cookie]);
   function stringToColor(string) {
     let hash = 0;
     let i;
