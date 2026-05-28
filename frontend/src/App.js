@@ -13,10 +13,10 @@ import LoginPage from "./pages/login";
 const App = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    if (!localStorage.getItem("profile")) navigate("/login")
-  }, [])
+    if (!localStorage.getItem("profile")) navigate("/login");
+  }, []);
   return (
-    <BrowserRouter>
+    <>
       <Header />
       <Container sx={{ marginTop: 3, position: "relative" }}>
         <Routes>
@@ -25,7 +25,7 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
         </Routes>
       </Container>
-    </BrowserRouter>
+    </>
   );
 };
 
