@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useRequest } from "../hooks/useRequest";
+import { useNavigate } from "react-router";
 
 export default function LoginPage() {
   const { request, isLoading, error } = useRequest();
@@ -32,6 +33,7 @@ export default function LoginPage() {
       [e.target.name]: "",
     }));
   };
+  const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,6 +50,7 @@ export default function LoginPage() {
       const meres = await request("get", "/api/me");
 
       localStorage.setItem("profile", JSON.stringify(meres.data));
+      navigate("/")
       // redirect here
       // navigate("/dashboard");
     } catch (err) {
@@ -149,21 +152,6 @@ export default function LoginPage() {
               {isLoading ? "Signing In..." : "Sign In"}
             </Button>
 
-            <Box
-              sx={{
-                mt: 2,
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <Link href="#" underline="hover">
-                Forgot Password?
-              </Link>
-
-              <Link href="#" underline="hover">
-                Create Account
-              </Link>
-            </Box>
           </Box>
         </Paper>
       </Grid>
