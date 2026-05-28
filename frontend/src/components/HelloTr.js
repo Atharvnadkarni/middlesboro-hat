@@ -1,5 +1,5 @@
 import { ArrowDownward, ArrowDropDown, Logout } from "@mui/icons-material";
-import {useRequest} from "../hooks/useRequest"
+import { useRequest } from "../hooks/useRequest";
 import {
   Avatar,
   Box,
@@ -20,10 +20,11 @@ const HelloTr = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const handleOpen = (e) => setAnchorEl(e.currentTarget);
   const handleClose = (e) => setAnchorEl(null);
-  const {request, isLoading, error} = useRequest()
+  const { request, isLoading, error } = useRequest();
   const logout = async () => {
-    await request("post", "/api/logout")
-  }
+    await request("post", "/api/logout");
+    localStorage.removeItem("profile");
+  };
   useEffect(() => {
     if (localStorage.getItem("profile")) {
       const profile = JSON.parse(localStorage.getItem("profile"));
