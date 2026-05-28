@@ -5,8 +5,13 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
+import { useEffect, useState } from "react";
 
 const Dropdown = ({ setClass }) => {
+  const [profile, setProfile] = useState();
+  useEffect(() => {
+    setProfile(JSON.parse(localStorage.getItem("profile")));
+  }, [localStorage]);
   return (
     <div
       style={{
@@ -32,7 +37,9 @@ const Dropdown = ({ setClass }) => {
           <MenuItem value={"C"}>10C</MenuItem>
         </Select>
       </FormControl>
-      <Button variant="contained">Submit XLSX Data</Button>
+      {profile?.role?.role == "Administrator" && (
+        <Button variant="contained">Submit XLSX Data</Button>
+      )}
     </div>
   );
 };
