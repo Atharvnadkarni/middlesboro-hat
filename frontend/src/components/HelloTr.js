@@ -22,7 +22,7 @@ const HelloTr = () => {
   const handleClose = (e) => setAnchorEl(null);
   const {request, isLoading, error} = useRequest()
   const logout = async () => {
-    await request("get", "/api/logout")
+    await request("post", "/api/logout")
   }
   useEffect(() => {
     if (localStorage.getItem("profile")) {
