@@ -20,10 +20,16 @@ class Subject(models.Model):
     def __str__(self):
         return f"{self.sub}"
 
+class Exam(models.Model):
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return f"{self.name}"
+
 
 class Mark(models.Model):
     student = models.ForeignKey(
         to=Student, on_delete=models.CASCADE, related_name="marks")
+    exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE, related_name="marks")
     subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE)
     score = models.IntegerField()
 
