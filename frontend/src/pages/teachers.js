@@ -1,9 +1,10 @@
-import { Button, Grid, Tabs } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import TeacherCard from "../components/TeacherCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { PersonAdd } from "@mui/icons-material";
 import AddEditTeacher from "../components/AddEditTeacher";
+import Tabs from "../components/Tabs";
 
 const Teachers = () => {
   const [teachers, setTeachers] = useState([]);
