@@ -244,7 +244,7 @@ class MeView(APIView):
             "first_name": teacher.first_name,
             "surname": teacher.surname,
             "role": teacher.role.role if teacher.role else None,
-            "subjects": TSCSerializer(teacher.subject_classes.objects.all(), many=True),
+            "subjects": TSCSerializer(teacher.subject_classes.all(), many=True).data,
             "class_tr": (
                 f"{teacher.class_tr.grade}-{teacher.class_tr.division}"
                 if teacher.class_tr else None
