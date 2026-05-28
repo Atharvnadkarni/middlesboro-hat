@@ -8,7 +8,7 @@ class MarksSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Mark
-        fields = ("student", "subject", "score")
+        fields = ("student","exam", "subject", "score")
 
     def get_student_name(self, obj):
         return f"{obj.student.first_name} {obj.student.last_name}"
@@ -20,7 +20,7 @@ class MarksStudentsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Mark
-        fields = ("subject", "score")
+        fields = ("subject", "exam", "score")
 
     def get_student_name(self, obj):
         return f"{obj.student.first_name} {obj.student.last_name}"
