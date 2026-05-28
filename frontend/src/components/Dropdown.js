@@ -37,7 +37,7 @@ const Dropdown = ({ setClass }) => {
           <MenuItem value={"C"}>10C</MenuItem>
         </Select>
       </FormControl>
-      {profile?.role?.role == "Administrator" && (
+      {profile?.role == "Administrator" && (
         <Button variant="contained">Submit XLSX Data</Button>
       )}
     </div>
