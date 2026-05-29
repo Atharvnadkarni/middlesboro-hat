@@ -106,7 +106,9 @@ class ExcelDataSerializerOne(serializers.Serializer):
     no = serializers.IntegerField()
     first_name = serializers.CharField()
     surname = serializers.CharField()
-    subjects = serializers.ReadOnlyField()
+    subjects = serializers.ListField(
+        child=serializers.CharField()
+    )
     
 class ExcelDataSerializerSheet(serializers.Serializer):
     # first_name = 
