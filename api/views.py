@@ -3,7 +3,7 @@ from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Teacher, TeacherSubjectClass, Role, Class, Subject, Student, Mark, Exam
-from .serializers import TeacherSerializer, TSCSerializer, CreateUpdateTeacherSerializer, ExcelDataSerializer
+from .serializers import TeacherSerializer, TSCSerializer, CreateUpdateTeacherSerializer, ExcelDataSerializer, StudentMarksSerializer
 from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
@@ -290,6 +290,6 @@ class HandleStudentsData(APIView):
                         mark.save()
                         
         re_new_students = Student.objects.all()
-        re_serialize = self.serializer_class(re_new_students)
+        re_serialize = StudentMarksSerializer(re_new_students)
         return Response({"message": "Success - Students Created", "data": re_serialize.data}, status=status.HTTP_201_CREATED)
     
