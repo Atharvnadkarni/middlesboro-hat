@@ -100,3 +100,15 @@ class CreateUpdateTeacherSerializer(serializers.Serializer):
     username = serializers.CharField(required=False)
     password = serializers.CharField(required=False)
     subjects = SubjectClassInputSerializer(many=True)
+    
+class ExcelDataSerializerOne(serializers.Serializer):
+    # first_name = 
+    no = serializers.IntegerField()
+    first_name = serializers.CharField()
+    surname = serializers.CharField()
+    subjects = serializers.Field()
+    
+class ExcelDataSerializer(serializers.Serializer):
+    # sheet_N
+    class_name = serializers.CharField()
+    excel_data = ExcelDataSerializerOne(many=True)

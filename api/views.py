@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Teacher, TeacherSubjectClass, Role, Class, Subject
-from .serializers import TeacherSerializer, TSCSerializer, CreateUpdateTeacherSerializer
+from .models import Teacher, TeacherSubjectClass, Role, Class, Subject, Student, Mark, Exam
+from .serializers import TeacherSerializer, TSCSerializer, CreateUpdateTeacherSerializer, ExcelDataSerializer
 from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
@@ -38,15 +38,15 @@ class HandleTeacher(APIView):
         class_tr = serializer.validated_data.get("class_tr")
         username = serializer.validated_data.get("username")
         password = serializer.validated_data.get("password")
-        
+
         qs = User.objects.filter(username=username)
         if qs.exists():
             return Response({"Error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         user = User(username=username)
         user.set_password(password)
         user.save()
-        
+
         # convert class_tr like "10B" into [10, "B"]
         division = class_tr[-1] if class_tr != 'No' else None
         print(division)
@@ -118,11 +118,11 @@ class HandleTeacherIndividual(APIView):
         teacher.class_tr = class_tr_obj
         teacher.save(update_fields=(
             'first_name', 'surname', 'role', 'class_tr'))
-        
+
         user_qs = User.objects.filter(username=username)
         if not user_qs.exists():
             return Response({"Error": "User doesnt exist"})
-        
+
         user = user_qs[0]
         if username and password:
             user.username = username
@@ -172,18 +172,18 @@ class HandleTeacherIndividual(APIView):
                 tsc = TeacherSubjectClass.objects.create(
                     teacher=teacher, subject=sub_obj)
                 tsc.classes.set(classes)
-                
-        serialize_tr = self.response_serializer_class(teacher)
-                
-        return Response(serialize_tr.data, status=status.HTTP_200_OK)
 
+        serialize_tr = self.response_serializer_class(teacher)
+
+        return Response(serialize_tr.data, status=status.HTTP_200_OK)
 
     def delete(self, request, id, format=None):
         teacher = Teacher.objects.get(id=id)
         teacher.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-#auth
+# auth
+
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
 class CSRFView(APIView):
@@ -192,7 +192,8 @@ class CSRFView(APIView):
 
     def get(self, request):
         return Response({"message": "CSRF cookie set"})
-    
+
+
 class LoginView(APIView):
 
     permission_classes = [AllowAny]
@@ -220,7 +221,8 @@ class LoginView(APIView):
             "message": "Logged in",
             "username": user.username
         })
-    
+
+
 class LogoutView(APIView):
 
     def post(self, request):
@@ -230,7 +232,8 @@ class LogoutView(APIView):
         return Response({
             "message": "Logged out"
         })
-        
+
+
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -250,3 +253,38 @@ class MeView(APIView):
                 if teacher.class_tr else None
             )
         })
+
+# Handle Excel
+
+
+class HandleStudentsData(APIView):
+    serializer_class = ExcelDataSerializer
+    exams = Exam.objects.all()
+    def post(self, request, format=True):
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
+            return Response({"Error": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        data = serializer.validated_data
+        class_name = data.get("class_name")
+        class_data = [class_name[0:2], class_name[2:]]
+        grade, division = class_data
+        class_obj = Class.objects.get(grade=grade, division=division)
+        
+        excel_data = data.get("excel_data")
+        for student_data in excel_data:
+            first_name = student_data.get("first_name")
+            surname = student_data.get("surname")
+            subjects = student_data.get("subjects")
+            roll_no = student_data.get("no")
+            new_student = Student(first_name=first_name, surname=surname, class_div=class_obj, roll_no=roll_no)
+            new_student.save()
+            
+            for subject in subjects:
+                for exam in self.exams:
+                    mark = Mark(student=new_student, subject=subject, exam=exam, score=1000)
+                    mark.save()
+                    
+        re_new_students = Student.objects.all()
+        re_serialize = self.serializer_class(re_new_students)
+        return Response({"message": "Success - Students Created", "data": re_serialize.data}, status=status.HTTP_201_CREATED)
