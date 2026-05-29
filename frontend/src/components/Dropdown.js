@@ -54,7 +54,7 @@ const Dropdown = ({ setClass }) => {
         data.push(obj);
       });
       // console.log(data)
-      parsedData.push({data, class_name: sheetName})
+      parsedData.push({excel_data: data, class_name: sheetName})
     });
 
     console.log(parsedData);
