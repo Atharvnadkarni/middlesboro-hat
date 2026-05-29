@@ -108,7 +108,11 @@ class ExcelDataSerializerOne(serializers.Serializer):
     surname = serializers.CharField()
     subjects = serializers.Field()
     
-class ExcelDataSerializer(serializers.Serializer):
-    # sheet_N
+class ExcelDataSerializerSheet(serializers.Serializer):
+    # first_name = 
     class_name = serializers.CharField()
     excel_data = ExcelDataSerializerOne(many=True)
+    
+class ExcelDataSerializer(serializers.Serializer):
+    # sheet_N
+    sheets = ExcelDataSerializerSheet(many=True)

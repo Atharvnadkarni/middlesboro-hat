@@ -59,7 +59,7 @@ const Dropdown = ({ setClass }) => {
       // delete parsedData[0];
       console.log(parsedData);
       setData(parsedData);
-      const res = await request("post", "/api/add-students", parsedData);
+      const res = await request("post", "/api/add-students", {sheets: parsedData});
       console.log(res.data);
       location.reload();
     };
