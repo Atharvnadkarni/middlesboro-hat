@@ -290,6 +290,6 @@ class HandleStudentsData(APIView):
                         mark.save()
                         
         re_new_students = Student.objects.all()
-        re_serialize = StudentMarksSerializer(re_new_students)
+        re_serialize = StudentMarksSerializer(re_new_students, many=True)
         return Response({"message": "Success - Students Created", "data": re_serialize.data}, status=status.HTTP_201_CREATED)
     
