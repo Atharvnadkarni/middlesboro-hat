@@ -5,13 +5,40 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import UploadModal from "./UploadModal";
+import * as XLSX from "xlsx"
+import {useRequest} from "../hooks/useRequest"
 
 const Dropdown = ({ setClass }) => {
   const [profile, setProfile] = useState();
+  const [data, setData] = useState([]);
+  const inputref = useRef();
   useEffect(() => {
     setProfile(JSON.parse(localStorage.getItem("profile")));
   }, [localStorage]);
+  const {request, isLoading, error} = useRequest
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file); // Reads the file safely as an ArrayBuffer
+
+    reader.onload = (event) => {
+      const buffer = event.target.result;
+      const workbook = XLSX.read(buffer, { type: "buffer" });
+
+      // Get the first sheet name
+      const sheetName = workbook.SheetNames[0];
+      // Get the sheet data
+      const worksheet = workbook.Sheets[sheetName];
+      // Convert sheet data to clean JSON array
+      const parsedData = XLSX.utils.sheet_to_json(worksheet);
+      console.log(parsedData);
+    };
+
+  };
   return (
     <div
       style={{
@@ -38,8 +65,11 @@ const Dropdown = ({ setClass }) => {
         </Select>
       </FormControl>
       {profile?.role == "Administrator" && (
-        <Button variant="contained">Submit XLSX Data</Button>
+        <Button variant="contained" onClick={() => inputref.current.click()}>
+          Submit XLSX Data
+        </Button>
       )}
+      <input type="file" style={{display: "none"}} ref={inputref} onChange={handleFileUpload} />
     </div>
   );
 };
