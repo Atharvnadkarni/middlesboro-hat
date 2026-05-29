@@ -19,28 +19,45 @@ const Dropdown = ({ setClass }) => {
   }, [localStorage]);
   const {request, isLoading, error} = useRequest
   const handleFileUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const file = e.target.files[0];
+  if (!file) return;
 
-    const reader = new FileReader();
-    reader.readAsArrayBuffer(file); // Reads the file safely as an ArrayBuffer
+  const reader = new FileReader();
+  reader.readAsArrayBuffer(file);
 
-    reader.onload = (event) => {
-      const buffer = event.target.result;
-      const workbook = XLSX.read(buffer, { type: "buffer" });
+  reader.onload = (event) => {
+    const buffer = event.target.result;
+    const workbook = XLSX.read(buffer, { type: "buffer" });
 
-      const sheetData = workbook.SheetNames.map((sheetName) => {
-        const worksheet = workbook.Sheets[sheetName];
-        return {
-          sheetName,
-          data: XLSX.utils.sheet_to_json(worksheet),
-        };
+    const parsedData = [];
+
+    workbook.SheetNames.forEach((sheetName) => {
+      const worksheet = workbook.Sheets[sheetName];
+
+      // Get rows as arrays instead of objects
+      const rows = XLSX.utils.sheet_to_json(worksheet, {
+        header: 1,
       });
-      console.log(sheetData);
-      setData(sheetData);
-    };
 
+      rows.forEach((row) => {
+        // Skip empty rows
+        if (!row || row.length < 3) return;
+
+        const obj = {
+          no: row[0],
+          first_name: row[1],
+          surname: row[2],
+          subjects: row.slice(3).filter(Boolean), // Remaining columns
+        };
+
+        parsedData.push(obj);
+      });
+    });
+
+    console.log(parsedData);
+    setData(parsedData);
   };
+};
   return (
     <div
       style={{
