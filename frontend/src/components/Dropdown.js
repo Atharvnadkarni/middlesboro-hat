@@ -7,60 +7,63 @@ import {
 } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import UploadModal from "./UploadModal";
-import * as XLSX from "xlsx"
-import {useRequest} from "../hooks/useRequest"
+import * as XLSX from "xlsx";
+import { useRequest } from "../hooks/useRequest";
 
 const Dropdown = ({ setClass }) => {
   const [profile, setProfile] = useState();
+  const { request, isLoading, error } = useRequest();
   const [data, setData] = useState([]);
   const inputref = useRef();
   useEffect(() => {
     setProfile(JSON.parse(localStorage.getItem("profile")));
   }, [localStorage]);
-  const {request, isLoading, error} = useRequest
   const handleFileUpload = async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    const file = e.target.files[0];
+    if (!file) return;
 
-  const reader = new FileReader();
-  reader.readAsArrayBuffer(file);
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
 
-  reader.onload = (event) => {
-    const buffer = event.target.result;
-    const workbook = XLSX.read(buffer, { type: "buffer" });
+    reader.onload = async (event) => {
+      const buffer = event.target.result;
+      const workbook = XLSX.read(buffer, { type: "buffer" });
+      const parsedData = [];
 
-    const parsedData = [];
+      workbook.SheetNames.forEach((sheetName) => {
+        const worksheet = workbook.Sheets[sheetName];
 
-    workbook.SheetNames.forEach((sheetName) => {
-      const worksheet = workbook.Sheets[sheetName];
+        // Get rows as arrays instead of objects
+        const rows = XLSX.utils.sheet_to_json(worksheet, {
+          header: 1,
+        });
+        const data = [];
 
-      // Get rows as arrays instead of objects
-      const rows = XLSX.utils.sheet_to_json(worksheet, {
-        header: 1,
+        rows.forEach((row, i) => {
+          // Skip empty rows
+          if (!row || row.length < 3) return;
+          if (i == 0) return
+
+          const obj = {
+            no: row[0],
+            first_name: row[1],
+            surname: row[2],
+            subjects: row.slice(3).filter(Boolean), // Remaining columns
+          };
+
+          data.push(obj);
+        });
+        // console.log(data)
+        parsedData.push({ excel_data: data, class_name: sheetName });
       });
-      const data = []
-
-      rows.forEach((row) => {
-        // Skip empty rows
-        if (!row || row.length < 3) return;
-
-        const obj = {
-          no: row[0],
-          first_name: row[1],
-          surname: row[2],
-          subjects: row.slice(3).filter(Boolean), // Remaining columns
-        };
-
-        data.push(obj);
-      });
-      // console.log(data)
-      parsedData.push({excel_data: data, class_name: sheetName})
-    });
-
-    console.log(parsedData);
-    setData(parsedData);
+      // delete parsedData[0];
+      console.log(parsedData);
+      setData(parsedData);
+      const res = await request("post", "/api/add-students", parsedData);
+      console.log(res.data);
+      location.reload();
+    };
   };
-};
   return (
     <div
       style={{
@@ -91,7 +94,12 @@ const Dropdown = ({ setClass }) => {
           Submit XLSX Data
         </Button>
       )}
-      <input type="file" style={{display: "none"}} ref={inputref} onChange={handleFileUpload} />
+      <input
+        type="file"
+        style={{ display: "none" }}
+        ref={inputref}
+        onChange={handleFileUpload}
+      />
     </div>
   );
 };
