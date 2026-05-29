@@ -29,13 +29,15 @@ const Dropdown = ({ setClass }) => {
       const buffer = event.target.result;
       const workbook = XLSX.read(buffer, { type: "buffer" });
 
-      // Get the first sheet name
-      const sheetName = workbook.SheetNames[0];
-      // Get the sheet data
-      const worksheet = workbook.Sheets[sheetName];
-      // Convert sheet data to clean JSON array
-      const parsedData = XLSX.utils.sheet_to_json(worksheet);
-      console.log(parsedData);
+      const sheetData = workbook.SheetNames.map((sheetName) => {
+        const worksheet = workbook.Sheets[sheetName];
+        return {
+          sheetName,
+          data: XLSX.utils.sheet_to_json(worksheet),
+        };
+      });
+      console.log(sheetData);
+      setData(sheetData);
     };
 
   };
