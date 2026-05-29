@@ -38,6 +38,7 @@ const Dropdown = ({ setClass }) => {
       const rows = XLSX.utils.sheet_to_json(worksheet, {
         header: 1,
       });
+      const data = []
 
       rows.forEach((row) => {
         // Skip empty rows
@@ -50,8 +51,10 @@ const Dropdown = ({ setClass }) => {
           subjects: row.slice(3).filter(Boolean), // Remaining columns
         };
 
-        parsedData.push(obj);
+        data.push(obj);
       });
+      // console.log(data)
+      parsedData.push({data, class: sheetName})
     });
 
     console.log(parsedData);
