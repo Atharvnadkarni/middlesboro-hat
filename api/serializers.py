@@ -1,10 +1,22 @@
-from .models import Student, Subject, Mark, Teacher,TeacherSubjectClass, Class, Role, TeacherSubjectClass
+from .models import Student, Subject, Mark,Exam, Teacher,TeacherSubjectClass, Class, Role, TeacherSubjectClass
 from rest_framework import serializers
 
+class SubjectSerializer(serializers.ModelSerializer):
+    # marks = MarksStudentsSerializer(many=True, read_only=True)
+    class Meta:
+        model = Subject
+        fields = ("id", "sub")
+        
+class ExamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Exam
+        fields = "__all__"
 
 class MarksSerializer(serializers.ModelSerializer):
     # student_name = serializers.SerializerMethodField()
     # subject = serializers.CharField(source='subject.sub')
+    exam = ExamSerializer()
+    subject = SubjectSerializer()
 
     class Meta:
         model = Mark
@@ -12,11 +24,15 @@ class MarksSerializer(serializers.ModelSerializer):
 
     def get_student_name(self, obj):
         return f"{obj.student.first_name} {obj.student.last_name}"
+    
+
 
 
 class MarksStudentsSerializer(serializers.ModelSerializer):
     # student_name = serializers.SerializerMethodField()
     # subject = serializers.CharField(source='subject.sub')
+    exam = ExamSerializer()
+    subject = SubjectSerializer()
 
     class Meta:
         model = Mark
@@ -55,12 +71,6 @@ class ClassSerializer(serializers.ModelSerializer):
         fields = ("id", "grade", "division")
 
 
-class SubjectSerializer(serializers.ModelSerializer):
-    # marks = MarksStudentsSerializer(many=True, read_only=True)
-    class Meta:
-        model = Subject
-        fields = ("id", "sub")
-        
 
 
 
