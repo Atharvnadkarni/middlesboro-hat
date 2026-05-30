@@ -21,7 +21,7 @@ const Teachers = () => {
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <>
-      <Tabs />
+      <Tabs value="teachers" />
       <div style={{ display: "flex", marginBottom: 20 }}>
         <div className="spacer" style={{ flex: 1 }} />
         <Button

@@ -1,9 +1,12 @@
 import { Tab, Tabs as TabContainer } from "@mui/material"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 
-const Tabs = () => {
+const Tabs = ({value: valueData}) => {
     const [value, setValue] = useState(0);
+    useEffect(() => {
+      if (valueData) setValue(value)
+    }, [])
     const handleChange = (e, newValue) => {
         setValue(newValue)
     }
