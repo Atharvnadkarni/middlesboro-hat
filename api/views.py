@@ -284,12 +284,14 @@ class HandleStudentsData(APIView):
                 new_student.save()
                 print("beta", student_data, excel_data, classe, data)
 
-                for subject in subjects:
+                all_subjects = Subject.objects.all()
+                for subject in all_subjects:
                     for exam in self.exams:
                         subject_obj = Subject.objects.get(sub=subject)
                         print(Subject.objects.all(), subject)
+                        score = 1000 if subject in subjects else -1000
                         mark = Mark(student=new_student,
-                                    subject=subject_obj, exam=exam, score=1000)
+                                    subject=subject_obj, exam=exam, score=score)
                         print("Mark added", mark)
                         mark.save()
 

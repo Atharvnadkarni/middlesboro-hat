@@ -110,7 +110,7 @@ const SubjectList = ({ class: classe }) => {
         subjectList.forEach((sub) => {
           const fliterMarks = student.marks.filter((a) => a.subject.sub == sub);
           const scorea = fliterMarks?.[0] ?? { score: "" };
-          const score = scorea.score;
+          let score = scorea.score;
           console.log(
             "stu",
             student,
@@ -119,6 +119,7 @@ const SubjectList = ({ class: classe }) => {
             fliterMarks?.[0],
             score,
           );
+          if (score == -1000) score = "N/A"
           newStudentValue[sub.toLowerCase()] = score ?? "";
         });
         finalStudentData.push(newStudentValue);
