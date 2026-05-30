@@ -120,6 +120,7 @@ const SubjectList = ({ class: classe }) => {
             score,
           );
           if (score == -1000) score = "N/A"
+          if (score == 1000) score = "✅"
           newStudentValue[sub.toLowerCase()] = score ?? "";
         });
         finalStudentData.push(newStudentValue);
