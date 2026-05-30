@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import HandleTeacher, HandleTeacherIndividual, LoginView,CSRFView,LogoutView,MeView, HandleStudentsData, HandleStudentsSubjectList
+from .views import HandleTeacher, HandleTeacherIndividual, LoginView,CSRFView,LogoutView,MeView, HandleStudentsData, HandleStudentsSubjectList, HandleStudentUpdate
 
 urlpatterns = [
     path('teacher/', HandleTeacher.as_view()),
@@ -11,4 +11,5 @@ urlpatterns = [
     path('me/', MeView.as_view()),
     path('add-students/', HandleStudentsData.as_view()),
     path('student/', HandleStudentsSubjectList.as_view()),
+    path('student/update/', HandleStudentUpdate.as_view()),
 ]

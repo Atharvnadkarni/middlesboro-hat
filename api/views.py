@@ -255,6 +255,8 @@ class MeView(APIView):
         })
 
 # Handle Excel
+
+
 class HandleStudentsData(APIView):
     serializer_class = ExcelDataSerializer
     exams = Exam.objects.all()
@@ -305,3 +307,22 @@ class HandleStudentsSubjectList(APIView):
         students = Student.objects.all()
         serialize = self.serializer_class(students, many=True)
         return Response(serialize.data, status=status.HTTP_200_OK)
+
+
+class HandleStudentUpdate(APIView):
+    def patch(self, request):
+        request_data = request.data
+        for student in request_data:
+            exam = student.get("exam")
+            exam_obj = Exam.objects.get(abbreviation=exam)
+            student_id = student.get("student_id")
+            student_obj = Student.objects.get(id=student_id)
+            other_student_data = {
+                key: value for key, value in student.items()
+                if key != "student_id"
+            }
+            for key, value in other_student_data.items():
+                subject = Subject.objects.get(sub=key.title())
+                mark = Mark.objects.get(exam=exam_obj, student=student_obj, subject=subject)
+                mark.score = value
+                mark.save(update_fields="score")
