@@ -1,7 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useRequest } from "../hooks/useRequest";
-const SubjectList = ({ class: classe }) => {
+const SubjectList = ({ class: classe, exam }) => {
   const [profile, setProfile] = useState([]);
   const subjectList = [
     "Math",
@@ -108,7 +108,8 @@ const SubjectList = ({ class: classe }) => {
         newStudentValue["first_name"] = student["first_name"];
         newStudentValue["surname"] = student["surname"];
         subjectList.forEach((sub) => {
-          const fliterMarks = student.marks.filter((a) => a.subject.sub == sub);
+          const fliterMarks = student.marks.filter((a) => a.subject.sub == sub && a.exam.abbreviation == exam);
+          console.log(exam)
           const scorea = fliterMarks?.[0] ?? { score: "" };
           let score = scorea.score;
           console.log(

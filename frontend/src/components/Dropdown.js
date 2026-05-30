@@ -10,7 +10,7 @@ import UploadModal from "./UploadModal";
 import * as XLSX from "xlsx";
 import { useRequest } from "../hooks/useRequest";
 
-const Dropdown = ({ setClass }) => {
+const Dropdown = ({ setClass, setExam }) => {
   const [profile, setProfile] = useState();
   const { request, isLoading, error } = useRequest();
   const [data, setData] = useState([]);
@@ -42,7 +42,7 @@ const Dropdown = ({ setClass }) => {
         rows.forEach((row, i) => {
           // Skip empty rows
           if (!row || row.length < 3) return;
-          if (i == 0) return
+          if (i == 0) return;
 
           const obj = {
             no: row[0],
@@ -59,7 +59,9 @@ const Dropdown = ({ setClass }) => {
       // delete parsedData[0];
       console.log(parsedData);
       setData(parsedData);
-      const res = await request("post", "/api/add-students", {sheets: parsedData});
+      const res = await request("post", "/api/add-students", {
+        sheets: parsedData,
+      });
       console.log(res.data);
       location.reload();
     };
@@ -74,21 +76,37 @@ const Dropdown = ({ setClass }) => {
       }}
     >
       {/* <div className="spacer flex-1"></div> */}
-      <FormControl sx={{ right: 0 }}>
-        <InputLabel id="demo-simple-select-label">Class</InputLabel>
-        <Select
-          defaultValue={"A"}
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          // value={age}
-          label="Class"
-          onChange={(e) => setClass(e.target.value)}
-        >
-          <MenuItem value={"A"}>10A</MenuItem>
-          <MenuItem value={"B"}>10B</MenuItem>
-          <MenuItem value={"C"}>10C</MenuItem>
-        </Select>
-      </FormControl>
+      <div>
+        <FormControl sx={{ right: 0 }}>
+          <InputLabel id="demo-simple-select-label">Class</InputLabel>
+          <Select
+            defaultValue={"A"}
+            // value={age}
+            label="Class"
+            onChange={(e) => setClass(e.target.value)}
+          >
+            <MenuItem value={"A"}>10A</MenuItem>
+            <MenuItem value={"B"}>10B</MenuItem>
+            <MenuItem value={"C"}>10C</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl sx={{ right: 0 }}>
+          <InputLabel id="demo-simple-select-label">Exam</InputLabel>
+          <Select
+            defaultValue={"PT1"}
+            // value={age}
+            label="Exam"
+            onChange={(e) => setExam(e.target.value)}
+          >
+            <MenuItem value={"PT1"}>Periodic Test 1</MenuItem>
+            <MenuItem value={"PT2"}>Periodic Test 2</MenuItem>
+            <MenuItem value={"PT3"}>Periodic Test 3</MenuItem>
+            <MenuItem value={"MT"}>MidTerms</MenuItem>
+            <MenuItem value={"PB1"}>Pre-Board 1</MenuItem>
+            <MenuItem value={"PB2"}>Pre-Board 2</MenuItem>
+          </Select>
+        </FormControl>
+      </div>
       {profile?.role == "Administrator" && (
         <Button variant="contained" onClick={() => inputref.current.click()}>
           Submit XLSX Data

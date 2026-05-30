@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 const Home = () => {
   const [classe, setClass] = useState();
+  const [exam, setExam] = useState("PT1");
   useEffect(() => {
     localStorage.setItem("class", classe);
   }, [classe]);
@@ -13,8 +14,8 @@ const Home = () => {
     <>
             <Tabs />
     
-      <Dropdown setClass={setClass} />
-      <SubjectList class={classe} />
+      <Dropdown setClass={setClass} setExam={setExam} />
+      <SubjectList class={classe} exam={exam} />
     </>
   );
 };
