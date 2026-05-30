@@ -255,41 +255,53 @@ class MeView(APIView):
         })
 
 # Handle Excel
-
-
 class HandleStudentsData(APIView):
     serializer_class = ExcelDataSerializer
     exams = Exam.objects.all()
+
     def post(self, request, format=True):
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
             return Response({"Error": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         data_with_key = serializer.validated_data
         data = data_with_key.get("sheets")
-        print("bata", data, request.data) 
+        print("bata", data, request.data)
         for classe in data:
             class_name = classe.get("class_name")
             class_data = [class_name[0:2], class_name[2:]]
             grade, division = class_data
             class_obj = Class.objects.get(grade=grade, division=division)
-            
+
             excel_data = classe.get("excel_data")
             for student_data in excel_data:
                 first_name = student_data.get("first_name")
                 surname = student_data.get("surname")
                 subjects = student_data.get("subjects")
                 roll_no = student_data.get("no")
-                new_student = Student(first_name=first_name, surname=surname, class_div=class_obj, roll_no=roll_no)
+                new_student = Student(
+                    first_name=first_name, surname=surname, class_div=class_obj, roll_no=roll_no)
                 new_student.save()
                 print("beta", student_data, excel_data, classe, data)
-                
+
                 for subject in subjects:
                     for exam in self.exams:
-                        mark = Mark(student=new_student, subject=subject, exam=exam, score=1000)
+                        subject_obj = Subject.objects.get(sub=subject)
+                        print(Subject.objects.all(), subject)
+                        mark = Mark(student=new_student,
+                                    subject=subject_obj, exam=exam, score=1000)
+                        print("Mark added", mark)
                         mark.save()
-                        
+
         re_new_students = Student.objects.all()
         re_serialize = StudentMarksSerializer(re_new_students, many=True)
         return Response({"message": "Success - Students Created", "data": re_serialize.data}, status=status.HTTP_201_CREATED)
-    
+
+
+class HandleStudentsSubjectList(APIView):
+    serializer_class = StudentMarksSerializer
+
+    def get(self, request, format=None):
+        students = Student.objects.all()
+        serialize = self.serializer_class(students, many=True)
+        return Response(serialize.data, status=status.HTTP_200_OK)

@@ -22,8 +22,9 @@ class Subject(models.Model):
 
 class Exam(models.Model):
     name = models.CharField(max_length=100)
+    abbreviation = models.CharField(max_length=100)
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name} ({self.abbreviation})"
 
 
 class Mark(models.Model):
