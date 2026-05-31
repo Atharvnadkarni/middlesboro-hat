@@ -317,12 +317,17 @@ class HandleStudentUpdate(APIView):
             exam_obj = Exam.objects.get(abbreviation=exam)
             student_id = student.get("student_id")
             student_obj = Student.objects.get(id=student_id)
+            print(student_id, student_obj)
             other_student_data = {
                 key: value for key, value in student.items()
-                if key != "student_id"
+                if key != "student_id" and key != 'exam'
             }
             for key, value in other_student_data.items():
+                print(repr(key))
                 subject = Subject.objects.get(sub=key.title())
                 mark = Mark.objects.get(exam=exam_obj, student=student_obj, subject=subject)
                 mark.score = value
-                mark.save(update_fields="score")
+                print(mark.subject, mark.student, mark.exam, mark.score)
+                mark.save(update_fields=["score"])
+    
+        return Response({"Updated": "Marks Modified"}, status=status.HTTP_200_OK)

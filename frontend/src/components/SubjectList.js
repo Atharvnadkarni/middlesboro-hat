@@ -175,7 +175,6 @@ const SubjectList = ({ class: classe, exam }) => {
     const changedRows = Object.values(editedRows);
 
     if (changedRows.length === 0) {
-      alert("No changes detected");
       return;
     }
 
@@ -188,13 +187,9 @@ const SubjectList = ({ class: classe, exam }) => {
         changedRows,
       );
 
-      setEditedRows({});
-      originalStudents.current = students;
-
-      alert("Changes saved successfully");
+      location.reload()
     } catch (err) {
       console.error(err);
-      alert("Failed to save changes");
     }
   };
 
