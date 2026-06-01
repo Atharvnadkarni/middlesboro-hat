@@ -259,7 +259,7 @@ class MeView(APIView):
 
 class HandleStudentsData(APIView):
     serializer_class = ExcelDataSerializer
-    exams = Exam.objects.all()
+    exams = ["PT1", "PT2", "PT3", "MT", "PB1", "PB2"]
 
     def post(self, request, format=True):
         serializer = self.serializer_class(data=request.data)
@@ -286,14 +286,49 @@ class HandleStudentsData(APIView):
                 new_student.save()
                 print("beta", student_data, excel_data, classe, data)
 
-                all_subjects = Subject.objects.all()
-                for subject in all_subjects:
+                scholastic_subjects = [
+                  "Math",
+                  "English",
+                  "Hindi",
+                  "Sci",
+                  "French",
+                  "SS",
+                  "HS",
+                  "Painting",
+                  "HC",
+                  "AI",
+                  "IT"
+                ]
+                co_scholastic_subjects = [
+                  "PE",
+                  "Yoga",
+                  "NSS",
+                  "MA",
+                  "Comp",
+                  "WE",
+                  "ATL",
+                  "Art",
+                  "Music",
+                  "SD",
+                ];
+                for subject in scholastic_subjects:
                     for exam in self.exams:
-                        score = 1000 if subject.sub in subjects else -1000
+                        score = 1000 if subject in subjects else -1000
+                        subject_obj = Subject.objects.get(sub=subject)
+                        exam_obj = Exam.objects.get(abbreviation=exam)
                         mark = Mark(student=new_student,
-                                    subject=subject, exam=exam, score=score)
+                                    subject=subject_obj, exam=exam_obj, score=score)
                         print("Mark added", mark)
                         mark.save()
+                        
+                for subject in co_scholastic_subjects:
+                    score = 1000 if subject in subjects else -1000
+                    subject_obj = Subject.objects.get(sub=subject)
+                    exam_obj = Exam.objects.get(abbreviation="SP")
+                    mark = Mark(student=new_student,
+                                subject=subject_obj, exam=exam_obj, score=score)
+                    print("Mark added", mark)
+                    mark.save()
 
         re_new_students = Student.objects.all()
         re_serialize = StudentMarksSerializer(re_new_students, many=True)
