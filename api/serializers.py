@@ -27,6 +27,12 @@ class MarksSerializer(serializers.ModelSerializer):
     
 
 
+class ClassSerializer(serializers.ModelSerializer):
+    # marks = MarksStudentsSerializer(many=True, read_only=True)
+    class Meta:
+        model = Class
+        fields = ("id", "grade", "division")
+
 
 class MarksStudentsSerializer(serializers.ModelSerializer):
     # student_name = serializers.SerializerMethodField()
@@ -50,6 +56,7 @@ class StudentDetailsSerializer(serializers.ModelSerializer):
 
 class StudentMarksSerializer(serializers.ModelSerializer):
     marks = MarksStudentsSerializer(many=True, read_only=True)
+    class_div = ClassSerializer()
 
     class Meta:
         model = Student
@@ -64,11 +71,6 @@ class RoleSerializer(serializers.ModelSerializer):
         fields = ("id", "role")
 
 
-class ClassSerializer(serializers.ModelSerializer):
-    # marks = MarksStudentsSerializer(many=True, read_only=True)
-    class Meta:
-        model = Class
-        fields = ("id", "grade", "division")
 
 
 
