@@ -5,7 +5,7 @@ import SubjectList from "../components/SubjectList";
 import { useEffect, useState } from "react";
 
 const Home = () => {
-  const [classe, setClass] = useState();
+  const [classe, setClass] = useState("A");
   const [exam, setExam] = useState("PT1");
   useEffect(() => {
     localStorage.setItem("class", classe);

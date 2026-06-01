@@ -17,14 +17,7 @@ const SubjectList = ({ class: classe, exam }) => {
     AI: 50,
     IT: 50,
   };
-  const mainSubjects = [
-    "Math",
-    "English",
-    "Hindi",
-    "Sci",
-    "French",
-    "SS",
-  ]
+  const mainSubjects = ["Math", "English", "Hindi", "Sci", "French", "SS"];
 
   const subjectList = [
     "Math",
@@ -715,9 +708,9 @@ const SubjectList = ({ class: classe, exam }) => {
   useEffect(() => {
     (async () => {
       const studentres = await request("get", "/api/student");
-      setRawStudents(studentres.data);
+      setRawStudents(studentres.data.filter((s) => s.class_div.division == classe));
     })();
-  }, []);
+  }, [exam]);
 
   useEffect(() => {
     const finalStudentData = [];
@@ -754,8 +747,15 @@ const SubjectList = ({ class: classe, exam }) => {
             ((score * 100) / subjectMarksMax[sub]).toFixed(1),
           );
         }
-        console.log("748", sub, subjectMarksMax[sub], sumScore, (sumScore * 100) / subjectMarksMax[sub]);
-        if (sub != "AI" && subjectMarksMax[sub]) sum += (sumScore * 100) / subjectMarksMax[sub];
+        console.log(
+          "748",
+          sub,
+          subjectMarksMax[sub],
+          sumScore,
+          (sumScore * 100) / subjectMarksMax[sub],
+        );
+        if (sub != "AI" && subjectMarksMax[sub])
+          sum += (sumScore * 100) / subjectMarksMax[sub];
         row[sub.toLowerCase()] = score ?? "";
       });
       console.log(sum);
@@ -769,7 +769,7 @@ const SubjectList = ({ class: classe, exam }) => {
     setStudents(finalStudentData);
   }, [rawStudents, exam]);
   const processRowUpdate = (newRow, oldRow) => {
-    console.log(772, newRow, oldRow)
+    console.log(772, newRow, oldRow);
     const changes = {};
 
     Object.keys(newRow).forEach((key) => {
