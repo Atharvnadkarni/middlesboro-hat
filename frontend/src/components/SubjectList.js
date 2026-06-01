@@ -4,6 +4,28 @@ import { useEffect, useRef, useState } from "react";
 import { useRequest } from "../hooks/useRequest";
 
 const SubjectList = ({ class: classe, exam }) => {
+  const subjectMarksMax = {
+    Math: 80,
+    English: 80,
+    Hindi: 80,
+    Sci: 80,
+    French: 80,
+    SS: 80,
+    HS: 70,
+    Painting: 30,
+    HC: 50,
+    AI: 50,
+    IT: 50,
+  };
+  const mainSubjects = [
+    "Math",
+    "English",
+    "Hindi",
+    "Sci",
+    "French",
+    "SS",
+  ]
+
   const subjectList = [
     "Math",
     "English",
@@ -27,8 +49,31 @@ const SubjectList = ({ class: classe, exam }) => {
     "Music",
     "SD",
   ];
+  const scholasticSubjectList = [
+    "Math",
+    "English",
+    "Hindi",
+    "Sci",
+    "French",
+    "SS",
+    "HS",
+    "Painting",
+    "HC",
+    "AI",
+    "IT",
+    "PE",
+    "Yoga",
+    "NSS",
+    "MA",
+    "Comp",
+    "WE",
+    "ATL",
+    "Art",
+    "Music",
+    "SD",
+  ];
 
-  const scholasticCols = [
+  const allCols = [
     {
       field: "roll_no",
       headerName: "Roll No",
@@ -54,7 +99,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "math",
-      headerName: "Math/80",
+      headerName: `Math-${subjectMarksMax["Math"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -64,7 +109,6 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "math_mo_100",
       headerName: "Math/100",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
@@ -72,13 +116,12 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "math_grade",
       headerName: "Grade",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
     {
       field: "english",
-      headerName: "English/80",
+      headerName: `English-${subjectMarksMax["English"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -88,7 +131,6 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "english_mo_100",
       headerName: "English/100",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
@@ -96,13 +138,12 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "english_grade",
       headerName: "Grade",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
     {
       field: "hindi",
-      headerName: "Hindi/80",
+      headerName: `Hindi-${subjectMarksMax["Hindi"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -112,7 +153,6 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "hindi_mo_100",
       headerName: "Hindi/100",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
@@ -120,13 +160,12 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "hindi_grade",
       headerName: "Grade",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
     {
       field: "sci",
-      headerName: "Sci/80",
+      headerName: `Sci-${subjectMarksMax["Sci"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -136,7 +175,6 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "sci_mo_100",
       headerName: "Sci/100",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
@@ -144,13 +182,12 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "sci_grade",
       headerName: "Grade",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
     {
       field: "french",
-      headerName: "French/80",
+      headerName: `French-${subjectMarksMax["French"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -160,7 +197,6 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "french_mo_100",
       headerName: "French/100",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
@@ -168,13 +204,12 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "french_grade",
       headerName: "Grade",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
     {
       field: "ss",
-      headerName: "SS/80",
+      headerName: `SS-${subjectMarksMax["SS"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -184,7 +219,6 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "ss_mo_100",
       headerName: "SS/100",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
@@ -192,13 +226,12 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "ss_grade",
       headerName: "Grade",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
     {
       field: "hs",
-      headerName: "Home Sci/80",
+      headerName: `Home Sci/${subjectMarksMax["HS"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -208,7 +241,6 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "hs_mo_100",
       headerName: "Home Sci/100",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
@@ -216,13 +248,12 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "hs_grade",
       headerName: "Grade",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
     {
       field: "painting",
-      headerName: "Painting/80",
+      headerName: `Painting-${subjectMarksMax["Painting"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -232,7 +263,6 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "painting_mo_100",
       headerName: "Painting/100",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
@@ -240,13 +270,12 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "painting_grade",
       headerName: "Grade",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
     {
       field: "hc",
-      headerName: "Healthcare/80",
+      headerName: `Healthcare-${subjectMarksMax["HC"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -256,7 +285,6 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "hc_mo_100",
       headerName: "Healthcare/100",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
@@ -264,13 +292,12 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "hc_grade",
       headerName: "Grade",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
     {
       field: "ai",
-      headerName: "AI/80",
+      headerName: `AI-${subjectMarksMax["AI"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -280,7 +307,6 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "ai_mo_100",
       headerName: "AI/100",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
@@ -288,13 +314,12 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "ai_grade",
       headerName: "Grade",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
     {
       field: "it",
-      headerName: "Info Tech/80",
+      headerName: `IT/${subjectMarksMax["IT"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -304,7 +329,6 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "it_mo_100",
       headerName: "Info Tech/100",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
@@ -312,16 +336,15 @@ const SubjectList = ({ class: classe, exam }) => {
       field: "it_grade",
       headerName: "Grade",
       width: 90,
-      editable: true,
       align: "center",
       headerAlign: "center",
     },
   ];
 
-  const allCols = [
+  const cosco = [
     {
       field: "pe",
-      headerName: "PE/80",
+      headerName: `PE-${subjectMarksMax["PE"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -345,7 +368,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "yoga",
-      headerName: "Yoga/80",
+      headerName: `Yoga-${subjectMarksMax["Yoga"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -369,7 +392,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "nss",
-      headerName: "NSS/80",
+      headerName: `NSS-${subjectMarksMax["NSS"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -393,7 +416,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "ma",
-      headerName: "MA/80",
+      headerName: `MA-${subjectMarksMax["MA"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -417,7 +440,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "comp",
-      headerName: "Comp/80",
+      headerName: `Comp-${subjectMarksMax["Comp"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -441,7 +464,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "we",
-      headerName: "WE/80",
+      headerName: `WE-${subjectMarksMax["WE"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -465,7 +488,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "atl",
-      headerName: "ATL/80",
+      headerName: `ATL-${subjectMarksMax["ATL"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -489,7 +512,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "art",
-      headerName: "Art/80",
+      headerName: `Art-${subjectMarksMax["Art"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -513,7 +536,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "music",
-      headerName: "Music/80",
+      headerName: `Music-${subjectMarksMax["Music"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -537,7 +560,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "sd",
-      headerName: "SD/80",
+      headerName: `SD-${subjectMarksMax["SD"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -633,7 +656,6 @@ const SubjectList = ({ class: classe, exam }) => {
         (col) => col.field === prefix || col.field.startsWith(`${prefix}_`),
       );
     };
-
     if (showAll) {
       const groupings = subjectList.map((sub) => ({
         groupId: sub,
@@ -645,12 +667,10 @@ const SubjectList = ({ class: classe, exam }) => {
       groupingModel.current = groupings;
       let endCols = [];
 
-      if (showAll) {
-        endCols = [
-          { field: "total", headerName: "Total" },
-          { field: "percentage", headerName: "Percentage" },
-        ];
-      }
+      endCols = [
+        { field: "total", headerName: "Total" },
+        { field: "percentage", headerName: "Percentage" },
+      ];
       setColumns([
         ...baseCols,
         ...allCols.filter(
@@ -683,6 +703,7 @@ const SubjectList = ({ class: classe, exam }) => {
         })),
       });
     });
+    console.log("hakd", mapsubs);
 
     groupingModel.current = groupings;
 
@@ -710,31 +731,45 @@ const SubjectList = ({ class: classe, exam }) => {
         surname: student.surname,
       };
 
-      subjectList.forEach((sub) => {
+      let sum = 0;
+
+      scholasticSubjectList.forEach((sub) => {
         const filterMarks = student.marks.filter(
           (a) => a.subject.sub === sub && a.exam.abbreviation === exam,
         );
 
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
+        let sumScore = scoreObj.score;
 
-        if (score === -1000) score = "N/A";
-        else if (score === 1000) score = "✅";
-        else {
+        if (score === -1000) {
+          score = "N/A";
+          sumScore = 0;
+        } else if (score === 1000) {
+          score = "✅";
+          sumScore = 0;
+        } else {
+          console.log(740, subjectMarksMax[sub], sub, subjectMarksMax);
           row[`${sub.toLowerCase()}_mo_100`] = Number(
-            ((score * 5) / 4).toFixed(1),
+            ((score * 100) / subjectMarksMax[sub]).toFixed(1),
           );
         }
-
+        console.log("748", sub, subjectMarksMax[sub], sumScore, (sumScore * 100) / subjectMarksMax[sub]);
+        if (sub != "AI" && subjectMarksMax[sub]) sum += (sumScore * 100) / subjectMarksMax[sub];
         row[sub.toLowerCase()] = score ?? "";
       });
-
+      console.log(sum);
+      const total = sum;
+      const average = total / 5;
+      row.total = total;
+      row.percentage = average;
       finalStudentData.push(row);
     });
 
     setStudents(finalStudentData);
   }, [rawStudents, exam]);
   const processRowUpdate = (newRow, oldRow) => {
+    console.log(772, newRow, oldRow)
     const changes = {};
 
     Object.keys(newRow).forEach((key) => {
