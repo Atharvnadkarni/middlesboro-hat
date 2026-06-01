@@ -703,14 +703,20 @@ const SubjectList = ({ class: classe, exam }) => {
     setColumns([...baseCols, ...matchedCols]);
   };
 
+  const [allStudents, setAllStudents] = useState([]);
   const [rawStudents, setRawStudents] = useState([]);
 
   useEffect(() => {
     (async () => {
       const studentres = await request("get", "/api/student");
-      setRawStudents(studentres.data.filter((s) => s.class_div.division == classe));
+      
+      setAllStudents(studentres.data);
     })();
-  }, [exam]);
+  }, []);
+  useEffect(() => {
+    console.log(776, allStudents, classe)
+      setRawStudents(allStudents.filter(a => a.class_div.division == classe))
+  }, [classe, allStudents]);
 
   useEffect(() => {
     const finalStudentData = [];
@@ -857,3 +863,4 @@ const SubjectList = ({ class: classe, exam }) => {
 };
 
 export default SubjectList;
+;
