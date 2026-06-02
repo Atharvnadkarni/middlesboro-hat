@@ -10,7 +10,7 @@ import UploadModal from "./UploadModal";
 import * as XLSX from "xlsx";
 import { useRequest } from "../hooks/useRequest";
 
-const Dropdown = ({ setClass, setExam }) => {
+const Dropdown = ({ exam, setClass, setExam }) => {
   const [profile, setProfile] = useState();
   const { request, isLoading, error } = useRequest();
   const [data, setData] = useState([]);
@@ -18,6 +18,26 @@ const Dropdown = ({ setClass, setExam }) => {
   useEffect(() => {
     setProfile(JSON.parse(localStorage.getItem("profile")));
   }, [localStorage]);
+  useEffect(() => {
+    if (!profile) return;
+    const mapsubs = (profile?.subjects || [null]).map((sub) => sub.subject.sub);
+    console.log(1211, 1, profile, profile.subjects, mapsubs)
+    if (
+      mapsubs.includes("PE") ||
+      mapsubs.includes("Yoga") ||
+      mapsubs.includes("NSS") ||
+      mapsubs.includes("MA")
+    ) {
+      console.log(1211,2,  mapsubs);
+      setExam("SP");
+    } else if (
+      mapsubs.includes("WE") ||
+      mapsubs.includes("ATL") ||
+      mapsubs.includes("Comp")
+    ) {
+      setExam("SE");
+    }
+  }, [profile]);
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -93,8 +113,7 @@ const Dropdown = ({ setClass, setExam }) => {
         <FormControl sx={{ right: 0 }}>
           <InputLabel id="demo-simple-select-label">Exam</InputLabel>
           <Select
-            defaultValue={"PT1"}
-            // value={age}
+            value={exam}
             label="Exam"
             onChange={(e) => setExam(e.target.value)}
           >
@@ -104,6 +123,8 @@ const Dropdown = ({ setClass, setExam }) => {
             <MenuItem value={"MT"}>MidTerms</MenuItem>
             <MenuItem value={"PB1"}>Pre-Board 1</MenuItem>
             <MenuItem value={"PB2"}>Pre-Board 2</MenuItem>
+            <MenuItem value={"SP"}>Sports Evaluation</MenuItem>
+            <MenuItem value={"SE"}>Skill Evaluation</MenuItem>
           </Select>
         </FormControl>
       </div>

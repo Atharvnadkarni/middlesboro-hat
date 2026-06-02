@@ -14,7 +14,7 @@ const Home = () => {
     <>
       <Tabs value="marktable" />
     
-      <Dropdown setClass={setClass} setExam={setExam} />
+      <Dropdown setClass={setClass} setExam={setExam} exam={exam} />
       <SubjectList class={classe} exam={exam} />
     </>
   );
