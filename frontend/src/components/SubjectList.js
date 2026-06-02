@@ -2,7 +2,13 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Button, ButtonGroup } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useRequest } from "../hooks/useRequest";
-
+const getActivityGrade = (avg) => {
+  if (avg > 4) return "A";
+  if (avg > 3) return "B";
+  if (avg > 2) return "C";
+  if (avg > 1) return "D";
+  return "";
+};
 const SubjectList = ({ class: classe, exam }) => {
   const subjectMarksMax = {
     Math: 80,
@@ -323,6 +329,20 @@ const SubjectList = ({ class: classe, exam }) => {
       headerAlign: "center",
     },
     {
+      field: "activity_average",
+      headerName: "Average",
+      width: 100,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "activity_grade",
+      headerName: "Grade",
+      width: 100,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
       field: "we",
       headerName: "WE",
       width: 90,
@@ -539,6 +559,20 @@ const SubjectList = ({ class: classe, exam }) => {
         matchedCols.push(...getSubjectColumns(sub));
       });
 
+      const hasAllActivitySubjects = coScholasticGroups.activity.every((s) =>
+        mapsubs.includes(s),
+      );
+
+      if (hasAllActivitySubjects) {
+        matchedCols.push(
+          coScholasticCols.find((c) => c.field === "activity_average"),
+        );
+
+        matchedCols.push(
+          coScholasticCols.find((c) => c.field === "activity_grade"),
+        );
+      }
+
       groupingModel.current = null;
 
       setColumns([...baseCols, ...matchedCols]);
@@ -557,10 +591,22 @@ const SubjectList = ({ class: classe, exam }) => {
     }
 
     let matchedCols = [];
-
     allSubjectsToShow.forEach((sub) => {
       matchedCols.push(...getSubjectColumns(sub));
     });
+    const hasActivity = mapsubs.some((s) =>
+      coScholasticGroups.activity.includes(s),
+    );
+
+    if (hasActivity) {
+      matchedCols.push(
+        coScholasticCols.find((c) => c.field === "activity_average"),
+      );
+
+      matchedCols.push(
+        coScholasticCols.find((c) => c.field === "activity_grade"),
+      );
+    }
 
     groupingModel.current = null;
 
@@ -628,16 +674,17 @@ const SubjectList = ({ class: classe, exam }) => {
           sum += (sumScore * 100) / subjectMarksMax[sub];
         row[sub.toLowerCase()] = score ?? "";
       });
+      let activityTotal = 0;
+      let activityCount = 0;
       coScholasticGroups.activity.forEach((sub) => {
         const filterMarks = student.marks.filter(
           (a) => a.subject.sub === sub && a.exam.abbreviation === "SP",
         );
 
         const scoreObj = filterMarks?.[0] ?? { score: "" };
-        console.log(99997, 1, scoreObj);
+
         let score = scoreObj.score;
         let sumScore = scoreObj.score;
-        console.log(99997, 2, score, sumScore);
 
         if (score === -1000) {
           score = "N/A";
@@ -645,21 +692,22 @@ const SubjectList = ({ class: classe, exam }) => {
         } else if (score === 1000) {
           score = "✅";
           sumScore = 0;
-        } else {
-          console.log(740, subjectMarksMax[sub], sub, subjectMarksMax);
+        } else if (typeof score === "number") {
+          activityTotal += score / 10;
+          activityCount += 1;
         }
-        console.log(
-          "748",
-          sub,
-          subjectMarksMax[sub],
-          sumScore,
-          (sumScore * 100) / subjectMarksMax[sub],
-        );
-        if (sub != "AI" && subjectMarksMax[sub])
-          sum += (sumScore * 100) / subjectMarksMax[sub];
-        console.log(99997, 3, score, typeof score);
+
         row[sub.toLowerCase()] = typeof score === "number" ? score / 10 : score;
       });
+      const activityAverage =
+        activityCount > 0
+          ? Number((activityTotal / activityCount).toFixed(2))
+          : "";
+
+      row.activity_average = activityAverage;
+
+      row.activity_grade =
+        activityAverage !== "" ? getActivityGrade(activityAverage) : "";
       console.log(sum);
       const total = sum;
       const average = total / 5;
@@ -692,10 +740,10 @@ const SubjectList = ({ class: classe, exam }) => {
       console.log(23, editedField, coScholasticFields, changes[editedField]);
 
       const isCoScholastic = coScholasticFields.has(editedField);
-      console.log(23, 46, isCoScholastic, typeof changes[editedField])
+      console.log(23, 46, isCoScholastic, typeof changes[editedField]);
       if (isCoScholastic && typeof changes[editedField] === "string") {
         changes[editedField] = (Number(changes[editedField]) * 10).toString();
-        console.log(23, 23*4, changes,editedField)
+        console.log(23, 23 * 4, changes, editedField);
       }
 
       setEditedRows((prev) => ({
