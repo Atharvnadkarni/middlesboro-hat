@@ -12,7 +12,7 @@ const Home = () => {
   }, [classe]);
   return (
     <>
-            <Tabs />
+      <Tabs value="marktable" />
     
       <Dropdown setClass={setClass} setExam={setExam} />
       <SubjectList class={classe} exam={exam} />
