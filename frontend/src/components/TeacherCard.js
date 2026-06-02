@@ -31,12 +31,21 @@ const TeacherCard = ({ teacher }) => {
               {teacher.first_name} {teacher.surname}
             </Typography>
             {teacher.role.id == 2 ? (
-              teacher.subject_classes.map((sub) => (
-                <Typography variant="body1">
-                  Teaches {sub.subject.sub} in 10
-                  {sub.classes.map((cl) => cl.division)}
-                </Typography>
-              ))
+              <>
+                {teacher.subject_classes.map((sub) => (
+                  <Typography variant="body1">
+                    Teaches {sub.subject.sub} in 10
+                    {sub.classes.map((cl) => cl.division)}
+                  </Typography>
+                ))}
+
+                {teacher.class_tr && (
+                  <Typography variant="body1">
+                    Class Tr of {teacher.class_tr?.grade}
+                    {teacher.class_tr?.division}
+                  </Typography>
+                )}
+              </>
             ) : (
               <Typography variant="body1">{teacher.role.role}</Typography>
             )}
