@@ -32,7 +32,7 @@ class Mark(models.Model):
         to=Student, on_delete=models.CASCADE, related_name="marks")
     exam = models.ForeignKey(to=Exam, on_delete=models.CASCADE, related_name="marks")
     subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE)
-    score = models.IntegerField()
+    score = models.FloatField()
 
 
 class Class(models.Model):
