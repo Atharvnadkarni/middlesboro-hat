@@ -366,6 +366,20 @@ const SubjectList = ({ class: classe, exam }) => {
       align: "center",
       headerAlign: "center",
     },
+    {
+      field: "skill_average",
+      headerName: "Average",
+      width: 100,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "skill_grade",
+      headerName: "Grade",
+      width: 100,
+      align: "center",
+      headerAlign: "center",
+    },
   ];
 
   const [columns, setColumns] = useState([
@@ -572,7 +586,19 @@ const SubjectList = ({ class: classe, exam }) => {
           coScholasticCols.find((c) => c.field === "activity_grade"),
         );
       }
-
+      const hasAllSkillSubjects = coScholasticGroups.skill.every((s) =>
+        mapsubs.includes(s),
+      );
+      
+      if (hasAllSkillSubjects) {
+        matchedCols.push(
+          coScholasticCols.find((c) => c.field === "skill_average"),
+        );
+      
+        matchedCols.push(
+          coScholasticCols.find((c) => c.field === "skill_grade"),
+        );
+      }
       groupingModel.current = null;
 
       setColumns([...baseCols, ...matchedCols]);
@@ -605,6 +631,19 @@ const SubjectList = ({ class: classe, exam }) => {
 
       matchedCols.push(
         coScholasticCols.find((c) => c.field === "activity_grade"),
+      );
+    }
+    const hasSkill = mapsubs.some((s) =>
+      coScholasticGroups.skill.includes(s),
+    );
+    
+    if (hasSkill) {
+      matchedCols.push(
+        coScholasticCols.find((c) => c.field === "skill_average"),
+      );
+    
+      matchedCols.push(
+        coScholasticCols.find((c) => c.field === "skill_grade"),
       );
     }
 
@@ -699,6 +738,30 @@ const SubjectList = ({ class: classe, exam }) => {
 
         row[sub.toLowerCase()] = typeof score === "number" ? score / 10 : score;
       });
+      let skillTotal = 0;
+      let skillCount = 0;
+      
+      coScholasticGroups.skill.forEach((sub) => {
+        const filterMarks = student.marks.filter(
+          (a) => a.subject.sub === sub && a.exam.abbreviation === "SP",
+        );
+      
+        const scoreObj = filterMarks?.[0] ?? { score: "" };
+      
+        let score = scoreObj.score;
+      
+        if (score === -1000) {
+          score = "N/A";
+        } else if (score === 1000) {
+          score = "✅";
+        } else if (typeof score === "number") {
+          skillTotal += score / 10;
+          skillCount += 1;
+        }
+      
+        row[sub.toLowerCase()] =
+          typeof score === "number" ? score / 10 : score;
+      });
       const activityAverage =
         activityCount > 0
           ? Number((activityTotal / activityCount).toFixed(2))
@@ -708,6 +771,17 @@ const SubjectList = ({ class: classe, exam }) => {
 
       row.activity_grade =
         activityAverage !== "" ? getActivityGrade(activityAverage) : "";
+      const skillAverage =
+        skillCount > 0
+          ? Number((skillTotal / skillCount).toFixed(2))
+          : "";
+      
+      row.skill_average = skillAverage;
+      
+      row.skill_grade =
+        skillAverage !== ""
+          ? getActivityGrade(skillAverage)
+          : "";
       console.log(sum);
       const total = sum;
       const average = total / 5;
