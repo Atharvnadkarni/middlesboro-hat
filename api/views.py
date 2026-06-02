@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from .models import Teacher, TeacherSubjectClass, Role, Class, Subject, Student, Mark, Exam
 from .serializers import TeacherSerializer, TSCSerializer, CreateUpdateTeacherSerializer, ExcelDataSerializer, StudentMarksSerializer
 from django.contrib.auth.models import User
+
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -359,7 +360,11 @@ class HandleStudentUpdate(APIView):
             }
             for key, value in other_student_data.items():
                 print(repr(key))
-                subject = Subject.objects.get(sub=key.title())
+                try:
+                    subject = Subject.objects.get(sub=key.title())
+                except Subject.DoesNotExist:
+                    subject = Subject.objects.get(sub=key.upper())
+                    
                 mark = Mark.objects.get(exam=exam_obj, student=student_obj, subject=subject)
                 mark.score = value
                 print(mark.subject, mark.student, mark.exam, mark.score)

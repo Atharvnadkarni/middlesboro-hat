@@ -19,29 +19,10 @@ const SubjectList = ({ class: classe, exam }) => {
   };
   const mainSubjects = ["Math", "English", "Hindi", "Sci", "French", "SS"];
 
-  const subjectList = [
-    "Math",
-    "English",
-    "Hindi",
-    "Sci",
-    "French",
-    "SS",
-    "HS",
-    "Painting",
-    "HC",
-    "AI",
-    "IT",
-    "PE",
-    "Yoga",
-    "NSS",
-    "MA",
-    "Comp",
-    "WE",
-    "ATL",
-    "Art",
-    "Music",
-    "SD",
-  ];
+  const coScholasticGroups = {
+    activity: ["PE", "Yoga", "NSS", "MA"],
+    skill: ["WE", "ATL", "Comp"],
+  };
   const scholasticSubjectList = [
     "Math",
     "English",
@@ -54,34 +35,9 @@ const SubjectList = ({ class: classe, exam }) => {
     "HC",
     "AI",
     "IT",
-    "PE",
-    "Yoga",
-    "NSS",
-    "MA",
-    "Comp",
-    "WE",
-    "ATL",
-    "Art",
-    "Music",
-    "SD",
   ];
 
-  const allCols = [
-    {
-      field: "roll_no",
-      headerName: "Roll No",
-      width: 50,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "first_name",
-      headerName: "First Name",
-      width: 100,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
+  const scholasticCols = [
     {
       field: "surname",
       headerName: "Surname",
@@ -333,27 +289,10 @@ const SubjectList = ({ class: classe, exam }) => {
       headerAlign: "center",
     },
   ];
-
-  const cosco = [
+  const coScholasticCols = [
     {
       field: "pe",
-      headerName: `PE-${subjectMarksMax["PE"]}`,
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "pe_mo_100",
-      headerName: "PE/100",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "pe_grade",
-      headerName: "Grade",
+      headerName: "PE",
       width: 90,
       editable: true,
       align: "center",
@@ -361,23 +300,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "yoga",
-      headerName: `Yoga-${subjectMarksMax["Yoga"]}`,
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "yoga_mo_100",
-      headerName: "Yoga/100",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "yoga_grade",
-      headerName: "Grade",
+      headerName: "Yoga",
       width: 90,
       editable: true,
       align: "center",
@@ -385,23 +308,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "nss",
-      headerName: `NSS-${subjectMarksMax["NSS"]}`,
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "nss_mo_100",
-      headerName: "NSS/100",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "nss_grade",
-      headerName: "Grade",
+      headerName: "NSS",
       width: 90,
       editable: true,
       align: "center",
@@ -409,47 +316,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "ma",
-      headerName: `MA-${subjectMarksMax["MA"]}`,
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "ma_mo_100",
-      headerName: "MA/100",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "ma_grade",
-      headerName: "Grade",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "comp",
-      headerName: `Comp-${subjectMarksMax["Comp"]}`,
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "comp_mo_100",
-      headerName: "Comp/100",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "comp_grade",
-      headerName: "Grade",
+      headerName: "MA",
       width: 90,
       editable: true,
       align: "center",
@@ -457,23 +324,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "we",
-      headerName: `WE-${subjectMarksMax["WE"]}`,
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "we_mo_100",
-      headerName: "WE/100",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "we_grade",
-      headerName: "Grade",
+      headerName: "WE",
       width: 90,
       editable: true,
       align: "center",
@@ -481,95 +332,15 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "atl",
-      headerName: `ATL-${subjectMarksMax["ATL"]}`,
+      headerName: "ATL",
       width: 90,
       editable: true,
       align: "center",
       headerAlign: "center",
     },
     {
-      field: "atl_mo_100",
-      headerName: "ATL/100",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "atl_grade",
-      headerName: "Grade",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "art",
-      headerName: `Art-${subjectMarksMax["Art"]}`,
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "art_mo_100",
-      headerName: "Art/100",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "art_grade",
-      headerName: "Grade",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "music",
-      headerName: `Music-${subjectMarksMax["Music"]}`,
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "music_mo_100",
-      headerName: "Music/100",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "music_grade",
-      headerName: "Grade",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "sd",
-      headerName: `SD-${subjectMarksMax["SD"]}`,
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "sd_mo_100",
-      headerName: "SD/100",
-      width: 90,
-      editable: true,
-      align: "center",
-      headerAlign: "center",
-    },
-    {
-      field: "sd_grade",
-      headerName: "Grade",
+      field: "comp",
+      headerName: "Comp",
       width: 90,
       editable: true,
       align: "center",
@@ -612,7 +383,21 @@ const SubjectList = ({ class: classe, exam }) => {
   const { request } = useRequest();
 
   useEffect(() => {
-    buildColumns(false);
+    const profile = JSON.parse(localStorage.getItem("profile"));
+
+    if (!profile?.subjects) return;
+
+    const mapsubs = profile.subjects.map((s) => s.subject.sub);
+
+    const hasCoScholastic = mapsubs.some((s) =>
+      [...coScholasticGroups.activity, ...coScholasticGroups.skill].includes(s),
+    );
+
+    if (hasCoScholastic) {
+      buildColumnsPE(false);
+    } else {
+      buildColumns(false);
+    }
   }, []);
   const [showAllColumns, setShowAllColumns] = useState(false);
   const buildColumns = (showAll = false) => {
@@ -642,20 +427,21 @@ const SubjectList = ({ class: classe, exam }) => {
       },
     ];
 
-    const getSubjectColumns = (subject) => {
+    const getSubjectColumns = (subject, cols) => {
       const prefix = subject.toLowerCase();
 
-      return allCols.filter(
+      return cols.filter(
         (col) => col.field === prefix || col.field.startsWith(`${prefix}_`),
       );
     };
     if (showAll) {
-      const groupings = subjectList.map((sub) => ({
+      const groupings = scholasticSubjectList.map((sub) => ({
         groupId: sub,
-        children: getSubjectColumns(sub).map((col) => ({
+        children: getSubjectColumns(sub, scholasticCols).map((col) => ({
           field: col.field,
         })),
       }));
+      console.log(767, showAll, groupings);
 
       groupingModel.current = groupings;
       let endCols = [];
@@ -666,7 +452,7 @@ const SubjectList = ({ class: classe, exam }) => {
       ];
       setColumns([
         ...baseCols,
-        ...allCols.filter(
+        ...scholasticCols.filter(
           (col) => !["roll_no", "first_name", "surname"].includes(col.field),
         ),
         ...endCols,
@@ -685,9 +471,12 @@ const SubjectList = ({ class: classe, exam }) => {
     let groupings = [];
 
     mapsubs.forEach((sub) => {
-      const cols = getSubjectColumns(sub);
+      const scholCols = getSubjectColumns(sub, scholasticCols);
+      const coScholCols = getSubjectColumns(sub, coScholasticCols);
+      const cols = [...scholCols, ...coScholCols];
 
       matchedCols.push(...cols);
+      console.log(matchedCols);
 
       groupings.push({
         groupId: sub,
@@ -702,6 +491,81 @@ const SubjectList = ({ class: classe, exam }) => {
 
     setColumns([...baseCols, ...matchedCols]);
   };
+  const buildColumnsPE = (showAll = false) => {
+    const baseCols = [
+      {
+        field: "roll_no",
+        headerName: "Roll No",
+        width: 50,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: "first_name",
+        headerName: "First Name",
+        width: 100,
+        editable: true,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: "surname",
+        headerName: "Surname",
+        width: 100,
+        editable: true,
+        align: "center",
+        headerAlign: "center",
+      },
+    ];
+
+    const getSubjectColumns = (subject) => {
+      const prefix = subject.toLowerCase();
+
+      return coScholasticCols.filter(
+        (col) => col.field === prefix || col.field.startsWith(`${prefix}_`),
+      );
+    };
+
+    const profile = JSON.parse(localStorage.getItem("profile"));
+
+    if (!profile?.subjects) return;
+
+    const mapsubs = profile.subjects.map((sub) => sub.subject.sub);
+
+    if (!showAll) {
+      let matchedCols = [];
+
+      mapsubs.forEach((sub) => {
+        matchedCols.push(...getSubjectColumns(sub));
+      });
+
+      groupingModel.current = null;
+
+      setColumns([...baseCols, ...matchedCols]);
+
+      return;
+    }
+
+    const allSubjectsToShow = [];
+
+    if (mapsubs.some((s) => coScholasticGroups.activity.includes(s))) {
+      allSubjectsToShow.push(...coScholasticGroups.activity);
+    }
+
+    if (mapsubs.some((s) => coScholasticGroups.skill.includes(s))) {
+      allSubjectsToShow.push(...coScholasticGroups.skill);
+    }
+
+    let matchedCols = [];
+
+    allSubjectsToShow.forEach((sub) => {
+      matchedCols.push(...getSubjectColumns(sub));
+    });
+
+    groupingModel.current = null;
+
+    setColumns([...baseCols, ...matchedCols]);
+  };
 
   const [allStudents, setAllStudents] = useState([]);
   const [rawStudents, setRawStudents] = useState([]);
@@ -709,13 +573,13 @@ const SubjectList = ({ class: classe, exam }) => {
   useEffect(() => {
     (async () => {
       const studentres = await request("get", "/api/student");
-      
+
       setAllStudents(studentres.data);
     })();
   }, []);
   useEffect(() => {
-    console.log(776, allStudents, classe)
-      setRawStudents(allStudents.filter(a => a.class_div.division == classe))
+    console.log(776, allStudents, classe);
+    setRawStudents(allStudents.filter((a) => a.class_div.division == classe));
   }, [classe, allStudents]);
 
   useEffect(() => {
@@ -764,6 +628,38 @@ const SubjectList = ({ class: classe, exam }) => {
           sum += (sumScore * 100) / subjectMarksMax[sub];
         row[sub.toLowerCase()] = score ?? "";
       });
+      coScholasticGroups.activity.forEach((sub) => {
+        const filterMarks = student.marks.filter(
+          (a) => a.subject.sub === sub && a.exam.abbreviation === "SP",
+        );
+
+        const scoreObj = filterMarks?.[0] ?? { score: "" };
+        console.log(99997, 1, scoreObj);
+        let score = scoreObj.score;
+        let sumScore = scoreObj.score;
+        console.log(99997, 2, score, sumScore);
+
+        if (score === -1000) {
+          score = "N/A";
+          sumScore = 0;
+        } else if (score === 1000) {
+          score = "✅";
+          sumScore = 0;
+        } else {
+          console.log(740, subjectMarksMax[sub], sub, subjectMarksMax);
+        }
+        console.log(
+          "748",
+          sub,
+          subjectMarksMax[sub],
+          sumScore,
+          (sumScore * 100) / subjectMarksMax[sub],
+        );
+        if (sub != "AI" && subjectMarksMax[sub])
+          sum += (sumScore * 100) / subjectMarksMax[sub];
+        console.log(99997, 3, score, typeof score);
+        row[sub.toLowerCase()] = typeof score === "number" ? score / 10 : score;
+      });
       console.log(sum);
       const total = sum;
       const average = total / 5;
@@ -774,9 +670,15 @@ const SubjectList = ({ class: classe, exam }) => {
 
     setStudents(finalStudentData);
   }, [rawStudents, exam]);
+  const coScholasticFields = new Set(
+    [...coScholasticGroups.activity, ...coScholasticGroups.skill].map((s) =>
+      s.toLowerCase(),
+    ),
+  );
+
   const processRowUpdate = (newRow, oldRow) => {
-    console.log(772, newRow, oldRow);
     const changes = {};
+    console.log(23, newRow, oldRow);
 
     Object.keys(newRow).forEach((key) => {
       if (newRow[key] !== oldRow[key]) {
@@ -785,10 +687,21 @@ const SubjectList = ({ class: classe, exam }) => {
     });
 
     if (Object.keys(changes).length > 0) {
+      console.log(23, changes);
+      const editedField = Object.keys(changes)[0];
+      console.log(23, editedField, coScholasticFields, changes[editedField]);
+
+      const isCoScholastic = coScholasticFields.has(editedField);
+      console.log(23, 46, isCoScholastic, typeof changes[editedField])
+      if (isCoScholastic && typeof changes[editedField] === "string") {
+        changes[editedField] = (Number(changes[editedField]) * 10).toString();
+        console.log(23, 23*4, changes,editedField)
+      }
+
       setEditedRows((prev) => ({
         ...prev,
         [newRow.student_id]: {
-          exam: exam,
+          exam: isCoScholastic ? "SP" : exam,
           student_id: newRow.student_id,
           ...changes,
         },
@@ -835,13 +748,28 @@ const SubjectList = ({ class: classe, exam }) => {
 
             setShowAllColumns(next);
 
-            buildColumns(next);
+            const profile = JSON.parse(localStorage.getItem("profile"));
+
+            const mapsubs = profile?.subjects?.map((s) => s.subject.sub) || [];
+
+            const hasCoScholastic = mapsubs.some((s) =>
+              [
+                ...coScholasticGroups.activity,
+                ...coScholasticGroups.skill,
+              ].includes(s),
+            );
+            console.log(mapsubs, hasCoScholastic, 767);
+            if (hasCoScholastic) {
+              buildColumnsPE(next);
+            } else {
+              buildColumns(next);
+            }
           }}
         >
           {showAllColumns ? "Show Profile Subjects" : "Show All Subjects"}
         </Button>
       </ButtonGroup>
-
+      {console.log(748, students)}
       <DataGrid
         rows={students}
         columns={columns}
@@ -863,4 +791,3 @@ const SubjectList = ({ class: classe, exam }) => {
 };
 
 export default SubjectList;
-;
