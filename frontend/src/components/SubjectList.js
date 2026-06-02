@@ -10,6 +10,7 @@ const getActivityGrade = (avg) => {
   return "";
 };
 const SubjectList = ({ class: classe, exam }) => {
+const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
   const subjectMarksMax = {
     Math: 80,
     English: 80,
@@ -54,7 +55,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "math",
-      headerName: `Math-${subjectMarksMax["Math"]}`,
+      headerName: `Math/${isPeriodicTest ? 20 : subjectMarksMax["Math"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -76,7 +77,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "english",
-      headerName: `English-${subjectMarksMax["English"]}`,
+      headerName: `English/${isPeriodicTest ? 20 : subjectMarksMax["English"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -98,7 +99,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "hindi",
-      headerName: `Hindi-${subjectMarksMax["Hindi"]}`,
+      headerName: `Hindi/${isPeriodicTest ? 20 : subjectMarksMax["Hindi"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -120,7 +121,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "sci",
-      headerName: `Sci-${subjectMarksMax["Sci"]}`,
+      headerName: `Sci/${isPeriodicTest ? 20 : subjectMarksMax["Sci"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -142,7 +143,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "french",
-      headerName: `French-${subjectMarksMax["French"]}`,
+      headerName: `French/${isPeriodicTest ? 20 : subjectMarksMax["French"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -164,7 +165,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "ss",
-      headerName: `SS-${subjectMarksMax["SS"]}`,
+      headerName: `SS/${isPeriodicTest ? 20 : subjectMarksMax["SS"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -186,7 +187,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "hs",
-      headerName: `Home Sci/${subjectMarksMax["HS"]}`,
+      headerName: `Home Sci/${isPeriodicTest ? 20 : subjectMarksMax["HS"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -208,7 +209,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "painting",
-      headerName: `Painting-${subjectMarksMax["Painting"]}`,
+      headerName: `Painting/${isPeriodicTest ? 20 : subjectMarksMax["Painting"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -230,7 +231,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "hc",
-      headerName: `Healthcare-${subjectMarksMax["HC"]}`,
+      headerName: `Healthcare/${isPeriodicTest ? 20 : subjectMarksMax["HC"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -252,7 +253,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "ai",
-      headerName: `AI-${subjectMarksMax["AI"]}`,
+      headerName: `AI/${isPeriodicTest ? 20 : subjectMarksMax["AI"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -274,7 +275,7 @@ const SubjectList = ({ class: classe, exam }) => {
     },
     {
       field: "it",
-      headerName: `IT/${subjectMarksMax["IT"]}`,
+      headerName: `IT/${isPeriodicTest ? 20 : subjectMarksMax["IT"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -432,7 +433,7 @@ const SubjectList = ({ class: classe, exam }) => {
     } else {
       buildColumns(false);
     }
-  }, []);
+  }, [exam]);
   const [showAllColumns, setShowAllColumns] = useState(false);
   const buildColumns = (showAll = false) => {
     const baseCols = [
@@ -463,21 +464,27 @@ const SubjectList = ({ class: classe, exam }) => {
 
     const getSubjectColumns = (subject, cols) => {
       const prefix = subject.toLowerCase();
-
+    
+      if (isPeriodicTest) {
+        return cols.filter((col) => col.field === prefix);
+      }
+    
       return cols.filter(
         (col) => col.field === prefix || col.field.startsWith(`${prefix}_`),
       );
     };
     if (showAll) {
-      const groupings = scholasticSubjectList.map((sub) => ({
-        groupId: sub,
-        children: getSubjectColumns(sub, scholasticCols).map((col) => ({
-          field: col.field,
-        })),
-      }));
+      const groupings = isPeriodicTest
+        ? []
+        : scholasticSubjectList.map((sub) => ({
+            groupId: sub,
+            children: getSubjectColumns(sub, scholasticCols).map((col) => ({
+              field: col.field,
+            })),
+          }));
       console.log(767, showAll, groupings);
 
-      groupingModel.current = groupings;
+      groupingModel.current = isPeriodicTest ? [] : groupings;
       let endCols = [];
 
       endCols = [
@@ -486,9 +493,17 @@ const SubjectList = ({ class: classe, exam }) => {
       ];
       setColumns([
         ...baseCols,
-        ...scholasticCols.filter(
-          (col) => !["roll_no", "first_name", "surname"].includes(col.field),
-        ),
+        ...scholasticCols.filter((col) => {
+          if (["roll_no", "first_name", "surname"].includes(col.field)) {
+            return false;
+          }
+        
+          if (isPeriodicTest) {
+            return !col.field.includes("_");
+          }
+        
+          return true;
+        }),
         ...endCols,
       ]);
 
@@ -521,7 +536,7 @@ const SubjectList = ({ class: classe, exam }) => {
     });
     console.log("hakd", mapsubs);
 
-    groupingModel.current = groupings;
+    groupingModel.current = isPeriodicTest ? [] : groupings;
 
     setColumns([...baseCols, ...matchedCols]);
   };
