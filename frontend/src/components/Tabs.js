@@ -17,6 +17,7 @@ const Tabs = ({ value: valueData }) => {
       value={value}
       onChange={handleChange}
       sx={{ marginBottom: 2 }}
+      slotProps={{ indicator: { sx: { transition: "none" } } }}
     >
       <Tab value="marktable" label="marktable" component={Link} to="/" />
       <Tab value="teachers" label="teachers" component={Link} to="/teachers" />
