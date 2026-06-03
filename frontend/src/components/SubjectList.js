@@ -10,7 +10,7 @@ const getActivityGrade = (avg) => {
   return "";
 };
 const SubjectList = ({ class: classe, exam }) => {
-const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
+  const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
   const subjectMarksMax = {
     Math: 80,
     English: 80,
@@ -424,11 +424,7 @@ const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
 
     const mapsubs = profile.subjects.map((s) => s.subject.sub);
 
-    const hasCoScholastic = mapsubs.some((s) =>
-      [...coScholasticGroups.activity, ...coScholasticGroups.skill].includes(s),
-    );
-
-    if (hasCoScholastic) {
+    if (exam === "SP" || exam === "SE") {
       buildColumnsPE(false);
     } else {
       buildColumns(false);
@@ -464,11 +460,11 @@ const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
 
     const getSubjectColumns = (subject, cols) => {
       const prefix = subject.toLowerCase();
-    
+
       if (isPeriodicTest) {
         return cols.filter((col) => col.field === prefix);
       }
-    
+
       return cols.filter(
         (col) => col.field === prefix || col.field.startsWith(`${prefix}_`),
       );
@@ -497,11 +493,11 @@ const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
           if (["roll_no", "first_name", "surname"].includes(col.field)) {
             return false;
           }
-        
+
           if (isPeriodicTest) {
             return !col.field.includes("_");
           }
-        
+
           return true;
         }),
         ...endCols,
@@ -575,71 +571,20 @@ const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
       );
     };
 
-    const profile = JSON.parse(localStorage.getItem("profile"));
-
-    if (!profile?.subjects) return;
-
-    const mapsubs = profile.subjects.map((sub) => sub.subject.sub);
-
-    if (!showAll) {
-      let matchedCols = [];
-
-      mapsubs.forEach((sub) => {
-        matchedCols.push(...getSubjectColumns(sub));
-      });
-
-      const hasAllActivitySubjects = coScholasticGroups.activity.every((s) =>
-        mapsubs.includes(s),
-      );
-
-      if (hasAllActivitySubjects) {
-        matchedCols.push(
-          coScholasticCols.find((c) => c.field === "activity_average"),
-        );
-
-        matchedCols.push(
-          coScholasticCols.find((c) => c.field === "activity_grade"),
-        );
-      }
-      const hasAllSkillSubjects = coScholasticGroups.skill.every((s) =>
-        mapsubs.includes(s),
-      );
-      
-      if (hasAllSkillSubjects) {
-        matchedCols.push(
-          coScholasticCols.find((c) => c.field === "skill_average"),
-        );
-      
-        matchedCols.push(
-          coScholasticCols.find((c) => c.field === "skill_grade"),
-        );
-      }
-      groupingModel.current = null;
-
-      setColumns([...baseCols, ...matchedCols]);
-
-      return;
-    }
-
-    const allSubjectsToShow = [];
-
-    if (mapsubs.some((s) => coScholasticGroups.activity.includes(s))) {
-      allSubjectsToShow.push(...coScholasticGroups.activity);
-    }
-
-    if (mapsubs.some((s) => coScholasticGroups.skill.includes(s))) {
-      allSubjectsToShow.push(...coScholasticGroups.skill);
-    }
+    const subjectsToShow =
+      exam === "SP"
+        ? coScholasticGroups.activity
+        : exam === "SE"
+          ? coScholasticGroups.skill
+          : [];
 
     let matchedCols = [];
-    allSubjectsToShow.forEach((sub) => {
+
+    subjectsToShow.forEach((sub) => {
       matchedCols.push(...getSubjectColumns(sub));
     });
-    const hasActivity = mapsubs.some((s) =>
-      coScholasticGroups.activity.includes(s),
-    );
 
-    if (hasActivity) {
+    if (exam === "SP") {
       matchedCols.push(
         coScholasticCols.find((c) => c.field === "activity_average"),
       );
@@ -648,23 +593,18 @@ const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
         coScholasticCols.find((c) => c.field === "activity_grade"),
       );
     }
-    const hasSkill = mapsubs.some((s) =>
-      coScholasticGroups.skill.includes(s),
-    );
-    
-    if (hasSkill) {
+
+    if (exam === "SE") {
       matchedCols.push(
         coScholasticCols.find((c) => c.field === "skill_average"),
       );
-    
-      matchedCols.push(
-        coScholasticCols.find((c) => c.field === "skill_grade"),
-      );
+
+      matchedCols.push(coScholasticCols.find((c) => c.field === "skill_grade"));
     }
 
     groupingModel.current = null;
 
-    setColumns([...baseCols, ...matchedCols]);
+    setColumns([...baseCols, ...matchedCols.filter(Boolean)]);
   };
 
   const [allStudents, setAllStudents] = useState([]);
@@ -755,16 +695,16 @@ const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
       });
       let skillTotal = 0;
       let skillCount = 0;
-      
+
       coScholasticGroups.skill.forEach((sub) => {
         const filterMarks = student.marks.filter(
           (a) => a.subject.sub === sub && a.exam.abbreviation === "SP",
         );
-      
+
         const scoreObj = filterMarks?.[0] ?? { score: "" };
-      
+
         let score = scoreObj.score;
-      
+
         if (score === -1000) {
           score = "N/A";
         } else if (score === 1000) {
@@ -773,9 +713,8 @@ const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
           skillTotal += score / 10;
           skillCount += 1;
         }
-      
-        row[sub.toLowerCase()] =
-          typeof score === "number" ? score / 10 : score;
+
+        row[sub.toLowerCase()] = typeof score === "number" ? score / 10 : score;
       });
       const activityAverage =
         activityCount > 0
@@ -787,16 +726,12 @@ const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
       row.activity_grade =
         activityAverage !== "" ? getActivityGrade(activityAverage) : "";
       const skillAverage =
-        skillCount > 0
-          ? Number((skillTotal / skillCount).toFixed(2))
-          : "";
-      
+        skillCount > 0 ? Number((skillTotal / skillCount).toFixed(2)) : "";
+
       row.skill_average = skillAverage;
-      
+
       row.skill_grade =
-        skillAverage !== ""
-          ? getActivityGrade(skillAverage)
-          : "";
+        skillAverage !== "" ? getActivityGrade(skillAverage) : "";
       console.log(sum);
       const total = sum;
       const average = total / 5;
@@ -889,14 +824,7 @@ const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
 
             const mapsubs = profile?.subjects?.map((s) => s.subject.sub) || [];
 
-            const hasCoScholastic = mapsubs.some((s) =>
-              [
-                ...coScholasticGroups.activity,
-                ...coScholasticGroups.skill,
-              ].includes(s),
-            );
-            console.log(mapsubs, hasCoScholastic, 767);
-            if (hasCoScholastic) {
+            if (exam === "SP" || exam === "SE") {
               buildColumnsPE(next);
             } else {
               buildColumns(next);
