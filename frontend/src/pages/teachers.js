@@ -1,4 +1,4 @@
-import { Button, Grid, Skeleton } from "@mui/material";
+import { Button, Grid, Skeleton, Snackbar,} from "@mui/material";
 import TeacherCard from "../components/TeacherCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -21,6 +21,7 @@ const Teachers = () => {
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <>
+      
       <Tabs value="teachers" />
       <div style={{ display: "flex", marginBottom: 20 }}>
         <div className="spacer" style={{ flex: 1 }} />

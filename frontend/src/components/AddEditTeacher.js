@@ -111,7 +111,10 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
       username,
       password,
     });
-    if (res) navigate(0);
+    if (res) {
+      localStorage.setItem("timer", true);
+      navigate(0);
+    }
   };
   const handleUpdateSubmit = async () => {
     if (!firstName) setFormErrors((ofe) => ({ ...ofe, firstName: "Required" }));
@@ -126,7 +129,7 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
       subjects,
       role,
     });
-    if (res) navigate(0);
+    if (res) {localStorage.setItem("","");navigate(0);}
   };
   return (
     <Dialog
