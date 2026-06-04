@@ -14,8 +14,8 @@ import { setClassValue } from "../../context/slices/classSlice";
 import { setExamValue } from "../../context/slices/examSlice";
 
 const Dropdown = () => {
-  const exam = useSelector(store => store.exam)
-  const dispatch = useDispatch()
+  const exam = useSelector((store) => store.exam);
+  const dispatch = useDispatch();
   const setClass = (newValue) => dispatch(setClassValue(newValue));
   const setExam = (newValue) => dispatch(setExamValue(newValue));
   const [profile, setProfile] = useState();
@@ -28,14 +28,14 @@ const Dropdown = () => {
   useEffect(() => {
     if (!profile) return;
     const mapsubs = (profile?.subjects || [null]).map((sub) => sub.subject.sub);
-    console.log(1211, 1, profile, profile.subjects, mapsubs)
+    console.log(1211, 1, profile, profile.subjects, mapsubs);
     if (
       mapsubs.includes("PE") ||
       mapsubs.includes("Yoga") ||
       mapsubs.includes("NSS") ||
       mapsubs.includes("MA")
     ) {
-      console.log(1211,2,  mapsubs);
+      console.log(1211, 2, mapsubs);
       setExam("SP");
     } else if (
       mapsubs.includes("WE") ||
@@ -136,11 +136,16 @@ const Dropdown = () => {
           </Select>
         </FormControl>
       </div>
-      {profile?.role == "Administrator" && (
-        <Button variant="contained" onClick={() => inputref.current.click()}>
-          Submit XLSX Data
+      <>
+        {profile?.role == "Administrator" && (
+          <Button variant="contained" onClick={() => inputref.current.click()}>
+            Submit XLSX Data
+          </Button>
+        )}
+        <Button variant="contained" color="secondary">
+          Generate PDF
         </Button>
-      )}
+      </>
       <input
         type="file"
         style={{ display: "none" }}

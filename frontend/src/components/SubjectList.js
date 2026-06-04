@@ -28,8 +28,8 @@ const SubjectList = () => {
   const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
   const isInternal = exam === "INT";
 
-  const classe = useSelector(store => store.class)
-  const exam = useSelector(store => store.exam)
+  const classe = useSelector((store) => store.class);
+  const exam = useSelector((store) => store.exam);
 
   const subjectMarksMax = {
     Math: 80,
@@ -53,6 +53,7 @@ const SubjectList = () => {
     activity: ["PE", "Yoga", "NSS", "MA"],
     skill: ["WE", "ATL", "Comp"],
   };
+  const dispatch = useDispatch()
   const scholasticSubjectList = [
     "Math",
     "English",
@@ -762,6 +763,7 @@ const SubjectList = () => {
     } else {
       buildStandardRows();
     }
+    
   }, [rawStudents, exam]);
 
   const buildInternalRows = () => {
@@ -1137,22 +1139,34 @@ const SubjectList = () => {
     return updatedRow;
   };
 
+
   // ─── Submit ───────────────────────────────────────────────────────────────
   const handleSubmit = async () => {
-    const changedRows = Object.values(editedRows);
-    if (changedRows.length === 0) return;
+  const changedRows = Object.values(editedRows);
+  if (changedRows.length === 0) return;
 
-    try {
-      if (isInternal) {
-        await request("patch", "/api/student/internals", changedRows);
-      } else {
-        await request("patch", "/api/student/update", changedRows);
-      }
-      location.reload();
-    } catch (err) {
-      console.error(err);
+  try {
+    if (isInternal) {
+      await request("patch", "/api/student/internals", changedRows);
+    } else {
+      await request("patch", "/api/student/update", changedRows);
     }
-  };
+
+    dispatch(
+      setMarksheetData({
+        students,
+        subjects: JSON.parse(localStorage.getItem("profile"))
+          ?.subjects?.map((s) => s.subject.sub) ?? [],
+      }),
+    );
+
+    // optional
+    // navigate("/marksheet");
+
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   return (
     <>
