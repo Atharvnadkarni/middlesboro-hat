@@ -3,6 +3,7 @@ import { Button, ButtonGroup } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useRequest } from "../hooks/useRequest";
 import { useSelector } from "react-redux";
+import { setFormatValue } from "../context/slices/formatSlice";
 
 const getActivityGrade = (avg) => {
   if (avg > 4) return "A";
@@ -31,6 +32,10 @@ const SubjectList = () => {
   const classe = useSelector((store) => store.class);
   const exam = useSelector((store) => store.exam);
 
+  useEffect(() => {
+    dispatch(setFormatValue("individual"))
+  }, [])
+
   const subjectMarksMax = {
     Math: 80,
     English: 80,
@@ -53,6 +58,7 @@ const SubjectList = () => {
     activity: ["PE", "Yoga", "NSS", "MA"],
     skill: ["WE", "ATL", "Comp"],
   };
+
   const dispatch = useDispatch()
   const scholasticSubjectList = [
     "Math",
@@ -1181,6 +1187,8 @@ const SubjectList = () => {
             sx={{ mb: 2, ml: 2 }}
             onClick={() => {
               const next = !showAllColumns;
+              if (next) dispatch(setFormatValue("consolidated"))
+                else dispatch(setFormatValue("individual"))
               setShowAllColumns(next);
               if (exam === "SP" || exam === "SE") {
                 buildColumnsPE(next);
