@@ -120,6 +120,7 @@ const Dropdown = ({ exam, setClass, setExam }) => {
             <MenuItem value={"PT1"}>Periodic Test 1</MenuItem>
             <MenuItem value={"PT2"}>Periodic Test 2</MenuItem>
             <MenuItem value={"PT3"}>Periodic Test 3</MenuItem>
+            <MenuItem value={"INT"}>Internals</MenuItem>
             <MenuItem value={"MT"}>MidTerms</MenuItem>
             <MenuItem value={"PB1"}>Pre-Board 1</MenuItem>
             <MenuItem value={"PB2"}>Pre-Board 2</MenuItem>
