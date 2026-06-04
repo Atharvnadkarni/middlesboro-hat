@@ -11,14 +11,38 @@ const getActivityGrade = (avg) => {
   return "";
 };
 
+// Derive grade from a normalised-to-100 score
+const getScholasticGrade = (score100) => {
+  if (score100 >= 91) return "A1";
+  if (score100 >= 81) return "A2";
+  if (score100 >= 71) return "B1";
+  if (score100 >= 61) return "B2";
+  if (score100 >= 51) return "C1";
+  if (score100 >= 41) return "C2";
+  if (score100 >= 33) return "D";
+  return "E";
+};
+
 const SubjectList = ({ class: classe, exam }) => {
   const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
   const isInternal = exam === "INT";
 
   const subjectMarksMax = {
-    Math: 80, English: 80, Hindi: 80, Sci: 80, French: 80,
-    SS: 80, HS: 70, Painting: 30, HC: 50, AI: 50, IT: 50,
+    Math: 80,
+    English: 80,
+    Hindi: 80,
+    Sci: 80,
+    French: 80,
+    SS: 80,
+    HS: 70,
+    Painting: 30,
+    HC: 50,
+    AI: 50,
+    IT: 50,
   };
+  // For PT the max per subject is 20
+  const ptMax = 20;
+
   const mainSubjects = ["Math", "English", "Hindi", "Sci", "French", "SS"];
 
   const coScholasticGroups = {
@@ -26,81 +50,462 @@ const SubjectList = ({ class: classe, exam }) => {
     skill: ["WE", "ATL", "Comp"],
   };
   const scholasticSubjectList = [
-    "Math", "English", "Hindi", "Sci", "French", "SS",
-    "HS", "Painting", "HC", "AI", "IT",
+    "Math",
+    "English",
+    "Hindi",
+    "Sci",
+    "French",
+    "SS",
+    "HS",
+    "Painting",
+    "HC",
+    "AI",
+    "IT",
   ];
 
   const scholasticCols = [
-    { field: "surname", headerName: "Surname", width: 100, editable: true, align: "center", headerAlign: "center" },
-    { field: "math", headerName: `Math/${isPeriodicTest ? 20 : subjectMarksMax["Math"]}`, width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "math_mo_100", headerName: "Math/100", width: 90, align: "center", headerAlign: "center" },
-    { field: "math_grade", headerName: "Grade", width: 90, align: "center", headerAlign: "center" },
-    { field: "english", headerName: `English/${isPeriodicTest ? 20 : subjectMarksMax["English"]}`, width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "english_mo_100", headerName: "English/100", width: 90, align: "center", headerAlign: "center" },
-    { field: "english_grade", headerName: "Grade", width: 90, align: "center", headerAlign: "center" },
-    { field: "hindi", headerName: `Hindi/${isPeriodicTest ? 20 : subjectMarksMax["Hindi"]}`, width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "hindi_mo_100", headerName: "Hindi/100", width: 90, align: "center", headerAlign: "center" },
-    { field: "hindi_grade", headerName: "Grade", width: 90, align: "center", headerAlign: "center" },
-    { field: "sci", headerName: `Sci/${isPeriodicTest ? 20 : subjectMarksMax["Sci"]}`, width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "sci_mo_100", headerName: "Sci/100", width: 90, align: "center", headerAlign: "center" },
-    { field: "sci_grade", headerName: "Grade", width: 90, align: "center", headerAlign: "center" },
-    { field: "french", headerName: `French/${isPeriodicTest ? 20 : subjectMarksMax["French"]}`, width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "french_mo_100", headerName: "French/100", width: 90, align: "center", headerAlign: "center" },
-    { field: "french_grade", headerName: "Grade", width: 90, align: "center", headerAlign: "center" },
-    { field: "ss", headerName: `SS/${isPeriodicTest ? 20 : subjectMarksMax["SS"]}`, width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "ss_mo_100", headerName: "SS/100", width: 90, align: "center", headerAlign: "center" },
-    { field: "ss_grade", headerName: "Grade", width: 90, align: "center", headerAlign: "center" },
-    { field: "hs", headerName: `Home Sci/${isPeriodicTest ? 20 : subjectMarksMax["HS"]}`, width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "hs_mo_100", headerName: "Home Sci/100", width: 90, align: "center", headerAlign: "center" },
-    { field: "hs_grade", headerName: "Grade", width: 90, align: "center", headerAlign: "center" },
-    { field: "painting", headerName: `Painting/${isPeriodicTest ? 20 : subjectMarksMax["Painting"]}`, width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "painting_mo_100", headerName: "Painting/100", width: 90, align: "center", headerAlign: "center" },
-    { field: "painting_grade", headerName: "Grade", width: 90, align: "center", headerAlign: "center" },
-    { field: "hc", headerName: `Healthcare/${isPeriodicTest ? 20 : subjectMarksMax["HC"]}`, width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "hc_mo_100", headerName: "Healthcare/100", width: 90, align: "center", headerAlign: "center" },
-    { field: "hc_grade", headerName: "Grade", width: 90, align: "center", headerAlign: "center" },
-    { field: "ai", headerName: `AI/${isPeriodicTest ? 20 : subjectMarksMax["AI"]}`, width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "ai_mo_100", headerName: "AI/100", width: 90, align: "center", headerAlign: "center" },
-    { field: "ai_grade", headerName: "Grade", width: 90, align: "center", headerAlign: "center" },
-    { field: "it", headerName: `IT/${isPeriodicTest ? 20 : subjectMarksMax["IT"]}`, width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "it_mo_100", headerName: "Info Tech/100", width: 90, align: "center", headerAlign: "center" },
-    { field: "it_grade", headerName: "Grade", width: 90, align: "center", headerAlign: "center" },
+    {
+      field: "surname",
+      headerName: "Surname",
+      width: 100,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "math",
+      headerName: `Math/${isPeriodicTest ? ptMax : subjectMarksMax["Math"]}`,
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "math_mo_100",
+      headerName: "Math/100",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "math_grade",
+      headerName: "Grade",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "english",
+      headerName: `English/${isPeriodicTest ? ptMax : subjectMarksMax["English"]}`,
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "english_mo_100",
+      headerName: "English/100",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "english_grade",
+      headerName: "Grade",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "hindi",
+      headerName: `Hindi/${isPeriodicTest ? ptMax : subjectMarksMax["Hindi"]}`,
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "hindi_mo_100",
+      headerName: "Hindi/100",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "hindi_grade",
+      headerName: "Grade",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "sci",
+      headerName: `Sci/${isPeriodicTest ? ptMax : subjectMarksMax["Sci"]}`,
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "sci_mo_100",
+      headerName: "Sci/100",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "sci_grade",
+      headerName: "Grade",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "french",
+      headerName: `French/${isPeriodicTest ? ptMax : subjectMarksMax["French"]}`,
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "french_mo_100",
+      headerName: "French/100",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "french_grade",
+      headerName: "Grade",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "ss",
+      headerName: `SS/${isPeriodicTest ? ptMax : subjectMarksMax["SS"]}`,
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "ss_mo_100",
+      headerName: "SS/100",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "ss_grade",
+      headerName: "Grade",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "hs",
+      headerName: `Home Sci/${isPeriodicTest ? ptMax : subjectMarksMax["HS"]}`,
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "hs_mo_100",
+      headerName: "Home Sci/100",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "hs_grade",
+      headerName: "Grade",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "painting",
+      headerName: `Painting/${isPeriodicTest ? ptMax : subjectMarksMax["Painting"]}`,
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "painting_mo_100",
+      headerName: "Painting/100",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "painting_grade",
+      headerName: "Grade",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "hc",
+      headerName: `Healthcare/${isPeriodicTest ? ptMax : subjectMarksMax["HC"]}`,
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "hc_mo_100",
+      headerName: "Healthcare/100",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "hc_grade",
+      headerName: "Grade",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "ai",
+      headerName: `AI/${isPeriodicTest ? ptMax : subjectMarksMax["AI"]}`,
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "ai_mo_100",
+      headerName: "AI/100",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "ai_grade",
+      headerName: "Grade",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "it",
+      headerName: `IT/${isPeriodicTest ? ptMax : subjectMarksMax["IT"]}`,
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "it_mo_100",
+      headerName: "Info Tech/100",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "it_grade",
+      headerName: "Grade",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
   ];
 
   const coScholasticCols = [
-    { field: "pe", headerName: "PE", width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "yoga", headerName: "Yoga", width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "nss", headerName: "NSS", width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "ma", headerName: "MA", width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "activity_average", headerName: "Average", width: 100, align: "center", headerAlign: "center" },
-    { field: "activity_grade", headerName: "Grade", width: 100, align: "center", headerAlign: "center" },
-    { field: "we", headerName: "WE", width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "atl", headerName: "ATL", width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "comp", headerName: "Comp", width: 90, editable: true, align: "center", headerAlign: "center" },
-    { field: "skill_average", headerName: "Average", width: 100, align: "center", headerAlign: "center" },
-    { field: "skill_grade", headerName: "Grade", width: 100, align: "center", headerAlign: "center" },
+    {
+      field: "pe",
+      headerName: "PE",
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "yoga",
+      headerName: "Yoga",
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "nss",
+      headerName: "NSS",
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "ma",
+      headerName: "MA",
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "activity_average",
+      headerName: "Average",
+      width: 100,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "activity_grade",
+      headerName: "Grade",
+      width: 100,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "we",
+      headerName: "WE",
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "atl",
+      headerName: "ATL",
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "comp",
+      headerName: "Comp",
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "skill_average",
+      headerName: "Average",
+      width: 100,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "skill_grade",
+      headerName: "Grade",
+      width: 100,
+      align: "center",
+      headerAlign: "center",
+    },
   ];
 
   // ─── Build INT columns per subject ────────────────────────────────────────
   const buildInternalColsForSubject = (sub) => {
     const prefix = sub.toLowerCase();
     return [
-      { field: `${prefix}_pt1`,        headerName: "PT1",                  width: 70,  editable: false, align: "center", headerAlign: "center" },
-      { field: `${prefix}_pt2`,        headerName: "PT2",                  width: 70,  editable: false, align: "center", headerAlign: "center" },
-      { field: `${prefix}_pt3`,        headerName: "PT3",                  width: 70,  editable: false, align: "center", headerAlign: "center" },
-      { field: `${prefix}_best_pt`,    headerName: "Best PT",              width: 80,  editable: false, align: "center", headerAlign: "center" },
-      { field: `${prefix}_pt`,         headerName: "PT",                   width: 60,  editable: false, align: "center", headerAlign: "center" },
-      { field: `${prefix}_mul_assess`, headerName: "Multiple Assessment",  width: 140, editable: true,  align: "center", headerAlign: "center" },
-      { field: `${prefix}_portfolio`,  headerName: "Portfolio",            width: 100, editable: true,  align: "center", headerAlign: "center" },
-      { field: `${prefix}_sub_enrich`, headerName: "Subject Enrichment",   width: 140, editable: true,  align: "center", headerAlign: "center" },
-      { field: `${prefix}_total_int`,  headerName: "Total Internal Marks", width: 140, editable: false, align: "center", headerAlign: "center" },
+      {
+        field: `${prefix}_pt1`,
+        headerName: "PT1",
+        width: 70,
+        editable: false,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: `${prefix}_pt2`,
+        headerName: "PT2",
+        width: 70,
+        editable: false,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: `${prefix}_pt3`,
+        headerName: "PT3",
+        width: 70,
+        editable: false,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: `${prefix}_best_pt`,
+        headerName: "Best PT",
+        width: 80,
+        editable: false,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: `${prefix}_pt`,
+        headerName: "PT",
+        width: 60,
+        editable: false,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: `${prefix}_mul_assess`,
+        headerName: "Multiple Assessment",
+        width: 140,
+        editable: true,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: `${prefix}_portfolio`,
+        headerName: "Portfolio",
+        width: 100,
+        editable: true,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: `${prefix}_sub_enrich`,
+        headerName: "Subject Enrichment",
+        width: 140,
+        editable: true,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: `${prefix}_total_int`,
+        headerName: "Total Internal Marks",
+        width: 140,
+        editable: false,
+        align: "center",
+        headerAlign: "center",
+      },
     ];
   };
 
   const [columns, setColumns] = useState([
-    { field: "roll_no",     headerName: "Roll No",    width: 50,  align: "center", headerAlign: "center" },
-    { field: "first_name",  headerName: "First Name", width: 100, editable: true,  align: "center", headerAlign: "center" },
-    { field: "surname",     headerName: "Surname",    width: 100, editable: true,  align: "center", headerAlign: "center" },
+    {
+      field: "roll_no",
+      headerName: "Roll No",
+      width: 50,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "first_name",
+      headerName: "First Name",
+      width: 100,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "surname",
+      headerName: "Surname",
+      width: 100,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
   ]);
 
   const [students, setStudents] = useState([]);
@@ -130,9 +535,29 @@ const SubjectList = ({ class: classe, exam }) => {
   // ─── Build INT columns ────────────────────────────────────────────────────
   const buildColumnsINT = () => {
     const baseCols = [
-      { field: "roll_no",    headerName: "Roll No",    width: 50,  align: "center", headerAlign: "center" },
-      { field: "first_name", headerName: "First Name", width: 100, editable: false, align: "center", headerAlign: "center" },
-      { field: "surname",    headerName: "Surname",    width: 100, editable: false, align: "center", headerAlign: "center" },
+      {
+        field: "roll_no",
+        headerName: "Roll No",
+        width: 50,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: "first_name",
+        headerName: "First Name",
+        width: 100,
+        editable: false,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: "surname",
+        headerName: "Surname",
+        width: 100,
+        editable: false,
+        align: "center",
+        headerAlign: "center",
+      },
     ];
 
     const profile = JSON.parse(localStorage.getItem("profile"));
@@ -147,8 +572,9 @@ const SubjectList = ({ class: classe, exam }) => {
       const cols = buildInternalColsForSubject(sub);
       allSubjectCols.push(...cols);
 
-      // track editable field names
-      cols.forEach((c) => { if (c.editable) editableFields.add(c.field); });
+      cols.forEach((c) => {
+        if (c.editable) editableFields.add(c.field);
+      });
 
       groupings.push({
         groupId: sub,
@@ -163,15 +589,37 @@ const SubjectList = ({ class: classe, exam }) => {
 
   const buildColumns = (showAll = false) => {
     const baseCols = [
-      { field: "roll_no",    headerName: "Roll No",    width: 50,  align: "center", headerAlign: "center" },
-      { field: "first_name", headerName: "First Name", width: 100, editable: true,  align: "center", headerAlign: "center" },
-      { field: "surname",    headerName: "Surname",    width: 100, editable: true,  align: "center", headerAlign: "center" },
+      {
+        field: "roll_no",
+        headerName: "Roll No",
+        width: 50,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: "first_name",
+        headerName: "First Name",
+        width: 100,
+        editable: true,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: "surname",
+        headerName: "Surname",
+        width: 100,
+        editable: true,
+        align: "center",
+        headerAlign: "center",
+      },
     ];
 
     const getSubjectColumns = (subject, cols) => {
       const prefix = subject.toLowerCase();
       if (isPeriodicTest) return cols.filter((col) => col.field === prefix);
-      return cols.filter((col) => col.field === prefix || col.field.startsWith(`${prefix}_`));
+      return cols.filter(
+        (col) => col.field === prefix || col.field.startsWith(`${prefix}_`),
+      );
     };
 
     if (showAll) {
@@ -179,18 +627,21 @@ const SubjectList = ({ class: classe, exam }) => {
         ? []
         : scholasticSubjectList.map((sub) => ({
             groupId: sub,
-            children: getSubjectColumns(sub, scholasticCols).map((col) => ({ field: col.field })),
+            children: getSubjectColumns(sub, scholasticCols).map((col) => ({
+              field: col.field,
+            })),
           }));
 
       groupingModel.current = isPeriodicTest ? [] : groupings;
       const endCols = [
-        { field: "total",      headerName: "Total" },
+        { field: "total", headerName: "Total" },
         { field: "percentage", headerName: "Percentage" },
       ];
       setColumns([
         ...baseCols,
         ...scholasticCols.filter((col) => {
-          if (["roll_no", "first_name", "surname"].includes(col.field)) return false;
+          if (["roll_no", "first_name", "surname"].includes(col.field))
+            return false;
           if (isPeriodicTest) return !col.field.includes("_");
           return true;
         }),
@@ -211,7 +662,10 @@ const SubjectList = ({ class: classe, exam }) => {
       const coScholCols = getSubjectColumns(sub, coScholasticCols);
       const cols = [...scholCols, ...coScholCols];
       matchedCols.push(...cols);
-      groupings.push({ groupId: sub, children: cols.map((col) => ({ field: col.field })) });
+      groupings.push({
+        groupId: sub,
+        children: cols.map((col) => ({ field: col.field })),
+      });
     });
 
     groupingModel.current = isPeriodicTest ? [] : groupings;
@@ -220,31 +674,62 @@ const SubjectList = ({ class: classe, exam }) => {
 
   const buildColumnsPE = (showAll = false) => {
     const baseCols = [
-      { field: "roll_no",    headerName: "Roll No",    width: 50,  align: "center", headerAlign: "center" },
-      { field: "first_name", headerName: "First Name", width: 100, editable: true,  align: "center", headerAlign: "center" },
-      { field: "surname",    headerName: "Surname",    width: 100, editable: true,  align: "center", headerAlign: "center" },
+      {
+        field: "roll_no",
+        headerName: "Roll No",
+        width: 50,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: "first_name",
+        headerName: "First Name",
+        width: 100,
+        editable: true,
+        align: "center",
+        headerAlign: "center",
+      },
+      {
+        field: "surname",
+        headerName: "Surname",
+        width: 100,
+        editable: true,
+        align: "center",
+        headerAlign: "center",
+      },
     ];
 
     const getSubjectColumns = (subject) => {
       const prefix = subject.toLowerCase();
       return coScholasticCols.filter(
-        (col) => col.field === prefix || col.field.startsWith(`${prefix}_`)
+        (col) => col.field === prefix || col.field.startsWith(`${prefix}_`),
       );
     };
 
     const subjectsToShow =
-      exam === "SP" ? coScholasticGroups.activity :
-      exam === "SE" ? coScholasticGroups.skill : [];
+      exam === "SP"
+        ? coScholasticGroups.activity
+        : exam === "SE"
+          ? coScholasticGroups.skill
+          : [];
 
     let matchedCols = [];
-    subjectsToShow.forEach((sub) => { matchedCols.push(...getSubjectColumns(sub)); });
+    subjectsToShow.forEach((sub) => {
+      matchedCols.push(...getSubjectColumns(sub));
+    });
 
     if (exam === "SP") {
-      matchedCols.push(coScholasticCols.find((c) => c.field === "activity_average"));
-      matchedCols.push(coScholasticCols.find((c) => c.field === "activity_grade"));
+      matchedCols.push(
+        coScholasticCols.find((c) => c.field === "activity_average"),
+      );
+      matchedCols.push(
+        coScholasticCols.find((c) => c.field === "activity_grade"),
+      );
     }
     if (exam === "SE") {
-      matchedCols.push(coScholasticCols.find((c) => c.field === "skill_average"));
+      matchedCols.push(
+        coScholasticCols.find((c) => c.field === "skill_average"),
+      );
       matchedCols.push(coScholasticCols.find((c) => c.field === "skill_grade"));
     }
 
@@ -292,12 +777,12 @@ const SubjectList = ({ class: classe, exam }) => {
       mapsubs.forEach((sub) => {
         const prefix = sub.toLowerCase();
 
-        // Pull PT1, PT2, PT3 scores from marks
         const getPTScore = (examAbbr) => {
           const mark = student.marks.find(
-            (m) => m.subject.sub === sub && m.exam.abbreviation === examAbbr
+            (m) => m.subject.sub === sub && m.exam.abbreviation === examAbbr,
           );
-          if (!mark || mark.score === undefined || mark.score === null) return "";
+          if (!mark || mark.score === undefined || mark.score === null)
+            return "";
           if (mark.score === -1000) return "N/A";
           if (mark.score === 1000) return "✅";
           return mark.score;
@@ -311,21 +796,20 @@ const SubjectList = ({ class: classe, exam }) => {
         row[`${prefix}_pt2`] = pt2;
         row[`${prefix}_pt3`] = pt3;
 
-        // Best PT = sum of two highest numeric PT scores
         const numericPTs = [pt1, pt2, pt3].filter((v) => typeof v === "number");
         numericPTs.sort((a, b) => b - a);
-        const bestPT = numericPTs.length >= 2
-          ? numericPTs[0] + numericPTs[1]
-          : numericPTs.length === 1
-            ? numericPTs[0]
-            : "";
+        const bestPT =
+          numericPTs.length >= 2
+            ? numericPTs[0] + numericPTs[1]
+            : numericPTs.length === 1
+              ? numericPTs[0]
+              : "";
 
         row[`${prefix}_best_pt`] = bestPT;
         row[`${prefix}_pt`] = bestPT !== "" ? Math.ceil(bestPT / 8) : "";
 
-        // Editable internal fields — pull existing values if available
         const internalMark = student.internals?.find?.(
-          (i) => i.subject?.sub === sub
+          (i) => i.subject?.sub === sub,
         );
 
         const mulAssess = internalMark?.multiple_assessment ?? "";
@@ -333,22 +817,74 @@ const SubjectList = ({ class: classe, exam }) => {
         const subEnrich = internalMark?.subject_enrichment ?? "";
 
         row[`${prefix}_mul_assess`] = mulAssess;
-        row[`${prefix}_portfolio`]  = portfolio;
+        row[`${prefix}_portfolio`] = portfolio;
         row[`${prefix}_sub_enrich`] = subEnrich;
 
-        // Total Internal Marks = PT + Multiple Assessment + Portfolio + Subject Enrichment
-        const ptVal  = row[`${prefix}_pt`];
-        const maVal  = typeof mulAssess === "number" ? mulAssess : Number(mulAssess) || 0;
-        const pfVal  = typeof portfolio === "number" ? portfolio : Number(portfolio) || 0;
-        const seVal  = typeof subEnrich === "number" ? subEnrich : Number(subEnrich) || 0;
+        const ptVal = row[`${prefix}_pt`];
+        const maVal =
+          typeof mulAssess === "number" ? mulAssess : Number(mulAssess) || 0;
+        const pfVal =
+          typeof portfolio === "number" ? portfolio : Number(portfolio) || 0;
+        const seVal =
+          typeof subEnrich === "number" ? subEnrich : Number(subEnrich) || 0;
 
-        row[`${prefix}_total_int`] = ptVal !== "" ? ptVal + maVal + pfVal + seVal : "";
+        row[`${prefix}_total_int`] =
+          ptVal !== "" ? ptVal + maVal + pfVal + seVal : "";
       });
 
       finalStudentData.push(row);
     });
 
     setStudents(finalStudentData);
+  };
+
+  // ─── Helper: compute derived fields (mo_100, grade) for a single subject score ──
+  const computeDerivedFields = (sub, score, row) => {
+    const prefix = sub.toLowerCase();
+    const max = isPeriodicTest ? ptMax : subjectMarksMax[sub];
+    if (typeof score === "number" && max) {
+      const mo100 = Number(((score * 100) / max).toFixed(1));
+      row[`${prefix}_mo_100`] = mo100;
+      row[`${prefix}_grade`] = getScholasticGrade(mo100);
+    } else {
+      row[`${prefix}_mo_100`] = "";
+      row[`${prefix}_grade`] = "";
+    }
+  };
+
+  // ─── Helper: recompute total and percentage for a row ─────────────────────
+  const computeTotals = (row) => {
+    let sum = 0;
+
+    scholasticSubjectList.forEach((sub) => {
+      if (sub === "AI") return;
+
+      const score = Number(row[sub.toLowerCase()]);
+
+      if (isNaN(score)) return;
+
+      if (isPeriodicTest) {
+        sum += score;
+      } else {
+        const max = subjectMarksMax[sub];
+        if (max) {
+          sum += (score * 100) / max;
+        }
+      }
+    });
+
+    row.total = Number(sum.toFixed(2));
+
+    if (isPeriodicTest) {
+      const subjectCount = scholasticSubjectList.filter(
+        (sub) => sub !== "AI",
+      ).length;
+
+      row.percentage =
+        subjectCount > 0 ? Number((sum / subjectCount).toFixed(2)) : 0;
+    } else {
+      row.percentage = Number((sum / 5).toFixed(2));
+    }
   };
 
   const buildStandardRows = () => {
@@ -363,74 +899,90 @@ const SubjectList = ({ class: classe, exam }) => {
         surname: student.surname,
       };
 
-      let sum = 0;
-
       scholasticSubjectList.forEach((sub) => {
         const filterMarks = student.marks.filter(
-          (a) => a.subject.sub === sub && a.exam.abbreviation === exam
+          (a) => a.subject.sub === sub && a.exam.abbreviation === exam,
         );
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
-        let sumScore = scoreObj.score;
+
+        const prefix = sub.toLowerCase();
 
         if (score === -1000) {
           score = "N/A";
-          sumScore = 0;
+          row[prefix] = score;
+          row[`${prefix}_mo_100`] = "";
+          row[`${prefix}_grade`] = "";
         } else if (score === 1000) {
           score = "✅";
-          sumScore = 0;
+          row[prefix] = score;
+          row[`${prefix}_mo_100`] = "";
+          row[`${prefix}_grade`] = "";
         } else {
-          row[`${sub.toLowerCase()}_mo_100`] = Number(
-            ((score * 100) / subjectMarksMax[sub]).toFixed(1)
-          );
+          row[prefix] = score ?? "";
+          computeDerivedFields(sub, score, row);
         }
-
-        if (sub !== "AI" && subjectMarksMax[sub])
-          sum += (sumScore * 100) / subjectMarksMax[sub];
-
-        row[sub.toLowerCase()] = score ?? "";
       });
 
-      let activityTotal = 0, activityCount = 0;
+      // co-scholastic activity
+      let activityTotal = 0,
+        activityCount = 0;
       coScholasticGroups.activity.forEach((sub) => {
         const filterMarks = student.marks.filter(
-          (a) => a.subject.sub === sub && a.exam.abbreviation === "SP"
+          (a) => a.subject.sub === sub && a.exam.abbreviation === "SP",
         );
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
 
-        if (score === -1000) { score = "N/A"; }
-        else if (score === 1000) { score = "✅"; }
-        else if (typeof score === "number") { activityTotal += score / 10; activityCount += 1; }
+        if (score === -1000) {
+          score = "N/A";
+        } else if (score === 1000) {
+          score = "✅";
+        } else if (typeof score === "number") {
+          activityTotal += score / 10;
+          activityCount += 1;
+        }
 
         row[sub.toLowerCase()] = typeof score === "number" ? score / 10 : score;
       });
 
-      let skillTotal = 0, skillCount = 0;
+      // co-scholastic skill
+      let skillTotal = 0,
+        skillCount = 0;
       coScholasticGroups.skill.forEach((sub) => {
         const filterMarks = student.marks.filter(
-          (a) => a.subject.sub === sub && a.exam.abbreviation === "SP"
+          (a) => a.subject.sub === sub && a.exam.abbreviation === "SP",
         );
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
 
-        if (score === -1000) { score = "N/A"; }
-        else if (score === 1000) { score = "✅"; }
-        else if (typeof score === "number") { skillTotal += score / 10; skillCount += 1; }
+        if (score === -1000) {
+          score = "N/A";
+        } else if (score === 1000) {
+          score = "✅";
+        } else if (typeof score === "number") {
+          skillTotal += score / 10;
+          skillCount += 1;
+        }
 
         row[sub.toLowerCase()] = typeof score === "number" ? score / 10 : score;
       });
 
-      const activityAverage = activityCount > 0 ? Number((activityTotal / activityCount).toFixed(2)) : "";
+      const activityAverage =
+        activityCount > 0
+          ? Number((activityTotal / activityCount).toFixed(2))
+          : "";
       row.activity_average = activityAverage;
-      row.activity_grade = activityAverage !== "" ? getActivityGrade(activityAverage) : "";
+      row.activity_grade =
+        activityAverage !== "" ? getActivityGrade(activityAverage) : "";
 
-      const skillAverage = skillCount > 0 ? Number((skillTotal / skillCount).toFixed(2)) : "";
+      const skillAverage =
+        skillCount > 0 ? Number((skillTotal / skillCount).toFixed(2)) : "";
       row.skill_average = skillAverage;
-      row.skill_grade = skillAverage !== "" ? getActivityGrade(skillAverage) : "";
+      row.skill_grade =
+        skillAverage !== "" ? getActivityGrade(skillAverage) : "";
 
-      row.total = sum;
-      row.percentage = sum / 5;
+      computeTotals(row);
       finalStudentData.push(row);
     });
 
@@ -438,7 +990,9 @@ const SubjectList = ({ class: classe, exam }) => {
   };
 
   const coScholasticFields = new Set(
-    [...coScholasticGroups.activity, ...coScholasticGroups.skill].map((s) => s.toLowerCase())
+    [...coScholasticGroups.activity, ...coScholasticGroups.skill].map((s) =>
+      s.toLowerCase(),
+    ),
   );
 
   // ─── Row update handler ───────────────────────────────────────────────────
@@ -451,55 +1005,117 @@ const SubjectList = ({ class: classe, exam }) => {
     if (Object.keys(changes).length === 0) return newRow;
 
     if (isInternal) {
-      // Recalculate total_int for any subject whose editable field changed
       const profile = JSON.parse(localStorage.getItem("profile"));
       const mapsubs = profile?.subjects?.map((s) => s.subject.sub) ?? [];
       const updatedRow = { ...newRow };
 
       mapsubs.forEach((sub) => {
         const prefix = sub.toLowerCase();
-        const ptVal  = updatedRow[`${prefix}_pt`];
-        const maVal  = Number(updatedRow[`${prefix}_mul_assess`]) || 0;
-        const pfVal  = Number(updatedRow[`${prefix}_portfolio`])  || 0;
-        const seVal  = Number(updatedRow[`${prefix}_sub_enrich`]) || 0;
-        updatedRow[`${prefix}_total_int`] = ptVal !== "" ? ptVal + maVal + pfVal + seVal : "";
+        const ptVal = updatedRow[`${prefix}_pt`];
+        const maVal = Number(updatedRow[`${prefix}_mul_assess`]) || 0;
+        const pfVal = Number(updatedRow[`${prefix}_portfolio`]) || 0;
+        const seVal = Number(updatedRow[`${prefix}_sub_enrich`]) || 0;
+        updatedRow[`${prefix}_total_int`] =
+          ptVal !== "" ? ptVal + maVal + pfVal + seVal : "";
       });
 
-      // Accumulate editable changes per student keyed by subject
       setEditedRows((prev) => {
-        const existing = prev[newRow.student_id] ?? { student_id: newRow.student_id, subjects: {} };
+        const existing = prev[newRow.student_id] ?? {
+          student_id: newRow.student_id,
+          subjects: {},
+        };
         const updatedSubjects = { ...existing.subjects };
 
         Object.keys(changes).forEach((field) => {
           if (!internalEditableFields.current.has(field)) return;
 
-          // field format: `${prefix}_mul_assess` | `${prefix}_portfolio` | `${prefix}_sub_enrich`
           const matchedSub = mapsubs.find((sub) =>
-            field.startsWith(sub.toLowerCase() + "_")
+            field.startsWith(sub.toLowerCase() + "_"),
           );
           if (!matchedSub) return;
           const prefix = matchedSub.toLowerCase();
 
           if (!updatedSubjects[matchedSub]) updatedSubjects[matchedSub] = {};
 
-          if (field === `${prefix}_mul_assess`) updatedSubjects[matchedSub].multiple_assessment = changes[field];
-          if (field === `${prefix}_portfolio`)  updatedSubjects[matchedSub].portfolio           = changes[field];
-          if (field === `${prefix}_sub_enrich`) updatedSubjects[matchedSub].subject_enrichment  = changes[field];
+          if (field === `${prefix}_mul_assess`)
+            updatedSubjects[matchedSub].multiple_assessment = changes[field];
+          if (field === `${prefix}_portfolio`)
+            updatedSubjects[matchedSub].portfolio = changes[field];
+          if (field === `${prefix}_sub_enrich`)
+            updatedSubjects[matchedSub].subject_enrichment = changes[field];
         });
 
-        return { ...prev, [newRow.student_id]: { student_id: newRow.student_id, subjects: updatedSubjects } };
+        return {
+          ...prev,
+          [newRow.student_id]: {
+            student_id: newRow.student_id,
+            subjects: updatedSubjects,
+          },
+        };
       });
 
-      setStudents((prev) => prev.map((row) => (row.id === updatedRow.id ? updatedRow : row)));
+      setStudents((prev) =>
+        prev.map((row) => (row.id === updatedRow.id ? updatedRow : row)),
+      );
       return updatedRow;
     }
 
-    // Standard (non-INT) path
+    // ─── Standard (non-INT) path ──────────────────────────────────────────
     const editedField = Object.keys(changes)[0];
     const isCoScholastic = coScholasticFields.has(editedField);
 
-    if (isCoScholastic && typeof changes[editedField] === "string") {
-      changes[editedField] = (Number(changes[editedField]) * 10).toString();
+    let updatedRow = { ...newRow };
+
+    if (isCoScholastic) {
+      // Co-scholastic fields stored *10 internally; recalc averages/grades
+      if (typeof changes[editedField] === "string") {
+        changes[editedField] = (Number(changes[editedField]) * 10).toString();
+      }
+
+      // Recalculate activity average/grade live
+      const activityVals = coScholasticGroups.activity
+        .map((sub) => updatedRow[sub.toLowerCase()])
+        .filter((v) => typeof v === "number");
+      if (activityVals.length > 0) {
+        const avg = Number(
+          (
+            activityVals.reduce((a, b) => a + b, 0) / activityVals.length
+          ).toFixed(2),
+        );
+        updatedRow.activity_average = avg;
+        updatedRow.activity_grade = getActivityGrade(avg);
+      }
+
+      const skillVals = coScholasticGroups.skill
+        .map((sub) => updatedRow[sub.toLowerCase()])
+        .filter((v) => typeof v === "number");
+      if (skillVals.length > 0) {
+        const avg = Number(
+          (skillVals.reduce((a, b) => a + b, 0) / skillVals.length).toFixed(2),
+        );
+        updatedRow.skill_average = avg;
+        updatedRow.skill_grade = getActivityGrade(avg);
+      }
+    } else {
+      // Scholastic field edited — recalculate _mo_100, _grade, total, percentage live
+      const editedSub = scholasticSubjectList.find(
+        (sub) => sub.toLowerCase() === editedField,
+      );
+
+      if (editedSub) {
+        const newScore = Number(newRow[editedField]);
+
+        if (!isNaN(newScore)) {
+          updatedRow[editedField] = newScore;
+          computeDerivedFields(editedSub, newScore, updatedRow);
+        } else {
+          const prefix = editedSub.toLowerCase();
+          updatedRow[`${prefix}_mo_100`] = "";
+          updatedRow[`${prefix}_grade`] = "";
+        }
+
+        computeTotals(updatedRow);
+      }
     }
 
     setEditedRows((prev) => ({
@@ -511,8 +1127,10 @@ const SubjectList = ({ class: classe, exam }) => {
       },
     }));
 
-    setStudents((prev) => prev.map((row) => (row.id === newRow.id ? newRow : row)));
-    return newRow;
+    setStudents((prev) =>
+      prev.map((row) => (row.id === updatedRow.id ? updatedRow : row)),
+    );
+    return updatedRow;
   };
 
   // ─── Submit ───────────────────────────────────────────────────────────────
@@ -522,7 +1140,6 @@ const SubjectList = ({ class: classe, exam }) => {
 
     try {
       if (isInternal) {
-        // Shape: [{ student_id, subjects: { Math: { multiple_assessment, portfolio, subject_enrichment }, ... } }]
         await request("patch", "/api/student/internals", changedRows);
       } else {
         await request("patch", "/api/student/update", changedRows);
@@ -565,7 +1182,8 @@ const SubjectList = ({ class: classe, exam }) => {
         onProcessRowUpdateError={(error) => console.error(error)}
         columnGroupingModel={groupingModel.current}
         getCellClassName={(params) => {
-          if (params.field === "first_name" || params.field === "surname") return "";
+          if (params.field === "first_name" || params.field === "surname")
+            return "";
           return "center";
         }}
       />
