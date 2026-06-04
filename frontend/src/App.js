@@ -9,6 +9,7 @@ import { BrowserRouter, Route, Routes, useNavigate } from "react-router";
 import Home from "./pages/home";
 import Teachers from "./pages/teachers";
 import LoginPage from "./pages/login";
+import MarksheetTemplate from "./components/MarksheetTemplate";
 
 const App = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/teachers" element={<Teachers />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/mk-ta" element={<MarksheetTemplate />} />
         </Routes>
       </Container>
     </>
