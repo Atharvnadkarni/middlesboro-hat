@@ -10,8 +10,8 @@ import UploadModal from "./UploadModal";
 import * as XLSX from "xlsx";
 import { useRequest } from "../hooks/useRequest";
 import { useDispatch, useSelector } from "react-redux";
-import { setClassValue } from "../../context/slices/classSlice";
-import { setExamValue } from "../../context/slices/examSlice";
+import { setClassValue } from "../context/slices/classSlice";
+import { setExamValue } from "../context/slices/examSlice";
 
 const Dropdown = () => {
   const exam = useSelector((store) => store.exam);
