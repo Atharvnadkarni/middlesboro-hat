@@ -9,8 +9,15 @@ import { useEffect, useRef, useState } from "react";
 import UploadModal from "./UploadModal";
 import * as XLSX from "xlsx";
 import { useRequest } from "../hooks/useRequest";
+import { useDispatch, useSelector } from "react-redux";
+import { setClassValue } from "../../context/slices/classSlice";
+import { setExamValue } from "../../context/slices/examSlice";
 
-const Dropdown = ({ exam, setClass, setExam }) => {
+const Dropdown = () => {
+  const exam = useSelector(store => store.exam)
+  const dispatch = useDispatch()
+  const setClass = (newValue) => dispatch(setClassValue(newValue));
+  const setExam = (newValue) => dispatch(setExamValue(newValue));
   const [profile, setProfile] = useState();
   const { request, isLoading, error } = useRequest();
   const [data, setData] = useState([]);

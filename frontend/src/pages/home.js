@@ -3,10 +3,10 @@ import Tabs from "../components/Tabs";
 import Dropdown from "../components/Dropdown";
 import SubjectList from "../components/SubjectList";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const Home = () => {
-  const [classe, setClass] = useState("A");
-  const [exam, setExam] = useState("PT1");
+  const classe = useSelector(state => state.class)
   useEffect(() => {
     localStorage.setItem("class", classe);
   }, [classe]);
@@ -14,8 +14,8 @@ const Home = () => {
     <>
       <Tabs value="marktable" />
     
-      <Dropdown setClass={setClass} setExam={setExam} exam={exam} />
-      <SubjectList class={classe} exam={exam} />
+      <Dropdown />
+      <SubjectList/>
     </>
   );
 };

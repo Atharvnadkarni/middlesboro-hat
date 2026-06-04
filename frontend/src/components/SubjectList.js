@@ -2,6 +2,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Button, ButtonGroup } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useRequest } from "../hooks/useRequest";
+import { useSelector } from "react-redux";
 
 const getActivityGrade = (avg) => {
   if (avg > 4) return "A";
@@ -23,9 +24,12 @@ const getScholasticGrade = (score100) => {
   return "E";
 };
 
-const SubjectList = ({ class: classe, exam }) => {
+const SubjectList = () => {
   const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
   const isInternal = exam === "INT";
+
+  const classe = useSelector(store => store.class)
+  const exam = useSelector(store => store.exam)
 
   const subjectMarksMax = {
     Math: 80,
