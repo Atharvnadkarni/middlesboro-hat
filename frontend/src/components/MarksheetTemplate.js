@@ -5,9 +5,13 @@ const MarksheetTemplate = () => {
   const {
     class: classe,
     exam,
-    format,
     marksheet: { rows, columns },
   } = useSelector((state) => state);
+  const format = useSelector((state) => state.format);
+
+  useEffect(() => {
+    console.log(format);
+  }, [format]);
   const [profile, setProfile] = useState({});
   useEffect(() => {
     const profileStr = localStorage.getItem("profile");
@@ -20,7 +24,9 @@ const MarksheetTemplate = () => {
           <td colSpan={4}>Vidya Vikas Academy</td>
         </tr>
         <tr>
-          <td colSpan={4}>{JSON.stringify(format)} {exam} Marksheet</td>
+          <td colSpan={4}>
+            {JSON.stringify(format)} {exam} Marksheet
+          </td>
         </tr>
       </thead>
     </table>

@@ -13,13 +13,13 @@ const formatSlice = createSlice({
   reducers: {
     setFormatValue: (state, action) => {
       console.log("che bella", state, action)
-      state.format = action.payload.format;
+      state.format = action.payload;
     },
     setFormatSubject: (state, action) => {
-      state.subject = action.payload.subject;
+      state.subject = action.payload;
     },
     setFormatClass: (state, action) => {
-      state.class = action.payload.class;
+      state.class = action.payload;
     },
 
     clearFormat: () => {
