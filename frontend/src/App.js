@@ -22,7 +22,8 @@ const App = () => {
  
   useEffect(() => {
     if (!localStorage.getItem("profile")) navigate("/login");
-    else dispatch(setProfileValue(JSON.parse(localStorage.getItem("profile"))));console.log("pus");
+    else dispatch(setProfileValue(JSON.parse(localStorage.getItem("profile"))));
+    
   
     (async () => {
       const studentres = await request("get", "/api/student");
