@@ -12,15 +12,24 @@ import LoginPage from "./pages/login";
 import MarksheetTemplate from "./components/MarksheetTemplate";
 import { setProfileValue } from "./context/slices/profileSlice";
 import { useDispatch } from "react-redux";
+import { setStudentsValue } from "./context/slices/studentSlice";
+import { useRequest } from "./hooks/useRequest";
 
 const App = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { request } = useRequest();
+ 
   useEffect(() => {
     if (!localStorage.getItem("profile")) navigate("/login");
-    else dispatch(setProfileValue(localStorage.getItem("profile")))
-  }, []);
+    else dispatch(setProfileValue(JSON.parse(localStorage.getItem("profile"))));console.log("pus");
   
+    (async () => {
+      const studentres = await request("get", "/api/student");
+      dispatch(setStudentsValue(studentres.data));
+    })();
+  }, []);
+
   return (
     <>
       <Header />
