@@ -11,6 +11,7 @@ import Teachers from "./pages/teachers";
 import LoginPage from "./pages/login";
 import MarksheetTemplate from "./components/MarksheetTemplate";
 import { setProfileValue } from "./context/slices/profileSlice";
+import { useDispatch } from "react-redux";
 
 const App = () => {
   const navigate = useNavigate();
