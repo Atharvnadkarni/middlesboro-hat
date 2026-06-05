@@ -4,11 +4,21 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const formatSlice = createSlice({
   name: "format",
-  initialState: "PT1",
+  initialState: {
+    format: "individual",
+    subject: "",
+    class: "",
+  },
 
   reducers: {
     setFormatValue: (state, action) => {
-      return action.payload;
+      state.format = action.payload.format;
+    },
+    setFormatSubject: (state, action) => {
+      state.subject = action.payload.subject;
+    },
+    setFormatClass: (state, action) => {
+      state.class = action.payload.class;
     },
 
     clearFormat: () => {

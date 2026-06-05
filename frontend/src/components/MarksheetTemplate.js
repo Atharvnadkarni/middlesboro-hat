@@ -1,15 +1,21 @@
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const MarksheetTemplate = () => {
-  const { rows, columns } = useSelector((state) => state.marksheet);
+  const { class:classe, exam, format, marksheet:{rows, columns} } = useSelector((state) => state);
+  const [profile, setProfile] = useState({})
+  useEffect(() => {
+    const profileStr = localStorage.getItem("profile")
+    setProfile(JSON.parse(profileStr))
+  }, [])
   return (
     <table border="1">
       <thead>
         <tr>
-          <td>Vidya Vikas Academy</td>
+          <td colSpan={4}>Vidya Vikas Academy</td>
         </tr>
         <tr>
-          <td>Vidya Vikas Academy</td>
+          <td colSpan={4}>{exam} Marksheet</td>
         </tr>
       </thead>
     </table>

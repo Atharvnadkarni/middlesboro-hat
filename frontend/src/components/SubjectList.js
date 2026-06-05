@@ -2,8 +2,9 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Button, ButtonGroup } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useRequest } from "../hooks/useRequest";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setFormatValue } from "../context/slices/formatSlice";
+import SubjectSelectModal from "./SubjectSelectModal";
 
 const getActivityGrade = (avg) => {
   if (avg > 4) return "A";
@@ -33,8 +34,8 @@ const SubjectList = () => {
   const exam = useSelector((store) => store.exam);
 
   useEffect(() => {
-    dispatch(setFormatValue("individual"))
-  }, [])
+    dispatch(setFormatValue("individual"));
+  }, []);
 
   const subjectMarksMax = {
     Math: 80,
@@ -58,8 +59,15 @@ const SubjectList = () => {
     activity: ["PE", "Yoga", "NSS", "MA"],
     skill: ["WE", "ATL", "Comp"],
   };
+  const [openSubjectModal, setOpenSubjectModal] = useState(false);
+  const handleOpenSubjectModal = () => {
+    setOpenSubjectModal(true);
+  };
 
-  const dispatch = useDispatch()
+  const handleCloseSubjectModal = () => {
+    setOpenSubjectModal(false);
+  };
+  const dispatch = useDispatch();
   const scholasticSubjectList = [
     "Math",
     "English",
@@ -524,6 +532,7 @@ const SubjectList = () => {
   const [editedRows, setEditedRows] = useState({});
   const originalStudents = useRef([]);
   const { request } = useRequest();
+  const subjects = JSON.parse(localStorage.getItem("profile"))?.subjects
 
   // ─── Track which fields are INT-editable ──────────────────────────────────
   const internalEditableFields = useRef(new Set());
@@ -769,7 +778,6 @@ const SubjectList = () => {
     } else {
       buildStandardRows();
     }
-    
   }, [rawStudents, exam]);
 
   const buildInternalRows = () => {
@@ -1145,34 +1153,34 @@ const SubjectList = () => {
     return updatedRow;
   };
 
-
   // ─── Submit ───────────────────────────────────────────────────────────────
   const handleSubmit = async () => {
-  const changedRows = Object.values(editedRows);
-  if (changedRows.length === 0) return;
+    const changedRows = Object.values(editedRows);
+    if (changedRows.length === 0) return;
 
-  try {
-    if (isInternal) {
-      await request("patch", "/api/student/internals", changedRows);
-    } else {
-      await request("patch", "/api/student/update", changedRows);
+    try {
+      if (isInternal) {
+        await request("patch", "/api/student/internals", changedRows);
+      } else {
+        await request("patch", "/api/student/update", changedRows);
+      }
+
+      dispatch(
+        setMarksheetData({
+          students,
+          subjects:
+            JSON.parse(localStorage.getItem("profile"))?.subjects?.map(
+              (s) => s.subject.sub,
+            ) ?? [],
+        }),
+      );
+
+      // optional
+      // navigate("/marksheet");
+    } catch (err) {
+      console.error(err);
     }
-
-    dispatch(
-      setMarksheetData({
-        students,
-        subjects: JSON.parse(localStorage.getItem("profile"))
-          ?.subjects?.map((s) => s.subject.sub) ?? [],
-      }),
-    );
-
-    // optional
-    // navigate("/marksheet");
-
-  } catch (err) {
-    console.error(err);
-  }
-};
+  };
 
   return (
     <>
@@ -1187,8 +1195,8 @@ const SubjectList = () => {
             sx={{ mb: 2, ml: 2 }}
             onClick={() => {
               const next = !showAllColumns;
-              if (next) dispatch(setFormatValue("consolidated"))
-                else dispatch(setFormatValue("individual"))
+              if (next) dispatch(setFormatValue("consolidated"));
+              else dispatch(setFormatValue("individual"));
               setShowAllColumns(next);
               if (exam === "SP" || exam === "SE") {
                 buildColumnsPE(next);
@@ -1200,6 +1208,9 @@ const SubjectList = () => {
             {showAllColumns ? "Show Profile Subjects" : "Show All Subjects"}
           </Button>
         )}
+        <Button variant="contained" onClick={handleOpenSubjectModal} sx={{ mb: 2 }}>
+          Generate Subject Report
+        </Button>
       </ButtonGroup>
       <DataGrid
         rows={students}
@@ -1212,6 +1223,11 @@ const SubjectList = () => {
             return "";
           return "center";
         }}
+      />
+      <SubjectSelectModal
+        open={openSubjectModal}
+        onClose={handleCloseSubjectModal}
+        profileSubjects={subjects}
       />
     </>
   );
