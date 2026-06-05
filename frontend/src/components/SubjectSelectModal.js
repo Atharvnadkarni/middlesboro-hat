@@ -40,12 +40,12 @@ export default function SubjectSelectModal({ open, onClose, profileSubjects }) {
 
   const handleGenerate = () => {
     if (!format || !selectedSubject || !selectedClass) return;
-
+    
     dispatch(
-      setFormatSubject(subject)
+      setFormatSubject(selectedSubject)
     );
     dispatch(
-      setFormatClass(subject)
+      setFormatClass(selectedClass)
     );
 
     onClose();
