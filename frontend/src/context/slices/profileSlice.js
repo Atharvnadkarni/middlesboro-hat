@@ -4,10 +4,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const profileSlice = createSlice({
   name: "profiles",
-  initialState: "PT1",
+  initialState: {subjects: [{subject: {sub: "Hi"}}]},
 
   reducers: {
     setProfileValue: (state, action) => {
+      console.log("wadiubeliviniwazaawesumtidedadun", state, action)
       return action.payload;
     },
 
