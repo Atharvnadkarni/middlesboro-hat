@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const classSlice = createSlice({
   name: "class",
-  initialState: "B",
+  initialState: "A",
 
   reducers: {
     setClassValue: (state, action) => {
