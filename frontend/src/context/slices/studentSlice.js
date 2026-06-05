@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const studentSlice = createSlice({
   name: "students",
-  initialState: "PT1",
+  initialState: {},
 
   reducers: {
     setStudentsValue: (state, action) => {
