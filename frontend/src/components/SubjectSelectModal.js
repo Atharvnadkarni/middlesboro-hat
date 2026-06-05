@@ -13,6 +13,7 @@ import {
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSubjectData } from "../context/slices/subjectSlice";
+import { setFormatSubject } from "../context/slices/formatSlice";
 
 const style = {
   position: "absolute",
@@ -41,10 +42,10 @@ export default function SubjectSelectModal({ open, onClose, profileSubjects }) {
     if (!format || !selectedSubject || !selectedClass) return;
 
     dispatch(
-      setSubjectData({
-        subject: selectedSubject,
-        class: selectedClass,
-      }),
+      setFormatSubject(subject)
+    );
+    dispatch(
+      setFormatClass(subject)
     );
 
     onClose();

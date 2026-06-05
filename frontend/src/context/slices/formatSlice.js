@@ -12,6 +12,7 @@ const formatSlice = createSlice({
 
   reducers: {
     setFormatValue: (state, action) => {
+      console.log("che bella", state, action)
       state.format = action.payload.format;
     },
     setFormatSubject: (state, action) => {
@@ -27,5 +28,5 @@ const formatSlice = createSlice({
   },
 });
 
-export const { setFormatValue, clearFormat } = formatSlice.actions;
+export const { setFormatValue, setFormatClass, setFormatSubject,clearFormat } = formatSlice.actions;
 export default formatSlice.reducer;
