@@ -5,6 +5,7 @@ import { useRequest } from "../hooks/useRequest";
 import { useDispatch, useSelector } from "react-redux";
 import { setFormatValue } from "../context/slices/formatSlice";
 import SubjectSelectModal from "./SubjectSelectModal";
+import { setStudentsValue } from "../context/slices/studentSlice";
 
 const getActivityGrade = (avg) => {
   if (avg > 4) return "A";
@@ -532,13 +533,15 @@ const SubjectList = () => {
   const [editedRows, setEditedRows] = useState({});
   const originalStudents = useRef([]);
   const { request } = useRequest();
-  const subjects = JSON.parse(localStorage.getItem("profile"))?.subjects
+  const profile = useSelector((state) => state.profile);
+
+  const subjects = profile?.subjects;
 
   // ─── Track which fields are INT-editable ──────────────────────────────────
   const internalEditableFields = useRef(new Set());
 
   useEffect(() => {
-    const profile = JSON.parse(localStorage.getItem("profile"));
+    
     if (!profile?.subjects) return;
 
     if (exam === "SP" || exam === "SE") {
@@ -580,7 +583,7 @@ const SubjectList = () => {
       },
     ];
 
-    const profile = JSON.parse(localStorage.getItem("profile"));
+    
     if (!profile?.subjects) return;
 
     const mapsubs = profile.subjects.map((s) => s.subject.sub);
@@ -670,7 +673,7 @@ const SubjectList = () => {
       return;
     }
 
-    const profile = JSON.parse(localStorage.getItem("profile"));
+    
     if (!profile?.subjects) return;
 
     const mapsubs = profile.subjects.map((sub) => sub.subject.sub);
@@ -764,6 +767,7 @@ const SubjectList = () => {
     (async () => {
       const studentres = await request("get", "/api/student");
       setAllStudents(studentres.data);
+      dispatch(setStudentsValue(studentres.data))
     })();
   }, []);
 
@@ -781,7 +785,7 @@ const SubjectList = () => {
   }, [rawStudents, exam]);
 
   const buildInternalRows = () => {
-    const profile = JSON.parse(localStorage.getItem("profile"));
+    
     const mapsubs = profile?.subjects?.map((s) => s.subject.sub) ?? [];
     const finalStudentData = [];
 
@@ -1025,7 +1029,7 @@ const SubjectList = () => {
     if (Object.keys(changes).length === 0) return newRow;
 
     if (isInternal) {
-      const profile = JSON.parse(localStorage.getItem("profile"));
+      
       const mapsubs = profile?.subjects?.map((s) => s.subject.sub) ?? [];
       const updatedRow = { ...newRow };
 
@@ -1169,7 +1173,7 @@ const SubjectList = () => {
         setMarksheetData({
           students,
           subjects:
-            JSON.parse(localStorage.getItem("profile"))?.subjects?.map(
+            profile?.subjects?.map(
               (s) => s.subject.sub,
             ) ?? [],
         }),
@@ -1208,7 +1212,11 @@ const SubjectList = () => {
             {showAllColumns ? "Show Profile Subjects" : "Show All Subjects"}
           </Button>
         )}
-        <Button variant="contained" onClick={handleOpenSubjectModal} sx={{ mb: 2 }}>
+        <Button
+          variant="contained"
+          onClick={handleOpenSubjectModal}
+          sx={{ mb: 2 }}
+        >
           Generate Subject Report
         </Button>
       </ButtonGroup>

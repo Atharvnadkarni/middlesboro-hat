@@ -1,7 +1,9 @@
 import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material";
 import { CalendarMonth } from "@mui/icons-material";
 import HelloTr from "./HelloTr";
+import { useSelector } from "react-redux";
 const Header = () => {
+  const profile = useSelector(state => state.profile)
   return (
     <AppBar position="static">
       <Container>
@@ -10,7 +12,7 @@ const Header = () => {
             <CalendarMonth />
             <Typography variant="h6">Marksheet</Typography>
           </Box>
-          {localStorage.getItem("profile") && (
+          {profile && (
             <Box>
               <HelloTr />
             </Box>

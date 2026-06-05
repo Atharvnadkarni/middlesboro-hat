@@ -10,12 +10,16 @@ import Home from "./pages/home";
 import Teachers from "./pages/teachers";
 import LoginPage from "./pages/login";
 import MarksheetTemplate from "./components/MarksheetTemplate";
+import { setProfileValue } from "./context/slices/profileSlice";
 
 const App = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
     if (!localStorage.getItem("profile")) navigate("/login");
+    else dispatch(setProfileValue(localStorage.getItem("profile")))
   }, []);
+  
   return (
     <>
       <Header />

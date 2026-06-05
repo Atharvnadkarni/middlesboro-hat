@@ -8,7 +8,8 @@ import examReducer from "./slices/examSlice";
 import classReducer from "./slices/classSlice";
 import marksheetReducer from "./slices/marksheetSlice";
 import formatReducer from "./slices/formatSlice";
-import subjectReducer from "./slices/subjectSlice";
+import studentReducer from "./slices/studentSlice";
+import profileReducer from "./slices/profileSlice";
 
 const formatPersistConfig = {
   key: "format",
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
   format: persistReducer(formatPersistConfig, formatReducer),
 
   // only this slice persists
-  subject: subjectReducer,
+  student: studentReducer,
+  profile: profileReducer,
 });
 
 export const store = configureStore({

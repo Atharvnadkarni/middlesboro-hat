@@ -18,13 +18,10 @@ const Dropdown = () => {
   const dispatch = useDispatch();
   const setClass = (newValue) => dispatch(setClassValue(newValue));
   const setExam = (newValue) => dispatch(setExamValue(newValue));
-  const [profile, setProfile] = useState();
+  const profile = useSelector(state => state.profile)
   const { request, isLoading, error } = useRequest();
   const [data, setData] = useState([]);
   const inputref = useRef();
-  useEffect(() => {
-    setProfile(JSON.parse(localStorage.getItem("profile")));
-  }, [localStorage]);
   useEffect(() => {
     if (!profile) return;
     const mapsubs = (profile?.subjects || [null]).map((sub) => sub.subject.sub);

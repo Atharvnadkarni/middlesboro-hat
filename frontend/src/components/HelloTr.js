@@ -15,9 +15,10 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 
 const HelloTr = () => {
-  const [profile, setProfile] = useState("");
+  const profile = useSelector(state => state.profile)
   const [anchorEl, setAnchorEl] = useState(null);
   const handleOpen = (e) => setAnchorEl(e.currentTarget);
   const handleClose = (e) => setAnchorEl(null);
@@ -29,13 +30,7 @@ const HelloTr = () => {
     handleClose();
     navigate("/login");
   };
-  useEffect(() => {
-    console.log("hello")
-    if (localStorage.getItem("profile")) {
-      const profile = JSON.parse(localStorage.getItem("profile"));
-      setProfile(profile);
-    }
-  }, [localStorage, localStorage.getItem("profile"), document.cookie]);
+  
   function stringToColor(string) {
     let hash = 0;
     let i;

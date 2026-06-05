@@ -12,8 +12,11 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSubjectData } from "../context/slices/subjectSlice";
-import { setFormatClass, setFormatSubject } from "../context/slices/formatSlice";
+import { setSubjectData } from "../context/slices/studentSlice";
+import {
+  setFormatClass,
+  setFormatSubject,
+} from "../context/slices/formatSlice";
 
 const style = {
   position: "absolute",
@@ -39,15 +42,16 @@ export default function SubjectSelectModal({ open, onClose, profileSubjects }) {
   );
 
   const handleGenerate = () => {
-    console.log(999, selectedSubject, selectedClass)
+    console.log(999, selectedSubject, selectedClass);
     if (!selectedSubject || !selectedClass) return;
-    console.log("dispatched format subject", selectedSubject, "format clas", selectedClass)
-    dispatch(
-      setFormatSubject(selectedSubject)
+    console.log(
+      "dispatched format subject",
+      selectedSubject,
+      "format clas",
+      selectedClass,
     );
-    dispatch(
-      setFormatClass(selectedClass)
-    );
+    dispatch(setFormatSubject(selectedSubject));
+    dispatch(setFormatClass(selectedClass));
 
     onClose();
   };
