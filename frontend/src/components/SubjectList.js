@@ -28,11 +28,10 @@ const getScholasticGrade = (score100) => {
 };
 
 const SubjectList = () => {
-  const isPeriodicTest = ["PT1", "PT2", "PT3"].includes(exam);
-  const isInternal = exam === "INT";
 
   const classe = useSelector((store) => store.class);
-  const exam = useSelector((store) => store.exam);
+  const exam = useSelector((store) => store.exam.exam);
+  console.info(exam,["PT1", "PT2", "PT3"].includes(exam), exam.split('').map(s => s.charCodeAt(0)))
 
   useEffect(() => {
     dispatch(setFormatValue("individual"));
@@ -94,7 +93,7 @@ const SubjectList = () => {
     },
     {
       field: "math",
-      headerName: `Math/${isPeriodicTest ? ptMax : subjectMarksMax["Math"]}`,
+      headerName: `Math/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["Math"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -116,7 +115,7 @@ const SubjectList = () => {
     },
     {
       field: "english",
-      headerName: `English/${isPeriodicTest ? ptMax : subjectMarksMax["English"]}`,
+      headerName: `English/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["English"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -138,7 +137,7 @@ const SubjectList = () => {
     },
     {
       field: "hindi",
-      headerName: `Hindi/${isPeriodicTest ? ptMax : subjectMarksMax["Hindi"]}`,
+      headerName: `Hindi/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["Hindi"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -160,7 +159,7 @@ const SubjectList = () => {
     },
     {
       field: "sci",
-      headerName: `Sci/${isPeriodicTest ? ptMax : subjectMarksMax["Sci"]}`,
+      headerName: `Sci/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["Sci"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -182,7 +181,7 @@ const SubjectList = () => {
     },
     {
       field: "french",
-      headerName: `French/${isPeriodicTest ? ptMax : subjectMarksMax["French"]}`,
+      headerName: `French/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["French"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -204,7 +203,7 @@ const SubjectList = () => {
     },
     {
       field: "ss",
-      headerName: `SS/${isPeriodicTest ? ptMax : subjectMarksMax["SS"]}`,
+      headerName: `SS/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["SS"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -226,7 +225,7 @@ const SubjectList = () => {
     },
     {
       field: "hs",
-      headerName: `Home Sci/${isPeriodicTest ? ptMax : subjectMarksMax["HS"]}`,
+      headerName: `Home Sci/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["HS"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -248,7 +247,7 @@ const SubjectList = () => {
     },
     {
       field: "painting",
-      headerName: `Painting/${isPeriodicTest ? ptMax : subjectMarksMax["Painting"]}`,
+      headerName: `Painting/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["Painting"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -270,7 +269,7 @@ const SubjectList = () => {
     },
     {
       field: "hc",
-      headerName: `Healthcare/${isPeriodicTest ? ptMax : subjectMarksMax["HC"]}`,
+      headerName: `Healthcare/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["HC"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -292,7 +291,7 @@ const SubjectList = () => {
     },
     {
       field: "ai",
-      headerName: `AI/${isPeriodicTest ? ptMax : subjectMarksMax["AI"]}`,
+      headerName: `AI/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["AI"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -314,7 +313,7 @@ const SubjectList = () => {
     },
     {
       field: "it",
-      headerName: `IT/${isPeriodicTest ? ptMax : subjectMarksMax["IT"]}`,
+      headerName: `IT/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["IT"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -541,7 +540,6 @@ const SubjectList = () => {
   const internalEditableFields = useRef(new Set());
 
   useEffect(() => {
-    
     if (!profile?.subjects) return;
 
     if (exam === "SP" || exam === "SE") {
@@ -583,7 +581,6 @@ const SubjectList = () => {
       },
     ];
 
-    
     if (!profile?.subjects) return;
 
     const mapsubs = profile.subjects.map((s) => s.subject.sub);
@@ -639,14 +636,14 @@ const SubjectList = () => {
 
     const getSubjectColumns = (subject, cols) => {
       const prefix = subject.toLowerCase();
-      if (isPeriodicTest) return cols.filter((col) => col.field === prefix);
+      if (["PT1", "PT2", "PT3"].includes(exam)) return cols.filter((col) => col.field === prefix);
       return cols.filter(
         (col) => col.field === prefix || col.field.startsWith(`${prefix}_`),
       );
     };
 
     if (showAll) {
-      const groupings = isPeriodicTest
+      const groupings = ["PT1", "PT2", "PT3"].includes(exam)
         ? []
         : scholasticSubjectList.map((sub) => ({
             groupId: sub,
@@ -655,7 +652,7 @@ const SubjectList = () => {
             })),
           }));
 
-      groupingModel.current = isPeriodicTest ? [] : groupings;
+      groupingModel.current = ["PT1", "PT2", "PT3"].includes(exam) ? [] : groupings;
       const endCols = [
         { field: "total", headerName: "Total" },
         { field: "percentage", headerName: "Percentage" },
@@ -665,7 +662,7 @@ const SubjectList = () => {
         ...scholasticCols.filter((col) => {
           if (["roll_no", "first_name", "surname"].includes(col.field))
             return false;
-          if (isPeriodicTest) return !col.field.includes("_");
+          if (["PT1", "PT2", "PT3"].includes(exam)) return !col.field.includes("_");
           return true;
         }),
         ...endCols,
@@ -673,7 +670,6 @@ const SubjectList = () => {
       return;
     }
 
-    
     if (!profile?.subjects) return;
 
     const mapsubs = profile.subjects.map((sub) => sub.subject.sub);
@@ -691,7 +687,7 @@ const SubjectList = () => {
       });
     });
 
-    groupingModel.current = isPeriodicTest ? [] : groupings;
+    groupingModel.current = ["PT1", "PT2", "PT3"].includes(exam) ? [] : groupings;
     setColumns([...baseCols, ...matchedCols]);
   };
 
@@ -767,7 +763,7 @@ const SubjectList = () => {
     (async () => {
       const studentres = await request("get", "/api/student");
       setAllStudents(studentres.data);
-      dispatch(setStudentsValue(studentres.data))
+      dispatch(setStudentsValue(studentres.data));
     })();
   }, []);
 
@@ -777,7 +773,7 @@ const SubjectList = () => {
 
   // ─── Row building ─────────────────────────────────────────────────────────
   useEffect(() => {
-    if (isInternal) {
+    if (exam === "INT") {
       buildInternalRows();
     } else {
       buildStandardRows();
@@ -785,7 +781,6 @@ const SubjectList = () => {
   }, [rawStudents, exam]);
 
   const buildInternalRows = () => {
-    
     const mapsubs = profile?.subjects?.map((s) => s.subject.sub) ?? [];
     const finalStudentData = [];
 
@@ -865,7 +860,7 @@ const SubjectList = () => {
   // ─── Helper: compute derived fields (mo_100, grade) for a single subject score ──
   const computeDerivedFields = (sub, score, row) => {
     const prefix = sub.toLowerCase();
-    const max = isPeriodicTest ? ptMax : subjectMarksMax[sub];
+    const max = ["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax[sub];
     if (typeof score === "number" && max) {
       const mo100 = Number(((score * 100) / max).toFixed(1));
       row[`${prefix}_mo_100`] = mo100;
@@ -887,7 +882,7 @@ const SubjectList = () => {
 
       if (isNaN(score)) return;
 
-      if (isPeriodicTest) {
+      if (["PT1", "PT2", "PT3"].includes(exam)) {
         sum += score;
       } else {
         const max = subjectMarksMax[sub];
@@ -899,7 +894,7 @@ const SubjectList = () => {
 
     row.total = Number(sum.toFixed(2));
 
-    if (isPeriodicTest) {
+    if (["PT1", "PT2", "PT3"].includes(exam)) {
       const subjectCount = scholasticSubjectList.filter(
         (sub) => sub !== "AI",
       ).length;
@@ -1028,8 +1023,7 @@ const SubjectList = () => {
 
     if (Object.keys(changes).length === 0) return newRow;
 
-    if (isInternal) {
-      
+    if (exam === "INT") {
       const mapsubs = profile?.subjects?.map((s) => s.subject.sub) ?? [];
       const updatedRow = { ...newRow };
 
@@ -1163,7 +1157,7 @@ const SubjectList = () => {
     if (changedRows.length === 0) return;
 
     try {
-      if (isInternal) {
+      if (exam === "INT") {
         await request("patch", "/api/student/internals", changedRows);
       } else {
         await request("patch", "/api/student/update", changedRows);
@@ -1172,10 +1166,7 @@ const SubjectList = () => {
       dispatch(
         setMarksheetData({
           students,
-          subjects:
-            profile?.subjects?.map(
-              (s) => s.subject.sub,
-            ) ?? [],
+          subjects: profile?.subjects?.map((s) => s.subject.sub) ?? [],
         }),
       );
 
@@ -1192,7 +1183,7 @@ const SubjectList = () => {
         <Button variant="contained" onClick={handleSubmit} sx={{ mb: 2 }}>
           Submit Changes
         </Button>
-        {!isInternal && (
+        {!exam === "INT" && (
           <Button
             variant="contained"
             color="secondary"

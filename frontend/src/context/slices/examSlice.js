@@ -4,11 +4,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const examSlice = createSlice({
   name: "exam",
-  initialState: "PT1",
+  initialState: {exam: "PT1"},
 
   reducers: {
     setExamValue: (state, action) => {
-      return action.payload;
+      state.exam = action.payload;
     },
 
     clearExam: () => {

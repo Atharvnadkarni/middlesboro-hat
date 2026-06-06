@@ -14,11 +14,11 @@ import { setClassValue } from "../context/slices/classSlice";
 import { setExamValue } from "../context/slices/examSlice";
 
 const Dropdown = () => {
-  const exam = useSelector((store) => store.exam);
+  const exam = useSelector((store) => store.exam.exam);
   const dispatch = useDispatch();
   const setClass = (newValue) => dispatch(setClassValue(newValue));
   const setExam = (newValue) => dispatch(setExamValue(newValue));
-  const profile = useSelector(state => state.profile)
+  const profile = useSelector((state) => state.profile);
   const { request, isLoading, error } = useRequest();
   const [data, setData] = useState([]);
   const inputref = useRef();

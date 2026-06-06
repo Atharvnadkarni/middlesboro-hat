@@ -15,9 +15,13 @@ const formatPersistConfig = {
   key: "format",
   storage,
 };
+const examPersistConfig = {
+  key: "exam",
+  storage,
+};
 
 const rootReducer = combineReducers({
-  exam: examReducer,
+  exam: persistReducer(examPersistConfig, examReducer),
   class: classReducer,
   marksheet: marksheetReducer,
   format: persistReducer(formatPersistConfig, formatReducer),
