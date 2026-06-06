@@ -18,6 +18,7 @@ import {
   setFormatSubject,
 } from "../context/slices/formatSlice";
 
+import {useNavigate} from "react-router"
 const style = {
   position: "absolute",
   top: "50%",
@@ -40,7 +41,7 @@ export default function SubjectSelectModal({ open, onClose, profileSubjects }) {
   const selectedSubjectObj = profileSubjects?.find(
     (s) => s.subject.sub === selectedSubject,
   );
-
+  const navigate = useNavigate()
   const handleGenerate = () => {
     console.log(999, selectedSubject, selectedClass);
     if (!selectedSubject || !selectedClass) return;
@@ -52,7 +53,7 @@ export default function SubjectSelectModal({ open, onClose, profileSubjects }) {
     );
     dispatch(setFormatSubject(selectedSubject));
     dispatch(setFormatClass(selectedClass));
-
+    navigate("/mk-ta")
     onClose();
   };
 
