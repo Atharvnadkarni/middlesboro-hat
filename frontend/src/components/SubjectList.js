@@ -1183,7 +1183,7 @@ const SubjectList = () => {
         <Button variant="contained" onClick={handleSubmit} sx={{ mb: 2 }}>
           Submit Changes
         </Button>
-        {!exam === "INT" && (
+        {!(exam === "INT") && (
           <Button
             variant="contained"
             color="secondary"
