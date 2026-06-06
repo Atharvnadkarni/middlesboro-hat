@@ -5,3 +5,10 @@ body {
 * {
     font-family: "system-ui" !important;
 }
+.quickTable th, .quickTable td {
+    outline: 1px solid black;
+    padding: 5px;
+}
+.quickTable thead {
+    outline: 1px solid black;
+}
