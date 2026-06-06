@@ -15,7 +15,7 @@ const QuickTable = ({
     <table className="quickTable">
       <thead>
         <tr>
-          <th colSpan={colspan}>Vidya Vikas Academy</th>
+          <th colSpan={colspan}>School A. School</th>
         </tr>
         <tr>
           <th colSpan={colspan}>
@@ -248,8 +248,8 @@ const MarksheetTemplate = () => {
   };
   const navigate = useNavigate();
   useEffect(() => {
-    downloadPDF();
-    navigate("/");
+    window.print()
+    // navigate("/");
   }, []);
 
   return <div id="pdf-content">{ptConsolidatedSubject()}</div>;
