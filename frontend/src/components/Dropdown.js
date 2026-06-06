@@ -139,9 +139,6 @@ const Dropdown = () => {
             Submit XLSX Data
           </Button>
         )}
-        <Button variant="contained" color="secondary">
-          Generate PDF
-        </Button>
       </>
       <input
         type="file"
