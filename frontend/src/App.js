@@ -5,7 +5,13 @@ import { useEffect, useState } from "react";
 import Dropdown from "./components/Dropdown";
 import UploadModal from "./components/UploadModal";
 import Tabs from "./components/Tabs";
-import { BrowserRouter, Route, Routes, useNavigate } from "react-router";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router";
 import Home from "./pages/home";
 import Teachers from "./pages/teachers";
 import LoginPage from "./pages/login";
@@ -19,21 +25,23 @@ const App = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { request } = useRequest();
- 
+
   useEffect(() => {
     if (!localStorage.getItem("profile")) navigate("/login");
     else dispatch(setProfileValue(JSON.parse(localStorage.getItem("profile"))));
-    
-  
+
     (async () => {
       const studentres = await request("get", "/api/student");
       dispatch(setStudentsValue(studentres.data));
     })();
   }, []);
 
+  const location = useLocation();
+  console.log(location, "sofi")
+
   return (
     <>
-      <Header />
+      {location.pathname != "/mk-ta" && <Header />}
       <Container sx={{ marginTop: 3, position: "relative" }}>
         <Routes>
           <Route path="/" element={<Home />} />
