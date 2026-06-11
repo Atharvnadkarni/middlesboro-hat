@@ -2,16 +2,17 @@ import { AppBar, Box, Container, Toolbar, Typography } from "@mui/material";
 import { CalendarMonth } from "@mui/icons-material";
 import HelloTr from "./HelloTr";
 import { useSelector } from "react-redux";
+import { Link } from "react-router";
 const Header = () => {
   const profile = useSelector(state => state.profile)
   return (
     <AppBar position="static">
       <Container>
         <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
-          <Box>
+          <Link to="/"><Box>
             <CalendarMonth />
             <Typography variant="h6">Marksheet</Typography>
-          </Box>
+          </Box></Link>
           {profile && (
             <Box>
               <HelloTr />
