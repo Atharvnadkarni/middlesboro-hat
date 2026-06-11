@@ -36,7 +36,7 @@ export const useRequest = () => {
     url,
     data = {},
     headers = {},
-    config = { BASE_URL: "http://localhost:8000" },
+    config = { BASE_URL: "" },
   ) => {
 
     try {
