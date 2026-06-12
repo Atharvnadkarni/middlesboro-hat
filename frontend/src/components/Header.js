@@ -9,7 +9,7 @@ const Header = () => {
     <AppBar position="static">
       <Container>
         <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
-          <Link to="/" style={{color: "White"}}><Box>
+          <Link to="/" style={{color: "White", textDecoration: "none"}}><Box>
             <CalendarMonth />
             <Typography variant="h6">Marksheet</Typography>
           </Box></Link>
