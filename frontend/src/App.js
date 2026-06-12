@@ -1,4 +1,4 @@
-import { Container } from "@mui/material";
+import { Container, Box } from "@mui/material";
 import Header from "./components/Header";
 import SubjectList from "./components/SubjectList";
 import { useEffect, useState } from "react";
@@ -37,7 +37,7 @@ const App = () => {
   }, []);
 
   const location = useLocation();
-  console.log(location, "sofi")
+  console.log(location, "sofi");
 
   return (
     <>
@@ -50,6 +50,12 @@ const App = () => {
           <Route path="/mk-ta" element={<MarksheetTemplate />} />
         </Routes>
       </Container>
+      <Box
+        component="footer"
+        sx={{ py: 2, mt: 4, textAlign: "center", bgcolor: "#f5f5f5" }}
+      >
+        {new Date().getFullYear()} Atharv Nadkarni.
+      </Box>
     </>
   );
 };
