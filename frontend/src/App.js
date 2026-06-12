@@ -52,7 +52,7 @@ const App = () => {
       </Container>
       <Box
         component="footer"
-        sx={{ py: 2, mt: 4, textAlign: "center", bgcolor: "#f5f5f5" }}
+        sx={{ py: 2, mt: 4, position: "absolute", bottom: 0, textAlign: "center", bgcolor: "#f5f5f5" }}
       >
         {new Date().getFullYear()} Atharv Nadkarni.
       </Box>
