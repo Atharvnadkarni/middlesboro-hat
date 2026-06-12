@@ -288,30 +288,30 @@ class HandleStudentsData(APIView):
                 print("beta", student_data, excel_data, classe, data)
 
                 scholastic_subjects = [
-                  "Math",
-                  "English",
-                  "Hindi",
-                  "Sci",
-                  "French",
-                  "SS",
-                  "HS",
-                  "Painting",
-                  "HC",
-                  "AI",
-                  "IT"
+                    "Math",
+                    "English",
+                    "Hindi",
+                    "Sci",
+                    "French",
+                    "SS",
+                    "HS",
+                    "Painting",
+                    "HC",
+                    "AI",
+                    "IT"
                 ]
                 co_scholastic_subjects = [
-                  "PE",
-                  "Yoga",
-                  "NSS",
-                  "MA",
-                  "Comp",
-                  "WE",
-                  "ATL",
-                  "Art",
-                  "Music",
-                  "SD",
-                ];
+                    "PE",
+                    "Yoga",
+                    "NSS",
+                    "MA",
+                    "Comp",
+                    "WE",
+                    "ATL",
+                    "Art",
+                    "Music",
+                    "SD",
+                ]
                 for subject in scholastic_subjects:
                     for exam in self.exams:
                         score = 1000 if subject in subjects else -1000
@@ -321,7 +321,7 @@ class HandleStudentsData(APIView):
                                     subject=subject_obj, exam=exam_obj, score=score)
                         print("Mark added", mark)
                         mark.save()
-                        
+
                 for subject in co_scholastic_subjects:
                     score = 1000 if subject in subjects else -1000
                     subject_obj = Subject.objects.get(sub=subject)
@@ -340,7 +340,14 @@ class HandleStudentsSubjectList(APIView):
     serializer_class = StudentMarksSerializer
 
     def get(self, request, format=None):
-        students = Student.objects.all()
+        students = (
+            Student.objects
+            .select_related("class_div")
+            .prefetch_related(
+                "marks__subject",
+                "marks__exam",
+            )
+        )
         serialize = self.serializer_class(students, many=True)
         return Response(serialize.data, status=status.HTTP_200_OK)
 
@@ -364,10 +371,11 @@ class HandleStudentUpdate(APIView):
                     subject = Subject.objects.get(sub=key.title())
                 except Subject.DoesNotExist:
                     subject = Subject.objects.get(sub=key.upper())
-                    
-                mark = Mark.objects.get(exam=exam_obj, student=student_obj, subject=subject)
+
+                mark = Mark.objects.get(
+                    exam=exam_obj, student=student_obj, subject=subject)
                 mark.score = value
                 print(mark.subject, mark.student, mark.exam, mark.score)
                 mark.save(update_fields=["score"])
-    
+
         return Response({"Updated": "Marks Modified"}, status=status.HTTP_200_OK)
