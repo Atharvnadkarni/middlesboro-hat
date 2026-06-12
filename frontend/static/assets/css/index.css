@@ -3,7 +3,7 @@ body {
     padding: 0;
 }
 * {
-    font-family: Geist, sans-serif !important;
+    font-family: Geist, "Google Sans", sans-serif !important;
 }
 .quickTable th, .quickTable td {
     outline: 1px solid black;
