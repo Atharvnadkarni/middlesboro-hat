@@ -56,8 +56,7 @@ const App = () => {
         sx={{
           py: 2,
           mt: 4,
-          position: "absolute",
-          bottom: 0,
+          width: "100vw",
           textAlign: "center",
           bgcolor: "#f5f5f5",
         }}
