@@ -41,7 +41,7 @@ const App = () => {
   console.log(location, "sofi");
 
   return (
-    <>
+    <div style={{position: "relative"}}>
       {location.pathname != "/mk-ta" && <Header />}
       <Container sx={{ marginTop: 3, position: "relative" }}>
         <Routes>
@@ -65,7 +65,7 @@ const App = () => {
         Developed by{" "}
         <Link to="https://atharvnadkarni.com">Atharv Nadkarni.</Link>
       </Box>
-    </>
+    </div>
   );
 };
 
