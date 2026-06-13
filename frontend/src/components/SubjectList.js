@@ -63,6 +63,32 @@ const SubjectList = () => {
     skill: ["WE", "ATL", "Comp"],
   };
   const [openSubjectModal, setOpenSubjectModal] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const handleDeleteSelected = async () => {
+    if (selectedRows.length === 0) return;
+
+    const studentIds = selectedRows
+      .map((rowId) => students.find((s) => s.id === rowId)?.student_id)
+      .filter(Boolean);
+
+    try {
+      await request("delete", "/api/student/bulk-delete", {
+        ids: studentIds,
+      });
+
+      setStudents((prev) =>
+        prev.filter((row) => !selectedRows.includes(row.id)),
+      );
+
+      setAllStudents((prev) =>
+        prev.filter((student) => !studentIds.includes(student.id)),
+      );
+
+      setSelectedRows([]);
+    } catch (err) {
+      console.error(err);
+    }
+  };
   const handleOpenSubjectModal = () => {
     setOpenSubjectModal(true);
   };
@@ -1226,19 +1252,33 @@ const SubjectList = () => {
         >
           Generate Subject Report
         </Button>
+        <Button
+          variant="contained"
+          color="error"
+          disabled={selectedRows.length === 0}
+          onClick={handleDeleteSelected}
+        >
+          Delete Selected
+        </Button>
       </ButtonGroup>
       <DataGrid
-        rows={students}
-        columns={columns}
-        processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={(error) => console.error(error)}
-        columnGroupingModel={groupingModel.current}
-        getCellClassName={(params) => {
-          if (params.field === "first_name" || params.field === "surname")
-            return "";
-          return "center";
-        }}
-      />
+  rows={students}
+  columns={columns}
+  checkboxSelection
+  disableRowSelectionOnClick
+  rowSelectionModel={selectedRows}
+  onRowSelectionModelChange={(newSelection) =>
+    setSelectedRows(newSelection)
+  }
+  processRowUpdate={processRowUpdate}
+  onProcessRowUpdateError={(error) => console.error(error)}
+  columnGroupingModel={groupingModel.current}
+  getCellClassName={(params) => {
+    if (params.field === "first_name" || params.field === "surname")
+      return "";
+    return "center";
+  }}
+/>
       <SubjectSelectModal
         open={openSubjectModal}
         onClose={handleCloseSubjectModal}
