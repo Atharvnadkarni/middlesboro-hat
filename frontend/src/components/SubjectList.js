@@ -549,7 +549,7 @@ const SubjectList = () => {
     } else {
       buildColumns(false);
     }
-  }, [exam, profile?.subject]);
+  }, [exam, profile, profile?.subject]);
 
   const [showAllColumns, setShowAllColumns] = useState(false);
 
