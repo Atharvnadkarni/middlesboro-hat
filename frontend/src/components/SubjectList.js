@@ -63,32 +63,40 @@ const SubjectList = () => {
     skill: ["WE", "ATL", "Comp"],
   };
   const [openSubjectModal, setOpenSubjectModal] = useState(false);
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRows, setSelectedRows] = useState({
+  type: "include",
+  ids: new Set(),
+});
   const handleDeleteSelected = async () => {
-    if (selectedRows.length === 0) return;
+  if (selectedRows.ids.size === 0) return;
 
-    const studentIds = selectedRows
-      .map((rowId) => students.find((s) => s.id === rowId)?.student_id)
-      .filter(Boolean);
+  const selectedIds = [...selectedRows.ids];
 
-    try {
-      await request("delete", "/api/student/bulk-delete", {
-        ids: studentIds,
-      });
+  const studentIds = selectedIds
+    .map((rowId) => students.find((s) => s.id === rowId)?.student_id)
+    .filter(Boolean);
 
-      setStudents((prev) =>
-        prev.filter((row) => !selectedRows.includes(row.id)),
-      );
+  try {
+    await request("delete", "/api/student/bulk-delete", {
+      ids: studentIds,
+    });
 
-      setAllStudents((prev) =>
-        prev.filter((student) => !studentIds.includes(student.id)),
-      );
+    setStudents((prev) =>
+      prev.filter((row) => !selectedIds.includes(row.id))
+    );
 
-      setSelectedRows([]);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    setAllStudents((prev) =>
+      prev.filter((student) => !studentIds.includes(student.id))
+    );
+
+    setSelectedRows({
+      type: "include",
+      ids: new Set(),
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
   const handleOpenSubjectModal = () => {
     setOpenSubjectModal(true);
   };
@@ -1255,7 +1263,7 @@ const SubjectList = () => {
         <Button
           variant="contained"
           color="error"
-          disabled={selectedRows.length === 0}
+          disabled={selectedRows.ids.size === 0}
           onClick={handleDeleteSelected}
         >
           Delete Selected
