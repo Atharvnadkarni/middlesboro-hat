@@ -28,10 +28,13 @@ const getScholasticGrade = (score100) => {
 };
 
 const SubjectList = () => {
-
   const classe = useSelector((store) => store.class);
   const exam = useSelector((store) => store.exam.exam);
-  console.info(exam,["PT1", "PT2", "PT3"].includes(exam), exam.split('').map(s => s.charCodeAt(0)))
+  console.info(
+    exam,
+    ["PT1", "PT2", "PT3"].includes(exam),
+    exam.split("").map((s) => s.charCodeAt(0)),
+  );
 
   useEffect(() => {
     dispatch(setFormatValue("individual"));
@@ -636,7 +639,8 @@ const SubjectList = () => {
 
     const getSubjectColumns = (subject, cols) => {
       const prefix = subject.toLowerCase();
-      if (["PT1", "PT2", "PT3"].includes(exam)) return cols.filter((col) => col.field === prefix);
+      if (["PT1", "PT2", "PT3"].includes(exam))
+        return cols.filter((col) => col.field === prefix);
       return cols.filter(
         (col) => col.field === prefix || col.field.startsWith(`${prefix}_`),
       );
@@ -652,7 +656,9 @@ const SubjectList = () => {
             })),
           }));
 
-      groupingModel.current = ["PT1", "PT2", "PT3"].includes(exam) ? [] : groupings;
+      groupingModel.current = ["PT1", "PT2", "PT3"].includes(exam)
+        ? []
+        : groupings;
       const endCols = [
         { field: "total", headerName: "Total" },
         { field: "percentage", headerName: "Percentage" },
@@ -662,7 +668,8 @@ const SubjectList = () => {
         ...scholasticCols.filter((col) => {
           if (["roll_no", "first_name", "surname"].includes(col.field))
             return false;
-          if (["PT1", "PT2", "PT3"].includes(exam)) return !col.field.includes("_");
+          if (["PT1", "PT2", "PT3"].includes(exam))
+            return !col.field.includes("_");
           return true;
         }),
         ...endCols,
@@ -687,7 +694,9 @@ const SubjectList = () => {
       });
     });
 
-    groupingModel.current = ["PT1", "PT2", "PT3"].includes(exam) ? [] : groupings;
+    groupingModel.current = ["PT1", "PT2", "PT3"].includes(exam)
+      ? []
+      : groupings;
     setColumns([...baseCols, ...matchedCols]);
   };
 
@@ -860,7 +869,9 @@ const SubjectList = () => {
   // ─── Helper: compute derived fields (mo_100, grade) for a single subject score ──
   const computeDerivedFields = (sub, score, row) => {
     const prefix = sub.toLowerCase();
-    const max = ["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax[sub];
+    const max = ["PT1", "PT2", "PT3"].includes(exam)
+      ? ptMax
+      : subjectMarksMax[sub];
     if (typeof score === "number" && max) {
       const mo100 = Number(((score * 100) / max).toFixed(1));
       row[`${prefix}_mo_100`] = mo100;
@@ -1183,7 +1194,7 @@ const SubjectList = () => {
         <Button variant="contained" onClick={handleSubmit} sx={{ mb: 2 }}>
           Submit Changes
         </Button>
-        {(!(exam === "INT") && profile.class_tr) && (
+        {!(exam === "INT") && profile.class_tr.division == classe && (
           <Button
             variant="contained"
             color="secondary"
@@ -1205,6 +1216,11 @@ const SubjectList = () => {
         )}
         <Button
           variant="contained"
+          color={
+            !(exam === "INT") && profile.class_tr.division == classe
+              ? "primary"
+              : "secondary"
+          }
           onClick={handleOpenSubjectModal}
           sx={{ mb: 2 }}
         >
