@@ -81,18 +81,7 @@ const SubjectList = () => {
       ids: studentIds,
     });
 
-    setStudents((prev) =>
-      prev.filter((row) => !selectedIds.includes(row.id))
-    );
-
-    setAllStudents((prev) =>
-      prev.filter((student) => !studentIds.includes(student.id))
-    );
-
-    setSelectedRows({
-      type: "include",
-      ids: new Set(),
-    });
+    location.reload()
   } catch (err) {
     console.error(err);
   }
