@@ -1262,6 +1262,7 @@ const SubjectList = () => {
         </Button>
         <Button
           variant="contained"
+          sx={{ mb: 2 }}
           color="error"
           disabled={selectedRows.ids.size === 0}
           onClick={handleDeleteSelected}
