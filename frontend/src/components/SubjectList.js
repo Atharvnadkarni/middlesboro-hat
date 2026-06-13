@@ -1194,7 +1194,7 @@ const SubjectList = () => {
         <Button variant="contained" onClick={handleSubmit} sx={{ mb: 2 }}>
           Submit Changes
         </Button>
-        {!(exam === "INT") && profile.class_tr.division == classe && (
+        {!(exam === "INT") && profile.class_tr?.division == classe && (
           <Button
             variant="contained"
             color="secondary"
@@ -1217,7 +1217,7 @@ const SubjectList = () => {
         <Button
           variant="contained"
           color={
-            !(exam === "INT") && profile.class_tr.division == classe
+            !(exam === "INT") && profile.class_tr?.division == classe
               ? "primary"
               : "secondary"
           }
