@@ -59,6 +59,10 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
   const [role, setRole] = useState("Teacher");
   const [subjects, setSubjects] = useState([]);
   useEffect(() => {
+    setUsername(`${firstName.toLowerCase()}${surname[0].toLowerCase()}`)
+    setPassword(`${firstName.toLowerCase()}${surname[0].toLowerCase()}123`)
+  }, [firstName, surname])
+  useEffect(() => {
     console.log(teacher);
     if (teacher) {
       setFirstName(teacher?.first_name ?? "");
@@ -323,7 +327,6 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
                 fullWidth
                 required
                 label={mode == "edit" ? "New Password" : "Password"}
-                type="password"
                 autoComplete={false}
                 error={formErrors.password}
                 helperText={formErrors.password}
