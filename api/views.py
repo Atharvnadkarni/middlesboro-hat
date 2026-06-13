@@ -382,7 +382,7 @@ class HandleStudentUpdate(APIView):
 
 class HandleStudentBulkDelete(APIView):
     def delete(self, request):
-        ids = request.body.ids
+        ids = request.data.get("ids")
         for id in ids:
             student_qs = Student.objects.filter(id=id)
             if not student_qs.exists():
