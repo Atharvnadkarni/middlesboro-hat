@@ -379,3 +379,15 @@ class HandleStudentUpdate(APIView):
                 mark.save(update_fields=["score"])
 
         return Response({"Updated": "Marks Modified"}, status=status.HTTP_200_OK)
+
+class HandleStudentBulkDelete(APIView):
+    def delete(self, request):
+        ids = request.body.ids
+        for id in ids:
+            student_qs = Student.objects.filter(id=id)
+            if not student_qs.exists():
+                return Response({"Error": f"Invalid Student ID {id}"}, status=status.HTTP_404_NOT_FOUND)
+            student = student_qs[0]
+            student.delete()
+        return Response({"Message": "Students Deleted Successfully"}, status=status.HTTP_204_NO_CONTENT)
+            
