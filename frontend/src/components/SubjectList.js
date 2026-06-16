@@ -609,7 +609,7 @@ const SubjectList = () => {
 
     if (!profile?.subjects) return;
 
-    const mapsubs = profile.subjects.map((s) => s.subject.sub);
+    const mapsubs = profile.subjects.map((s) => (sub && sub.subject) ? s.subject.sub : null).filter(a => a);
     const editableFields = new Set();
     const groupings = [];
     let allSubjectCols = [];
@@ -702,7 +702,7 @@ const SubjectList = () => {
 
     if (!profile?.subjects) return;
 
-    const mapsubs = profile.subjects.map((sub) => sub.subject.sub);
+    const mapsubs = profile.subjects.map((sub) => (sub && sub.subject) ? sub.subject.sub : null).filter(a => a);
     let matchedCols = [];
     let groupings = [];
 
@@ -813,7 +813,7 @@ const SubjectList = () => {
   }, [rawStudents, exam]);
 
   const buildInternalRows = () => {
-    const mapsubs = profile?.subjects?.map((s) => s.subject.sub) ?? [];
+    const mapsubs = profile?.subjects?.map((s) => (sub && sub.subject) ? s.subject.sub : null) ?? [].filter(a => a);
     const finalStudentData = [];
 
     rawStudents.forEach((student, id) => {
@@ -830,7 +830,7 @@ const SubjectList = () => {
 
         const getPTScore = (examAbbr) => {
           const mark = student.marks.find(
-            (m) => m.subject.sub === sub && m.exam.abbreviation === examAbbr,
+            (m) => (sub && sub.subject) ? m.subject.sub  : null=== sub && m.exam.abbreviation === examAbbr.filter(a => a),
           );
           if (!mark || mark.score === undefined || mark.score === null)
             return "";
@@ -954,7 +954,7 @@ const SubjectList = () => {
 
       scholasticSubjectList.forEach((sub) => {
         const filterMarks = student.marks.filter(
-          (a) => a.subject.sub === sub && a.exam.abbreviation === exam,
+          (a) => (sub && sub.subject) ? a.subject.sub  : null=== sub && a.exam.abbreviation === exam.filter(a => a),
         );
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
@@ -982,7 +982,7 @@ const SubjectList = () => {
         activityCount = 0;
       coScholasticGroups.activity.forEach((sub) => {
         const filterMarks = student.marks.filter(
-          (a) => a.subject.sub === sub && a.exam.abbreviation === "SP",
+          (a) => (sub && sub.subject) ? a.subject.sub  : null=== sub && a.exam.abbreviation === "SP".filter(a => a),
         );
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
@@ -1004,7 +1004,7 @@ const SubjectList = () => {
         skillCount = 0;
       coScholasticGroups.skill.forEach((sub) => {
         const filterMarks = student.marks.filter(
-          (a) => a.subject.sub === sub && a.exam.abbreviation === "SP",
+          (a) => (sub && sub.subject) ? a.subject.sub  : null=== sub && a.exam.abbreviation === "SP".filter(a => a),
         );
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
@@ -1058,7 +1058,7 @@ const SubjectList = () => {
     if (Object.keys(changes).length === 0) return newRow;
 
     if (exam === "INT") {
-      const mapsubs = profile?.subjects?.map((s) => s.subject.sub) ?? [];
+      const mapsubs = profile?.subjects?.map((s) => (sub && sub.subject) ? s.subject.sub : null) ?? [].filter(a => a);
       const updatedRow = { ...newRow };
 
       mapsubs.forEach((sub) => {
@@ -1200,7 +1200,7 @@ const SubjectList = () => {
       dispatch(
         setMarksheetData({
           students,
-          subjects: profile?.subjects?.map((s) => s.subject.sub) ?? [],
+          subjects: profile?.subjects?.map((s) => (sub && sub.subject) ? s.subject.sub : null) ?? [].filter(a => a),
         }),
       );
 
