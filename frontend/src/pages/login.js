@@ -50,7 +50,7 @@ export default function LoginPage() {
       const meres = await request("get", "/api/me");
 
       localStorage.setItem("profile", JSON.stringify(meres.data));
-      navigate("/")
+      navigate("/?reload=true")
       // redirect here
       // navigate("/dashboard");
     } catch (err) {
