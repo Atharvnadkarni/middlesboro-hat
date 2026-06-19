@@ -10,22 +10,27 @@ import {
 import { memo, useState } from "react";
 import AddEditTeacher from "./AddEditTeacher";
 import DeleteModal from "./DeleteModal";
+import { useSelector } from "react-redux";
 
 const TeacherCard = ({ teacher }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const role = useSelector((state) => state.profile.role);
+  console.log(role, "sussudio");
   return (
     <>
       <Grid size={{ md: 3, sm: 6, xs: 12 }}>
         <Card sx={{ position: "relative", padding: 0 }}>
-          <CardActions sx={{ position: "absolute", right: 0 }}>
-            <IconButton onClick={() => setModalOpen(true)}>
-              <Edit />
-            </IconButton>
-            <IconButton onClick={() => setDeleteModalOpen(true)}>
-              <Delete />
-            </IconButton>
-          </CardActions>
+          {role == "Administrator" && (
+            <CardActions sx={{ position: "absolute", right: 0 }}>
+              <IconButton onClick={() => setModalOpen(true)}>
+                <Edit />
+              </IconButton>
+              <IconButton onClick={() => setDeleteModalOpen(true)}>
+                <Delete />
+              </IconButton>
+            </CardActions>
+          )}
           <CardContent sx={{ marginTop: "30px", paddingBottom: 16 }}>
             <Typography variant="h5" color="body1">
               {teacher.first_name} {teacher.surname}
