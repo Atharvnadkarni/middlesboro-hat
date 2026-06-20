@@ -59,6 +59,7 @@ class HandleTeacher(APIView):
                           surname=surname, role=role_obj, class_tr=class_tr_obj, user=user)
         teacher.save()
         for subject in subjects:
+            print("hei", subject)
             sub_id = Subject.objects.get(
                 sub=subject.get("subject") if isinstance(
                     subject, dict) else getattr(subject, "subject", None)
@@ -87,23 +88,29 @@ class HandleTeacherIndividual(APIView):
     # update teacher
 
     def patch(self, request, id, format=None):
+        print("Hello", id, request)
         if not id:
             return Response({"Error": "ID Not Provided in Request"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
             return Response({"Error": "Invalid Data"}, status=status.HTTP_400_BAD_REQUEST)
+        print("Hello", serializer.validated_data)
 
         teacher_qs = Teacher.objects.filter(id=id)
         if not teacher_qs.exists():
             return Response({"Error": "Teacher ID Does Not Exist"}, status=status.HTTP_404_NOT_FOUND)
 
         teacher = teacher_qs[0]
+        print("Hello",  TeacherSerializer(teacher).data)
         first_name = serializer.validated_data.get("first_name")
         surname = serializer.validated_data.get("surname")
         role = serializer.validated_data.get("role")
         class_tr = serializer.validated_data.get("class_tr")
         subjects = serializer.validated_data.get("subjects")
+        print("crno i belo", type(subjects))
+        print("crno i belo", repr(subjects))
+        print("jello", subjects, serializer.validated_data.keys())
         username = serializer.validated_data.get("username")
         password = serializer.validated_data.get("password")
 
@@ -119,20 +126,32 @@ class HandleTeacherIndividual(APIView):
         teacher.class_tr = class_tr_obj
         teacher.save(update_fields=(
             'first_name', 'surname', 'role', 'class_tr'))
+        if username:
+            user_qs = User.objects.filter(username=teacher.username)
+            print("booser", user_qs)
+            if not user_qs.exists():
+                return Response({"Error": "User doesnt exist"})
 
-        user_qs = User.objects.filter(username=username)
-        if not user_qs.exists():
-            return Response({"Error": "User doesnt exist"})
-
-        user = user_qs[0]
-        if username and password:
-            user.username = username
-            user.set_password(password)
-            user.save(update_fields=["password"])
+            user = user_qs[0]
+            if password:
+                user.username = username
+                user.set_password(password)
+                user.save(update_fields=["password"])
+            print("booser", username)
 
         # handling subjects
         new_subjects = []
+        print("BEFORE LOOP")
+
+        try:
+            for subject in subjects:
+                print("Hello", subject)
+        except Exception as e:
+            print("ERROR", repr(e))
+
+        print("AFTER LOOP")
         for subject in subjects:
+            print("Hello", subject)
             sub_obj = Subject.objects.get(
                 sub=subject.get("subject") if isinstance(
                     subject, dict) else getattr(subject, "subject", None)
