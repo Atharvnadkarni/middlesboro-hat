@@ -609,6 +609,9 @@ const SubjectList = () => {
 
     if (!profile?.subjects) return;
 
+console.log("PROFILE SUBJECTS", profile.subjects);
+console.log("SELECTED CLASS", classe);
+
     const mapsubs = profile.subjects.map((s) => (sub && sub.subject) ? s.subject.sub : null).filter(a => a);
     const editableFields = new Set();
     const groupings = [];
@@ -702,6 +705,8 @@ const SubjectList = () => {
 
     if (!profile?.subjects) return;
 
+console.log("PROFILE SUBJECTS", profile.subjects);
+console.log("SELECTED CLASS", classe);
     const mapsubs = profile.subjects.map((sub) => (sub && sub.subject) ? sub.subject.sub : null).filter(a => a);
     let matchedCols = [];
     let groupings = [];
@@ -813,6 +818,9 @@ const SubjectList = () => {
   }, [rawStudents, exam]);
 
   const buildInternalRows = () => {
+
+console.log("PROFILE SUBJECTS", profile.subjects);
+console.log("SELECTED CLASS", classe);
     const mapsubs = profile?.subjects?.map((s) => (sub && sub.subject) ? s.subject.sub : null) ?? [].filter(a => a);
     const finalStudentData = [];
 
