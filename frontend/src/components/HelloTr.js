@@ -16,7 +16,8 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { clearProfile, setProfileValue } from "../context/slices/profileSlice";
 
 const HelloTr = () => {
   const profile = useSelector(state => state.profile)
@@ -25,9 +26,11 @@ const HelloTr = () => {
   const handleClose = (e) => setAnchorEl(null);
   const { request, isLoading, error } = useRequest();
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const logout = async () => {
     await request("post", "/api/logout");
     localStorage.removeItem("profile");
+    dispatch(clearProfile())
     handleClose();
     navigate("/login");
   };
@@ -83,9 +86,9 @@ const HelloTr = () => {
         <Divider />
         <MenuItem onClick={logout}>
           <ListItemIcon>
-            {isLoading ? <CircularProgress /> :<Logout />}
+            {isLoading ? <CircularProgress size={20} /> :<Logout />}
           </ListItemIcon>
-         <ListItemText>{isLoading? "Logging out..." : Logout}</ListItemText>
+         <ListItemText>{isLoading? "Logging out..." : "Logout"}</ListItemText>
         </MenuItem>
       </Menu>
     </>
