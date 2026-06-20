@@ -16,6 +16,7 @@ import { setSubjectData } from "../context/slices/studentSlice";
 import {
   setFormatClass,
   setFormatSubject,
+  setFormatValue,
 } from "../context/slices/formatSlice";
 
 import {useNavigate} from "react-router"
@@ -37,6 +38,7 @@ export default function SubjectSelectModal({ open, onClose, profileSubjects }) {
 
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
+  const [selectedFormat, setSelectedFormat] = useState("");
 
   const selectedSubjectObj = profileSubjects?.find(
     (s) => s.subject.sub === selectedSubject,
@@ -51,6 +53,7 @@ export default function SubjectSelectModal({ open, onClose, profileSubjects }) {
       "format clas",
       selectedClass,
     );
+    dispatch(setFormatValue(selectedFormat))
     dispatch(setFormatSubject(selectedSubject));
     dispatch(setFormatClass(selectedClass));
     navigate("/mk-ta")
@@ -64,6 +67,24 @@ export default function SubjectSelectModal({ open, onClose, profileSubjects }) {
           Select Subject and Class
         </Typography>
 
+        <FormControl fullWidth>
+          <InputLabel>Format</InputLabel>
+
+          <Select
+            value={format}
+            label="Format"
+            onChange={(e) => {
+              setSelectedFormat(e.target.value)
+            }}
+          >
+              <MenuItem key={"individual"} value={"individual"}>
+                Individual
+              </MenuItem>
+              <MenuItem key={"consolidated"} value={"consolidated"}>
+                Consolidated
+              </MenuItem>
+          </Select>
+        </FormControl>
         <FormControl fullWidth>
           <InputLabel>Subject</InputLabel>
 
