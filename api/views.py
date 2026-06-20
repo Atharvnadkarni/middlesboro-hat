@@ -129,16 +129,15 @@ class HandleTeacherIndividual(APIView):
         if username:
             user_qs = teacher.user
             print("booser", user_qs)
-            if not user_qs.exists():
-                new_user = User()
-                new_user.username = username
+            # teacher.user may be a queryset/manager or a single User instance
+            if user_qs is None:
                 return Response({"Error": "User doesnt exist"})
+            user = user_qs
 
-            user = user_qs[0]
             if password:
                 user.username = username
                 user.set_password(password)
-                user.save(update_fields=["password"])
+                user.save(update_fields=["password", "username"]) 
             print("booser", username)
 
         # handling subjects
