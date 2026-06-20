@@ -4,6 +4,7 @@ import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
   Divider,
   IconButton,
   ListItemIcon,
@@ -82,9 +83,9 @@ const HelloTr = () => {
         <Divider />
         <MenuItem onClick={logout}>
           <ListItemIcon>
-            <Logout />
+            {isLoading ? <CircularProgress /> :<Logout />}
           </ListItemIcon>
-          <ListItemText>Logout</ListItemText>
+         <ListItemText>{isLoading? "Logging out..." : Logout}</ListItemText>
         </MenuItem>
       </Menu>
     </>
