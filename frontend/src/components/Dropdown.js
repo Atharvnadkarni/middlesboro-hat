@@ -107,7 +107,10 @@ const Dropdown = () => {
             defaultValue={"A"}
             // value={age}
             label="Class"
-            onChange={(e) => setClass(e.target.value)}
+            onChange={(e) => {
+              console.log("NEW CLASS", e.target.value);
+              setClass(e.target.value);
+            }}
           >
             <MenuItem value={"A"}>10A</MenuItem>
             <MenuItem value={"B"}>10B</MenuItem>

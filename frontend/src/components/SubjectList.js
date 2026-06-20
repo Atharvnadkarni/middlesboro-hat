@@ -30,6 +30,9 @@ const getScholasticGrade = (score100) => {
 const SubjectList = () => {
   const classe = useSelector((store) => store.class);
   const exam = useSelector((store) => store.exam.exam);
+  useEffect(() => {
+    console.log("barstoltwo", classe)
+  }, [classe])
   console.info(
     exam,
     ["PT1", "PT2", "PT3"].includes(exam),
@@ -64,28 +67,28 @@ const SubjectList = () => {
   };
   const [openSubjectModal, setOpenSubjectModal] = useState(false);
   const [selectedRows, setSelectedRows] = useState({
-  type: "include",
-  ids: new Set(),
-});
+    type: "include",
+    ids: new Set(),
+  });
   const handleDeleteSelected = async () => {
-  if (selectedRows.ids.size === 0) return;
+    if (selectedRows.ids.size === 0) return;
 
-  const selectedIds = [...selectedRows.ids];
+    const selectedIds = [...selectedRows.ids];
 
-  const studentIds = selectedIds
-    .map((rowId) => students.find((s) => s.id === rowId)?.student_id)
-    .filter(Boolean);
+    const studentIds = selectedIds
+      .map((rowId) => students.find((s) => s.id === rowId)?.student_id)
+      .filter(Boolean);
 
-  try {
-    await request("delete", "/api/student/bulk-delete", {
-      ids: studentIds,
-    });
+    try {
+      await request("delete", "/api/student/bulk-delete", {
+        ids: studentIds,
+      });
 
-    location.reload()
-  } catch (err) {
-    console.error(err);
-  }
-};
+      location.reload();
+    } catch (err) {
+      console.error(err);
+    }
+  };
   const handleOpenSubjectModal = () => {
     setOpenSubjectModal(true);
   };
@@ -575,7 +578,7 @@ const SubjectList = () => {
     } else {
       buildColumns(false);
     }
-  }, [exam, profile, profile?.subject]);
+  }, [exam, classe, profile, profile?.subject]);
 
   const [showAllColumns, setShowAllColumns] = useState(false);
 
@@ -609,10 +612,12 @@ const SubjectList = () => {
 
     if (!profile?.subjects) return;
 
-console.log("PROFILE SUBJECTS", profile.subjects);
-console.log("SELECTED CLASS", classe);
+    console.log("PROFILE SUBJECTS", profile.subjects);
+    console.log("SELECTED CLASS", classe);
 
-    const mapsubs = profile.subjects.map((s) => (sub && sub.subject) ? s.subject.sub : null).filter(a => a);
+    const mapsubs = profile.subjects
+      .map((s) => (sub && sub.subject ? s.subject.sub : null))
+      .filter((a) => a);
     const editableFields = new Set();
     const groupings = [];
     let allSubjectCols = [];
@@ -705,9 +710,25 @@ console.log("SELECTED CLASS", classe);
 
     if (!profile?.subjects) return;
 
-console.log("PROFILE SUBJECTS", profile.subjects);
-console.log("SELECTED CLASS", classe);
-    const mapsubs = profile.subjects.map((sub) => (sub && sub.subject) ? sub.subject.sub : null).filter(a => a);
+    console.log("PROFILE SUBJECTS", profile.subjects);
+    console.log("SELECTED CLASS", classe);
+    profile.subjects.forEach((s) => {
+  console.log("barstol",
+    classe,
+    s.subject.sub,
+    s.classes.map((c) => c.division),
+    s.classes.some((c) => c.division === classe)
+  );
+});
+    console.log("ISHIDA", profile.subjects
+  .filter((s) =>
+    s.classes.some((c) => c.division === classe)
+  ));
+    const mapsubs = profile.subjects
+  .filter((s) =>
+    s.classes.some((c) => c.division === classe)
+  )
+  .map((s) => s.subject.sub);
     let matchedCols = [];
     let groupings = [];
 
@@ -818,10 +839,11 @@ console.log("SELECTED CLASS", classe);
   }, [rawStudents, exam]);
 
   const buildInternalRows = () => {
-
-console.log("PROFILE SUBJECTS", profile.subjects);
-console.log("SELECTED CLASS", classe);
-    const mapsubs = profile?.subjects?.map((s) => (sub && sub.subject) ? s.subject.sub : null) ?? [].filter(a => a);
+    console.log("PROFILE SUBJECTS", profile.subjects);
+    console.log("SELECTED CLASS", classe);
+    const mapsubs = profile.subjects
+      .filter((s) => s.classes.some((c) => c.division === classe))
+      .map((s) => s.subject.sub);
     const finalStudentData = [];
 
     rawStudents.forEach((student, id) => {
@@ -837,8 +859,11 @@ console.log("SELECTED CLASS", classe);
         const prefix = sub.toLowerCase();
 
         const getPTScore = (examAbbr) => {
-          const mark = student.marks.find(
-            (m) => (sub && sub.subject) ? m.subject.sub  : null=== sub && m.exam.abbreviation === examAbbr.filter(a => a),
+          const mark = student.marks.find((m) =>
+            sub && sub.subject
+              ? m.subject.sub
+              : null === sub &&
+                m.exam.abbreviation === examAbbr.filter((a) => a),
           );
           if (!mark || mark.score === undefined || mark.score === null)
             return "";
@@ -961,8 +986,10 @@ console.log("SELECTED CLASS", classe);
       };
 
       scholasticSubjectList.forEach((sub) => {
-        const filterMarks = student.marks.filter(
-          (a) => (sub && sub.subject) ? a.subject.sub  : null=== sub && a.exam.abbreviation === exam.filter(a => a),
+        const filterMarks = student.marks.filter((a) =>
+          sub && sub.subject
+            ? a.subject.sub
+            : null === sub && a.exam.abbreviation === exam.filter((a) => a),
         );
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
@@ -989,8 +1016,10 @@ console.log("SELECTED CLASS", classe);
       let activityTotal = 0,
         activityCount = 0;
       coScholasticGroups.activity.forEach((sub) => {
-        const filterMarks = student.marks.filter(
-          (a) => (sub && sub.subject) ? a.subject.sub  : null=== sub && a.exam.abbreviation === "SP".filter(a => a),
+        const filterMarks = student.marks.filter((a) =>
+          sub && sub.subject
+            ? a.subject.sub
+            : null === sub && a.exam.abbreviation === "SP".filter((a) => a),
         );
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
@@ -1011,8 +1040,10 @@ console.log("SELECTED CLASS", classe);
       let skillTotal = 0,
         skillCount = 0;
       coScholasticGroups.skill.forEach((sub) => {
-        const filterMarks = student.marks.filter(
-          (a) => (sub && sub.subject) ? a.subject.sub  : null=== sub && a.exam.abbreviation === "SP".filter(a => a),
+        const filterMarks = student.marks.filter((a) =>
+          sub && sub.subject
+            ? a.subject.sub
+            : null === sub && a.exam.abbreviation === "SP".filter((a) => a),
         );
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
@@ -1066,7 +1097,9 @@ console.log("SELECTED CLASS", classe);
     if (Object.keys(changes).length === 0) return newRow;
 
     if (exam === "INT") {
-      const mapsubs = profile?.subjects?.map((s) => (sub && sub.subject) ? s.subject.sub : null) ?? [].filter(a => a);
+      const mapsubs = profile.subjects
+        .filter((s) => s.classes.some((c) => c.division === classe))
+        .map((s) => s.subject.sub);
       const updatedRow = { ...newRow };
 
       mapsubs.forEach((sub) => {
@@ -1208,7 +1241,10 @@ console.log("SELECTED CLASS", classe);
       dispatch(
         setMarksheetData({
           students,
-          subjects: profile?.subjects?.map((s) => (sub && sub.subject) ? s.subject.sub : null) ?? [].filter(a => a),
+          subjects:
+            profile?.subjects?.map((s) =>
+              sub && sub.subject ? s.subject.sub : null,
+            ) ?? [].filter((a) => a),
         }),
       );
 
@@ -1268,23 +1304,23 @@ console.log("SELECTED CLASS", classe);
         </Button>
       </ButtonGroup>
       <DataGrid
-  rows={students}
-  columns={columns}
-  checkboxSelection
-  disableRowSelectionOnClick
-  rowSelectionModel={selectedRows}
-  onRowSelectionModelChange={(newSelection) =>
-    setSelectedRows(newSelection)
-  }
-  processRowUpdate={processRowUpdate}
-  onProcessRowUpdateError={(error) => console.error(error)}
-  columnGroupingModel={groupingModel.current}
-  getCellClassName={(params) => {
-    if (params.field === "first_name" || params.field === "surname")
-      return "";
-    return "center";
-  }}
-/>
+        rows={students}
+        columns={columns}
+        checkboxSelection
+        disableRowSelectionOnClick
+        rowSelectionModel={selectedRows}
+        onRowSelectionModelChange={(newSelection) =>
+          setSelectedRows(newSelection)
+        }
+        processRowUpdate={processRowUpdate}
+        onProcessRowUpdateError={(error) => console.error(error)}
+        columnGroupingModel={groupingModel.current}
+        getCellClassName={(params) => {
+          if (params.field === "first_name" || params.field === "surname")
+            return "";
+          return "center";
+        }}
+      />
       <SubjectSelectModal
         open={openSubjectModal}
         onClose={handleCloseSubjectModal}

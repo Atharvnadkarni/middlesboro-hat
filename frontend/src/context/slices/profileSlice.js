@@ -4,7 +4,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const profileSlice = createSlice({
   name: "profiles",
-  initialState: { subjects: [{ subject: { sub: "Hi" } }] },
+  initialState: {
+    subjects: [
+      { subject: { sub: "Hi" }, classes: [{ grade: 10, division: "A" }] },
+    ],
+  },
 
   reducers: {
     setProfileValue: (state, action) => {
@@ -13,7 +17,11 @@ const profileSlice = createSlice({
     },
 
     clearProfile: () => {
-      return { subjects: [{ subject: { sub: "Hi" } }] };
+      return {
+        subjects: [
+          { subject: { sub: "Hi", classes: [{ grade: 10, division: "A" }] } },
+        ],
+      };
     },
   },
 });
