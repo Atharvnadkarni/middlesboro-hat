@@ -110,7 +110,7 @@ class CreateUpdateTeacherSerializer(serializers.Serializer):
     role = serializers.CharField()
     class_tr = serializers.CharField(required=False)
     username = serializers.CharField(required=False)
-    password = serializers.CharField(required=False)
+    password = serializers.CharField(required=False, allow_blank=True)
     subjects = SubjectClassInputSerializer(many=True)
     
 class ExcelDataSerializerOne(serializers.Serializer):
