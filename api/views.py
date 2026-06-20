@@ -127,9 +127,11 @@ class HandleTeacherIndividual(APIView):
         teacher.save(update_fields=(
             'first_name', 'surname', 'role', 'class_tr'))
         if username:
-            user_qs = User.objects.filter(username=teacher.username)
+            user_qs = teacher.user
             print("booser", user_qs)
             if not user_qs.exists():
+                new_user = User()
+                new_user.username = username
                 return Response({"Error": "User doesnt exist"})
 
             user = user_qs[0]
