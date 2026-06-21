@@ -103,7 +103,7 @@ const SubjectList = () => {
     "Math",
     "English",
     "Hindi",
-    "Phys", "Chem","Bio"
+    "Phys", "Chem","Bio",
     "French",
     "SS",
     "HS",
