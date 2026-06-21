@@ -47,7 +47,9 @@ const SubjectList = () => {
     Math: 80,
     English: 80,
     Hindi: 80,
-    Sci: 80,
+    Phys: 80,
+    Chem: 80,
+    Bio: 80,
     French: 80,
     SS: 80,
     HS: 70,
@@ -59,7 +61,7 @@ const SubjectList = () => {
   // For PT the max per subject is 20
   const ptMax = 20;
 
-  const mainSubjects = ["Math", "English", "Hindi", "Sci", "French", "SS"];
+  const mainSubjects = ["Math", "English", "Hindi", "Phys", "Chem", "Bio", "French", "SS"];
 
   const coScholasticGroups = {
     activity: ["PE", "Yoga", "NSS", "MA"],
@@ -101,7 +103,7 @@ const SubjectList = () => {
     "Math",
     "English",
     "Hindi",
-    "Sci",
+    "Phys", "Chem","Bio"
     "French",
     "SS",
     "HS",
@@ -187,8 +189,24 @@ const SubjectList = () => {
       headerAlign: "center",
     },
     {
-      field: "sci",
-      headerName: `Sci/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["Sci"]}`,
+      field: "phys",
+      headerName: `Phys/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["Sci"]}`,
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "chem",
+      headerName: `Chem/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["Sci"]}`,
+      width: 90,
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "bio",
+      headerName: `Bio/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["Sci"]}`,
       width: 90,
       editable: true,
       align: "center",
