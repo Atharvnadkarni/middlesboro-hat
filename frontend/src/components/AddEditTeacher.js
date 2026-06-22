@@ -59,12 +59,12 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
   const [role, setRole] = useState("Teacher");
   const [subjects, setSubjects] = useState([]);
   useEffect(() => {
-    if (open && !teacher.username) {
+  if (open && (!teacher || !teacher.username)) {
       setUsername(
         `${firstName && firstName.toLowerCase()}${surname && surname[0] && surname?.[0].toLowerCase()}`,
       );
     }
-    if (open && !teacher.password) {
+  if (open && (!teacher || !teacher.password)) {
       setPassword(
         `${firstName && firstName.toLowerCase()}${surname && surname[0] && surname?.[0].toLowerCase()}123`,
       );
