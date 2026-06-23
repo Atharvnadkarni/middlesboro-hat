@@ -31,8 +31,8 @@ const SubjectList = () => {
   const classe = useSelector((store) => store.class);
   const exam = useSelector((store) => store.exam.exam);
   useEffect(() => {
-    console.log("barstoltwo", classe)
-  }, [classe])
+    console.log("barstoltwo", classe);
+  }, [classe]);
   console.info(
     exam,
     ["PT1", "PT2", "PT3"].includes(exam),
@@ -61,7 +61,16 @@ const SubjectList = () => {
   // For PT the max per subject is 20
   const ptMax = 20;
 
-  const mainSubjects = ["Math", "English", "Hindi", "Phys", "Chem", "Bio", "French", "SS"];
+  const mainSubjects = [
+    "Math",
+    "English",
+    "Hindi",
+    "Phys",
+    "Chem",
+    "Bio",
+    "French",
+    "SS",
+  ];
 
   const coScholasticGroups = {
     activity: ["PE", "Yoga", "NSS", "MA"],
@@ -103,7 +112,9 @@ const SubjectList = () => {
     "Math",
     "English",
     "Hindi",
-    "Phys", "Chem","Bio",
+    "Phys",
+    "Chem",
+    "Bio",
     "French",
     "SS",
     "HS",
@@ -190,7 +201,7 @@ const SubjectList = () => {
     },
     {
       field: "phys",
-      headerName: `Phys/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["Sci"]}`,
+      headerName: `Phys/${["PT1", "PT2", "PT3"].includes(exam) ? 6 : subjectMarksMax["Sci"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -198,7 +209,7 @@ const SubjectList = () => {
     },
     {
       field: "chem",
-      headerName: `Chem/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["Sci"]}`,
+      headerName: `Chem/${["PT1", "PT2", "PT3"].includes(exam) ? 6 : subjectMarksMax["Sci"]}`,
       width: 90,
       editable: true,
       align: "center",
@@ -206,9 +217,17 @@ const SubjectList = () => {
     },
     {
       field: "bio",
-      headerName: `Bio/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["Sci"]}`,
+      headerName: `Bio/${["PT1", "PT2", "PT3"].includes(exam) ? 8 : subjectMarksMax["Sci"]}`,
       width: 90,
       editable: true,
+      align: "center",
+      headerAlign: "center",
+    },
+    {
+      field: "sci",
+      headerName: `Sci/${["PT1", "PT2", "PT3"].includes(exam) ? ptMax : subjectMarksMax["Sci"]}`,
+      width: 90,
+      editable: !["PT1", "PT2", "PT3"].includes(exam),
       align: "center",
       headerAlign: "center",
     },
@@ -688,8 +707,17 @@ const SubjectList = () => {
 
     const getSubjectColumns = (subject, cols) => {
       const prefix = subject.toLowerCase();
-      if (["PT1", "PT2", "PT3"].includes(exam))
+
+      if (["PT1", "PT2", "PT3"].includes(exam)) {
+        if (subject === "Sci") {
+          return cols.filter((col) =>
+            ["phys", "chem", "bio", "sci"].includes(col.field),
+          );
+        }
+
         return cols.filter((col) => col.field === prefix);
+      }
+
       return cols.filter(
         (col) => col.field === prefix || col.field.startsWith(`${prefix}_`),
       );
@@ -731,22 +759,23 @@ const SubjectList = () => {
     console.log("PROFILE SUBJECTS", profile.subjects);
     console.log("SELECTED CLASS", classe);
     profile.subjects.forEach((s) => {
-  console.log("barstol",
-    classe,
-    s.subject.sub,
-    s.classes.map((c) => c.division),
-    s.classes.some((c) => c.division === classe)
-  );
-});
-    console.log("ISHIDA", profile.subjects
-  .filter((s) =>
-    s.classes.some((c) => c.division === classe)
-  ));
+      console.log(
+        "barstol",
+        classe,
+        s.subject.sub,
+        s.classes.map((c) => c.division),
+        s.classes.some((c) => c.division === classe),
+      );
+    });
+    console.log(
+      "ISHIDA",
+      profile.subjects.filter((s) =>
+        s.classes.some((c) => c.division === classe),
+      ),
+    );
     const mapsubs = profile.subjects
-  .filter((s) =>
-    s.classes.some((c) => c.division === classe)
-  )
-  .map((s) => s.subject.sub);
+      .filter((s) => s.classes.some((c) => c.division === classe))
+      .map((s) => s.subject.sub);
     let matchedCols = [];
     let groupings = [];
 
@@ -1029,6 +1058,16 @@ const SubjectList = () => {
           computeDerivedFields(sub, score, row);
         }
       });
+      if (["PT1", "PT2", "PT3"].includes(exam)) {
+        const phys = Number(row.phys) || 0;
+        const chem = Number(row.chem) || 0;
+        const bio = Number(row.bio) || 0;
+
+        row.sci = phys + chem + bio;
+
+        row.sci_mo_100 = row.sci;
+        row.sci_grade = getScholasticGrade(row.sci * 5);
+      }
 
       // co-scholastic activity
       let activityTotal = 0,
@@ -1223,6 +1262,20 @@ const SubjectList = () => {
           const prefix = editedSub.toLowerCase();
           updatedRow[`${prefix}_mo_100`] = "";
           updatedRow[`${prefix}_grade`] = "";
+        }
+
+        if (
+          ["PT1", "PT2", "PT3"].includes(exam) &&
+          ["phys", "chem", "bio"].includes(editedField)
+        ) {
+          const phys = Number(updatedRow.phys) || 0;
+          const chem = Number(updatedRow.chem) || 0;
+          const bio = Number(updatedRow.bio) || 0;
+
+          updatedRow.sci = phys + chem + bio;
+
+          updatedRow.sci_mo_100 = updatedRow.sci;
+          updatedRow.sci_grade = getScholasticGrade(updatedRow.sci * 5);
         }
 
         computeTotals(updatedRow);
