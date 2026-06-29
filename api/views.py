@@ -291,10 +291,10 @@ class HandleStudentsData(APIView):
         data = data_with_key.get("sheets")
         print("bata", data, request.data)
         for classe in data:
-            class_name = classe.get("class_name")
+            class_name = classe.get("class_name").strip()
             class_data = [class_name[0:2], class_name[2:]]
             grade, division = class_data
-            class_obj = Class.objects.get(grade=grade, division=division)
+            class_obj = Class.objects.get(grade=grade.strip(), division=division.strip())
 
             excel_data = classe.get("excel_data")
             for student_data in excel_data:
