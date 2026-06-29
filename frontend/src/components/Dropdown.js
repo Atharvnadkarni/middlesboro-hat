@@ -83,11 +83,15 @@ const Dropdown = () => {
       // delete parsedData[0];
       console.log(parsedData);
       setData(parsedData);
-      const res = await request("post", "/api/add-students", {
-        sheets: parsedData,
-      });
-      console.log(res.data);
-      location.reload();
+      try {
+        const res = await request("post", "/api/add-students", {
+          sheets: parsedData,
+        });
+        console.log(res?.data);
+        location.reload();
+      } catch (error) {
+        console.error(error);
+      }
     };
   };
   return (
