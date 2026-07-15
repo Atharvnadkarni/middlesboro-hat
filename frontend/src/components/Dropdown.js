@@ -91,7 +91,7 @@ const Dropdown = () => {
         location.reload();
       } catch (error) {
         console.error(error);
-      }
+      } 
     };
   };
   return (

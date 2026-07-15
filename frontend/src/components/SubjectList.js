@@ -906,12 +906,11 @@ const SubjectList = () => {
         const prefix = sub.toLowerCase();
 
         const getPTScore = (examAbbr) => {
-          const mark = student.marks.find((m) =>
-            sub && sub.subject
-              ? m.subject.sub
-              : null === sub &&
-                m.exam.abbreviation === examAbbr.filter((a) => a),
-          );
+          const mark = student.marks.find(
+  (m) =>
+    m.subject?.sub === sub &&
+    m.exam?.abbreviation === examAbbr
+);
           if (!mark || mark.score === undefined || mark.score === null)
             return "";
           if (mark.score === -1000) return "N/A";
@@ -1033,10 +1032,8 @@ const SubjectList = () => {
       };
 
       scholasticSubjectList.forEach((sub) => {
-        const filterMarks = student.marks.filter((a) =>
-          sub && sub.subject
-            ? a.subject.sub
-            : null === sub && a.exam.abbreviation === exam.filter((a) => a),
+        const filterMarks = student.marks.filter(
+          (a) => a.subject?.sub === sub && a.exam?.abbreviation === exam,
         );
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
@@ -1073,11 +1070,11 @@ const SubjectList = () => {
       let activityTotal = 0,
         activityCount = 0;
       coScholasticGroups.activity.forEach((sub) => {
-        const filterMarks = student.marks.filter((a) =>
-          sub && sub.subject
-            ? a.subject.sub
-            : null === sub && a.exam.abbreviation === "SP".filter((a) => a),
-        );
+        const filterMarks = student.marks.find(
+  (a) =>
+    a.subject?.sub === sub &&
+    a.exam?.abbreviation === "SP"
+);
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
 
@@ -1097,11 +1094,11 @@ const SubjectList = () => {
       let skillTotal = 0,
         skillCount = 0;
       coScholasticGroups.skill.forEach((sub) => {
-        const filterMarks = student.marks.filter((a) =>
-          sub && sub.subject
-            ? a.subject.sub
-            : null === sub && a.exam.abbreviation === "SP".filter((a) => a),
-        );
+        const filterMarks = student.marks.find(
+  (a) =>
+    a.subject?.sub === sub &&
+    a.exam?.abbreviation === "SP"
+);
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
 
@@ -1325,6 +1322,14 @@ const SubjectList = () => {
       console.error(err);
     }
   };
+  useEffect(() => {
+    console.log("Mounted");
+  }, []);
+  useEffect(() => {
+    {
+      console.log(1919, students, columns);
+    }
+  }, [students]);
 
   return (
     <>
