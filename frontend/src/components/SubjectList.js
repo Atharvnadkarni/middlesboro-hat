@@ -1,9 +1,10 @@
 import { DataGrid } from "@mui/x-data-grid";
-import { Button, ButtonGroup } from "@mui/material";
+import { Button, ButtonGroup, Fade } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useRequest } from "../hooks/useRequest";
 import { useDispatch, useSelector } from "react-redux";
 import { setFormatValue } from "../context/slices/formatSlice";
+import { setMarksheetData } from "../context/slices/marksheetSlice";
 import SubjectSelectModal from "./SubjectSelectModal";
 import { setStudentsValue } from "../context/slices/studentSlice";
 
@@ -597,7 +598,7 @@ const SubjectList = () => {
   const groupingModel = useRef([]);
   const [editedRows, setEditedRows] = useState({});
   const originalStudents = useRef([]);
-  const { request } = useRequest();
+  const { request, isLoading } = useRequest();
   const profile = useSelector((state) => state.profile);
 
   const subjects = profile?.subjects;
@@ -907,10 +908,8 @@ const SubjectList = () => {
 
         const getPTScore = (examAbbr) => {
           const mark = student.marks.find(
-  (m) =>
-    m.subject?.sub === sub &&
-    m.exam?.abbreviation === examAbbr
-);
+            (m) => m.subject?.sub === sub && m.exam?.abbreviation === examAbbr,
+          );
           if (!mark || mark.score === undefined || mark.score === null)
             return "";
           if (mark.score === -1000) return "N/A";
@@ -1071,10 +1070,8 @@ const SubjectList = () => {
         activityCount = 0;
       coScholasticGroups.activity.forEach((sub) => {
         const filterMarks = student.marks.find(
-  (a) =>
-    a.subject?.sub === sub &&
-    a.exam?.abbreviation === "SP"
-);
+          (a) => a.subject?.sub === sub && a.exam?.abbreviation === "SP",
+        );
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
 
@@ -1095,10 +1092,8 @@ const SubjectList = () => {
         skillCount = 0;
       coScholasticGroups.skill.forEach((sub) => {
         const filterMarks = student.marks.find(
-  (a) =>
-    a.subject?.sub === sub &&
-    a.exam?.abbreviation === "SP"
-);
+          (a) => a.subject?.sub === sub && a.exam?.abbreviation === "SP",
+        );
         const scoreObj = filterMarks?.[0] ?? { score: "" };
         let score = scoreObj.score;
 
@@ -1140,6 +1135,7 @@ const SubjectList = () => {
       s.toLowerCase(),
     ),
   );
+  const [changes, setChanges] = useState(null);
 
   // ─── Row update handler ───────────────────────────────────────────────────
   const processRowUpdate = (newRow, oldRow) => {
@@ -1287,6 +1283,7 @@ const SubjectList = () => {
         ...changes,
       },
     }));
+    setChanges(changes);
 
     setStudents((prev) =>
       prev.map((row) => (row.id === updatedRow.id ? updatedRow : row)),
@@ -1305,7 +1302,7 @@ const SubjectList = () => {
       } else {
         await request("patch", "/api/student/update", changedRows);
       }
-
+      console.log(profile)
       dispatch(
         setMarksheetData({
           students,
@@ -1333,52 +1330,67 @@ const SubjectList = () => {
 
   return (
     <>
-      <ButtonGroup>
-        <Button variant="contained" onClick={handleSubmit} sx={{ mb: 2 }}>
-          Submit Changes
-        </Button>
-        {!(exam === "INT") && profile.class_tr?.division == classe && (
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <ButtonGroup>
+          {!(exam === "INT") && profile.class_tr?.division == classe && (
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{ mb: 2, ml: 2 }}
+              onClick={() => {
+                const next = !showAllColumns;
+                if (next) dispatch(setFormatValue("consolidated"));
+                else dispatch(setFormatValue("individual"));
+                setShowAllColumns(next);
+                if (exam === "SP" || exam === "SE") {
+                  buildColumnsPE(next);
+                } else {
+                  buildColumns(next);
+                }
+              }}
+            >
+              {showAllColumns ? "Show Profile Subjects" : "Show All Subjects"}
+            </Button>
+          )}
           <Button
             variant="contained"
-            color="secondary"
-            sx={{ mb: 2, ml: 2 }}
-            onClick={() => {
-              const next = !showAllColumns;
-              if (next) dispatch(setFormatValue("consolidated"));
-              else dispatch(setFormatValue("individual"));
-              setShowAllColumns(next);
-              if (exam === "SP" || exam === "SE") {
-                buildColumnsPE(next);
-              } else {
-                buildColumns(next);
-              }
-            }}
+            color={
+              !(exam === "INT") && profile.class_tr?.division == classe
+                ? "primary"
+                : "secondary"
+            }
+            onClick={handleOpenSubjectModal}
+            sx={{ mb: 2 }}
           >
-            {showAllColumns ? "Show Profile Subjects" : "Show All Subjects"}
+            Generate Subject Report
           </Button>
-        )}
+          <Button
+            variant="contained"
+            sx={{ mb: 2 }}
+            color="error"
+            disabled={selectedRows.ids.size === 0}
+            onClick={handleDeleteSelected}
+          >
+            Delete Selected
+          </Button>
+        </ButtonGroup>
         <Button
           variant="contained"
-          color={
-            !(exam === "INT") && profile.class_tr?.division == classe
-              ? "primary"
-              : "secondary"
-          }
-          onClick={handleOpenSubjectModal}
+          onClick={handleSubmit}
           sx={{ mb: 2 }}
+          disabled={!changes}
+          loading={isLoading}
+          loadingPosition="start"
         >
-          Generate Subject Report
+          Submit Changes
         </Button>
-        <Button
-          variant="contained"
-          sx={{ mb: 2 }}
-          color="error"
-          disabled={selectedRows.ids.size === 0}
-          onClick={handleDeleteSelected}
-        >
-          Delete Selected
-        </Button>
-      </ButtonGroup>
+      </div>
       <DataGrid
         rows={students}
         columns={columns}
