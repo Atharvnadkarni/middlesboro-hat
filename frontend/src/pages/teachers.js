@@ -1,4 +1,4 @@
-import { Button, Grid, Skeleton, Snackbar,} from "@mui/material";
+import { Alert, Button, Grid, Skeleton, Snackbar } from "@mui/material";
 import TeacherCard from "../components/TeacherCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -20,23 +20,37 @@ const Teachers = () => {
       setTeachers(data);
     })();
   }, []);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  useEffect(() => {
+    setSnackbarOpen(true)
+  }, [teachers])
   return (
     <>
-      
+      <Snackbar
+        open={teachers.length && snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        autoHideDuration={5000}
+      >
+        <Alert severity="success" variant="filled">
+          New Teacher Added
+        </Alert>
+      </Snackbar>
       <Tabs value="teachers" />
-      {role == "Administrator" && <div style={{ display: "flex", marginBottom: 20 }}>
-        <div className="spacer" style={{ flex: 1 }} />
-        <Button
-          variant="contained"
-          startIcon={<PersonAdd />}
-          onClick={() => {
-            setModalOpen(true);
-          }}
-        >
-          Add Teacher
-        </Button>
-      </div>}
+      {role == "Administrator" && (
+        <div style={{ display: "flex", marginBottom: 20 }}>
+          <div className="spacer" style={{ flex: 1 }} />
+          <Button
+            variant="contained"
+            startIcon={<PersonAdd />}
+            onClick={() => {
+              setModalOpen(true);
+            }}
+          >
+            Add Teacher
+          </Button>
+        </div>
+      )}
 
       <Grid container spacing={2}>
         {teachers.map((teacher) => (
@@ -47,7 +61,7 @@ const Teachers = () => {
           />
         ))}
         {isLoading &&
-          [1, 2, 3, 4, 5, 6, 7, 8,9,10].map((a) => (
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((a) => (
             <Grid item size={{ xs: 3 }}>
               <Skeleton variant="rectangular" height={130} animation="wave" />
             </Grid>
