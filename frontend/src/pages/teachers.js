@@ -23,19 +23,10 @@ const Teachers = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   useEffect(() => {
-    setSnackbarOpen(true)
-  }, [teachers])
+    setSnackbarOpen(true);
+  }, [teachers]);
   return (
     <>
-      <Snackbar
-        open={teachers.length && snackbarOpen}
-        onClose={() => setSnackbarOpen(false)}
-        autoHideDuration={5000}
-      >
-        <Alert severity="success" variant="filled">
-          New Teacher Added
-        </Alert>
-      </Snackbar>
       <Tabs value="teachers" />
       {role == "Administrator" && (
         <div style={{ display: "flex", marginBottom: 20 }}>
