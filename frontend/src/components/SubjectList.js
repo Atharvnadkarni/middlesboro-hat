@@ -43,6 +43,7 @@ const SubjectList = () => {
   useEffect(() => {
     dispatch(setFormatValue("individual"));
   }, []);
+  const [cellError, setCellError] = useState(false);
 
   const subjectMarksMax = {
     Math: 80,
@@ -124,6 +125,8 @@ const SubjectList = () => {
     "AI",
     "IT",
   ];
+
+  const lastChange = useRef();
 
   const scholasticCols = [
     {
@@ -1288,6 +1291,37 @@ const SubjectList = () => {
     setStudents((prev) =>
       prev.map((row) => (row.id === updatedRow.id ? updatedRow : row)),
     );
+    const maxMarks = {
+      math: ["PT1", "PT2", "PT3"].includes(exam) ? 20 : 80,
+      english: ["PT1", "PT2", "PT3"].includes(exam) ? 20 : 80,
+      hindi: ["PT1", "PT2", "PT3"].includes(exam) ? 20 : 80,
+      phys: ["PT1", "PT2", "PT3"].includes(exam) ? 6 : 80,
+      chem: ["PT1", "PT2", "PT3"].includes(exam) ? 6 : 80,
+      bio: ["PT1", "PT2", "PT3"].includes(exam) ? 8 : 80,
+      sci: ["PT1", "PT2", "PT3"].includes(exam) ? 20 : 80,
+      french: ["PT1", "PT2", "PT3"].includes(exam) ? 20 : 80,
+      ss: ["PT1", "PT2", "PT3"].includes(exam) ? 20 : 80,
+      hs: ["PT1", "PT2", "PT3"].includes(exam) ? 20 : 70,
+      painting: ["PT1", "PT2", "PT3"].includes(exam) ? 20 : 30,
+      hc: ["PT1", "PT2", "PT3"].includes(exam) ? 20 : 50,
+      ai: ["PT1", "PT2", "PT3"].includes(exam) ? 20 : 50,
+      it: ["PT1", "PT2", "PT3"].includes(exam) ? 20 : 50,
+    };
+
+    const hasError = students.some((row) =>
+      Object.entries(maxMarks).some(([field, max]) => {
+        const value = row[field];
+        return (
+          value !== "" &&
+          value !== null &&
+          value !== undefined &&
+          !isNaN(value) &&
+          Number(value) > max
+        );
+      }),
+    );
+
+    setCellError(hasError);
     return updatedRow;
   };
 
@@ -1302,16 +1336,19 @@ const SubjectList = () => {
       } else {
         await request("patch", "/api/student/update", changedRows);
       }
-      console.log(profile)
+      console.log(profile);
       dispatch(
         setMarksheetData({
           students,
           subjects:
-            profile?.subjects?.map((s) =>
-              sub && sub.subject ? s.subject.sub : null,
+            profile?.subjects?.map((sub) =>
+              sub && sub.subject ? sub.subject.sub : null,
             ) ?? [].filter((a) => a),
         }),
       );
+      console.log(originalStudents, changedRows);
+
+      setEditedRows({});
 
       // optional
       // navigate("/marksheet");
@@ -1327,6 +1364,15 @@ const SubjectList = () => {
       console.log(1919, students, columns);
     }
   }, [students]);
+
+  useEffect(() => {
+    console.log(
+      "hian",
+      originalStudents.current,
+      Object.values(editedRows),
+      editedRows,
+    );
+  }, [originalStudents, editedRows]);
 
   return (
     <>
@@ -1380,11 +1426,12 @@ const SubjectList = () => {
             Delete Selected
           </Button>
         </ButtonGroup>
+        {console.log(Object.values(editedRows).length)}
         <Button
           variant="contained"
           onClick={handleSubmit}
           sx={{ mb: 2 }}
-          disabled={!changes}
+          disabled={Object.values(editedRows).length == 0}
           loading={isLoading}
           loadingPosition="start"
         >
