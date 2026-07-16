@@ -19,6 +19,9 @@ export default function LoginPage() {
     username: "",
     password: "",
   });
+  useEffect(() => {
+    location.reload()
+  }, [])
 
   const [formErrors, setFormErrors] = useState({});
 

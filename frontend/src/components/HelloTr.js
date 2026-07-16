@@ -32,6 +32,7 @@ const HelloTr = () => {
     localStorage.removeItem("profile");
     dispatch(clearProfile())
     handleClose();
+    location.reload();
     navigate("/login");
   };
   
