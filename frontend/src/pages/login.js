@@ -20,9 +20,6 @@ export default function LoginPage() {
     username: "",
     password: "",
   });
-  useEffect(() => {
-    location.reload()
-  }, [])
 
   const [formErrors, setFormErrors] = useState({});
 
@@ -37,7 +34,7 @@ export default function LoginPage() {
       [e.target.name]: "",
     }));
   };
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,7 +51,7 @@ export default function LoginPage() {
       const meres = await request("get", "/api/me");
 
       localStorage.setItem("profile", JSON.stringify(meres.data));
-      navigate("/?reload=true")
+      navigate("/?reload=true");
       // redirect here
       // navigate("/dashboard");
     } catch (err) {
@@ -155,7 +152,6 @@ export default function LoginPage() {
             >
               {isLoading ? "Signing In..." : "Sign In"}
             </Button>
-
           </Box>
         </Paper>
       </Grid>
