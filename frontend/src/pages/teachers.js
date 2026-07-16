@@ -6,10 +6,12 @@ import { PersonAdd } from "@mui/icons-material";
 import AddEditTeacher from "../components/AddEditTeacher";
 import Tabs from "../components/Tabs";
 import { useRequest } from "../hooks/useRequest";
+import { useSelector } from "react-redux";
 
 const Teachers = () => {
   const [teachers, setTeachers] = useState([]);
   const [editingTeacher, setEditingTeacher] = useState({});
+  const role = useSelector((state) => state.profile.role);
   const { request, isLoading, error } = useRequest();
   useEffect(() => {
     (async () => {
@@ -23,7 +25,7 @@ const Teachers = () => {
     <>
       
       <Tabs value="teachers" />
-      <div style={{ display: "flex", marginBottom: 20 }}>
+      {role == "Administrator" && <div style={{ display: "flex", marginBottom: 20 }}>
         <div className="spacer" style={{ flex: 1 }} />
         <Button
           variant="contained"
@@ -34,7 +36,7 @@ const Teachers = () => {
         >
           Add Teacher
         </Button>
-      </div>
+      </div>}
 
       <Grid container spacing={2}>
         {teachers.map((teacher) => (

@@ -21,7 +21,7 @@ const TeacherCard = ({ teacher }) => {
     <>
       <Grid size={{ md: 3, sm: 6, xs: 12 }}>
         <Card sx={{ position: "relative", padding: 0 }}>
-          {role == "Administrator" && (
+          {role === "Administrator" && (
             <CardActions sx={{ position: "absolute", right: 0 }}>
               <IconButton onClick={() => setModalOpen(true)}>
                 <Edit />
@@ -31,7 +31,12 @@ const TeacherCard = ({ teacher }) => {
               </IconButton>
             </CardActions>
           )}
-          <CardContent sx={{ marginTop: "30px", paddingBottom: 16 }}>
+          <CardContent
+            sx={{
+              paddingBottom: 16,
+              ...(role === "Administrator" ? { marginTop: "30px" } : {marginTop: "16px"}),
+            }}
+          >
             <Typography variant="h5" color="body1">
               {teacher.first_name} {teacher.surname}
             </Typography>
