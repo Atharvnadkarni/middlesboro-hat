@@ -1426,6 +1426,7 @@ const SubjectList = () => {
             Delete Selected
           </Button>
         </ButtonGroup>
+        {console.log("KEVING UAMGUAM", students)}
         {console.log(Object.values(editedRows).length)}
         <Button
           variant="contained"

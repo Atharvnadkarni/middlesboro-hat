@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from .models import Teacher, TeacherSubjectClass, Role, Class, Subject, Student, Mark, Exam
 from .serializers import TeacherSerializer, TSCSerializer, CreateUpdateTeacherSerializer, ExcelDataSerializer, StudentMarksSerializer
 from django.contrib.auth.models import User
+from django.db import transaction
 
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate, login, logout
@@ -137,7 +138,7 @@ class HandleTeacherIndividual(APIView):
             if password:
                 user.username = username
                 user.set_password(password)
-                user.save(update_fields=["password", "username"]) 
+                user.save(update_fields=["password", "username"])
             print("booser", username)
 
         # handling subjects
@@ -285,75 +286,184 @@ class HandleStudentsData(APIView):
     def post(self, request, format=True):
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
-            return Response({"Error": "Invalid data"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        data_with_key = serializer.validated_data
-        data = data_with_key.get("sheets")
-        print("bata", data, request.data)
+        data = serializer.validated_data["sheets"]
+
+        # -------------------------
+        # Cache database objects
+        # -------------------------
+        subject_map = {s.sub: s for s in Subject.objects.all()}
+        exam_map = {e.abbreviation: e for e in Exam.objects.all()}
+        class_map = {(str(c.grade), c.division.strip())
+                    : c for c in Class.objects.all()}
+
+        existing_students = set(
+            Student.objects.values_list("first_name", "surname")
+        )
+
+        scholastic_subjects = [
+            "Math",
+            "English",
+            "Hindi",
+            "Sci",
+            "French",
+            "SS",
+            "HS",
+            "Painting",
+            "HC",
+            "AI",
+            "IT",
+        ]
+
+        co_scholastic_subjects = [
+            "PE",
+            "Yoga",
+            "NSS",
+            "MA",
+            "Comp",
+            "WE",
+            "ATL",
+            "Art",
+            "Music",
+            "SD",
+        ]
+
+        students_to_create = []
+        student_metadata = []
+
+        # ---------------------------------------
+        # Phase 1: Build Student objects only
+        # ---------------------------------------
         for classe in data:
-            class_name = classe.get("class_name").strip()
-            class_data = [class_name[0:2], class_name[2:]]
-            grade, division = class_data
-            class_obj = Class.objects.get(grade=grade.strip(), division=division.strip())
+            class_name = classe["class_name"].strip()
+            grade = class_name[:2].strip()
+            division = class_name[2:].strip()
 
-            excel_data = classe.get("excel_data")
-            for student_data in excel_data:
-                first_name = student_data.get("first_name")
-                surname = student_data.get("surname")
-                subjects = student_data.get("subjects")
-                roll_no = student_data.get("no")
-                new_student = Student(
-                    first_name=first_name, surname=surname, class_div=class_obj, roll_no=roll_no)
-                new_student.save()
-                print("beta", student_data, excel_data, classe, data)
+            class_obj = class_map[(grade, division)]
 
-                scholastic_subjects = [
-                    "Math",
-                    "English",
-                    "Hindi",
-                    "Sci",
-                    "French",
-                    "SS",
-                    "HS",
-                    "Painting",
-                    "HC",
-                    "AI",
-                    "IT"
-                ]
-                co_scholastic_subjects = [
-                    "PE",
-                    "Yoga",
-                    "NSS",
-                    "MA",
-                    "Comp",
-                    "WE",
-                    "ATL",
-                    "Art",
-                    "Music",
-                    "SD",
-                ]
+            for student_data in classe["excel_data"]:
+
+                first_name = student_data["first_name"]
+                surname = student_data["surname"]
+
+                if (first_name, surname) in existing_students:
+                    continue
+
+                raw_subjects = student_data.get("subjects", [])
+
+                subjects = set()
+
+                for subject in raw_subjects:
+                    if subject == "Maths":
+                        subjects.add("Math")
+                    elif subject == "Science":
+                        subjects.add("Sci")
+                    elif "instead" in subject.lower():
+                        subjects.add(subject.split("instead")[0].strip())
+                    else:
+                        subjects.add(subject)
+
+                student = Student(
+                    first_name=first_name,
+                    surname=surname,
+                    class_div=class_obj,
+                    roll_no=student_data.get("no"),
+                )
+
+                students_to_create.append(student)
+
+                student_metadata.append({
+                    "subjects": subjects,
+                })
+
+        # Nothing new
+        if not students_to_create:
+            students = Student.objects.select_related(
+                "class_div"
+            ).prefetch_related(
+                "marks__subject",
+                "marks__exam"
+            )
+
+            return Response(
+                {
+                    "message": "No new students.",
+                    "data": StudentMarksSerializer(students, many=True).data,
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        # ---------------------------------------
+        # Save students
+        # ---------------------------------------
+        with transaction.atomic():
+
+            created_students = Student.objects.bulk_create(
+                students_to_create,
+                batch_size=1000,
+            )
+
+            # ---------------------------------------
+            # Build ALL marks
+            # ---------------------------------------
+            all_marks = []
+
+            for student, metadata in zip(created_students, student_metadata):
+
+                student_subjects = metadata["subjects"]
+
                 for subject in scholastic_subjects:
+                    subject_obj = subject_map[subject]
+
+                    score = 1000 if subject in student_subjects else -1000
+
                     for exam in self.exams:
-                        score = 1000 if subject in subjects else -1000
-                        subject_obj = Subject.objects.get(sub=subject)
-                        exam_obj = Exam.objects.get(abbreviation=exam)
-                        mark = Mark(student=new_student,
-                                    subject=subject_obj, exam=exam_obj, score=score)
-                        print("Mark added", mark)
-                        mark.save()
+                        all_marks.append(
+                            Mark(
+                                student=student,
+                                subject=subject_obj,
+                                exam=exam_map[exam],
+                                score=score,
+                            )
+                        )
+
+                sp_exam = exam_map["SP"]
 
                 for subject in co_scholastic_subjects:
-                    score = 1000 if subject in subjects else -1000
-                    subject_obj = Subject.objects.get(sub=subject)
-                    exam_obj = Exam.objects.get(abbreviation="SP")
-                    mark = Mark(student=new_student,
-                                subject=subject_obj, exam=exam_obj, score=score)
-                    print("Mark added", mark)
-                    mark.save()
+                    all_marks.append(
+                        Mark(
+                            student=student,
+                            subject=subject_map[subject],
+                            exam=sp_exam,
+                            score=1000 if subject in student_subjects else -1000,
+                        )
+                    )
 
-        re_new_students = Student.objects.all()
-        re_serialize = StudentMarksSerializer(re_new_students, many=True)
-        return Response({"message": "Success - Students Created", "data": re_serialize.data}, status=status.HTTP_201_CREATED)
+            # ---------------------------------------
+            # Save marks in batches
+            # ---------------------------------------
+            Mark.objects.bulk_create(
+                all_marks,
+                batch_size=5000,
+            )
+
+        students = (
+            Student.objects
+            .select_related("class_div")
+            .prefetch_related(
+                "marks__subject",
+                "marks__exam",
+            )
+        )
+
+        return Response(
+            {
+                "message": f"Success - {len(created_students)} Students Created",
+                "data": StudentMarksSerializer(students, many=True).data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class HandleStudentsSubjectList(APIView):
@@ -400,6 +510,7 @@ class HandleStudentUpdate(APIView):
 
         return Response({"Updated": "Marks Modified"}, status=status.HTTP_200_OK)
 
+
 class HandleStudentBulkDelete(APIView):
     def delete(self, request):
         ids = request.data.get("ids")
@@ -410,4 +521,3 @@ class HandleStudentBulkDelete(APIView):
             student = student_qs[0]
             student.delete()
         return Response({"Message": "Students Deleted Successfully"}, status=status.HTTP_204_NO_CONTENT)
-            

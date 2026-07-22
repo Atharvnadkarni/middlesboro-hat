@@ -66,7 +66,7 @@ const Dropdown = () => {
         rows.forEach((row, i) => {
           // Skip empty rows
           if (!row || row.length < 3) return;
-          if (i == 0) return;
+          if (i <= 3) return;
 
           const obj = {
             no: row[0],
