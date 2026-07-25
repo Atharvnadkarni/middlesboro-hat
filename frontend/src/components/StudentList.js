@@ -180,7 +180,7 @@ const StudentListEditing = ({
 
     if (!changed.length) return;
 
-    await request("post", "/api/marks/update", {
+    await request("post", "/api/mark/update", {
       marks: changed,
       exam,
       subject: profile.subjects[0].subject,
