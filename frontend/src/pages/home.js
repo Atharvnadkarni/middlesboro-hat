@@ -5,6 +5,7 @@ import SubjectList from "../components/SubjectList";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams, useNavigate } from "react-router";
+import StudentList from "../components/StudentList";
 
 const Home = () => {
   const classe = useSelector((state) => state.class);
@@ -25,7 +26,7 @@ const Home = () => {
       <Tabs value="marktable" />
 
       <Dropdown />
-      <SubjectList />
+      <StudentList />
     </>
   );
 };

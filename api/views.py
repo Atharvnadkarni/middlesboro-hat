@@ -295,8 +295,7 @@ class HandleStudentsData(APIView):
         # -------------------------
         subject_map = {s.sub: s for s in Subject.objects.all()}
         exam_map = {e.abbreviation: e for e in Exam.objects.all()}
-        class_map = {(str(c.grade), c.division.strip())
-                    : c for c in Class.objects.all()}
+        class_map = {(str(c.grade), c.division.strip())                     : c for c in Class.objects.all()}
 
         existing_students = set(
             Student.objects.values_list("first_name", "surname")
@@ -521,3 +520,39 @@ class HandleStudentBulkDelete(APIView):
             student = student_qs[0]
             student.delete()
         return Response({"Message": "Students Deleted Successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class UpdateMarkView(APIView):
+    def post(self, request):
+        exam_str = request.data.get("exam")
+        marks_obj = request.data.get("marks")
+        subject_str = request.data.get("subject").get("sub")
+
+        exam_objqs = Exam.objects.filter(abbreviation=exam_str)
+        if not exam_objqs.exists():
+            return Response({"Error": "Exam value is invalid"}, status=status.HTTP_400_BAD_REQUEST)
+        exam = exam_objqs.first()
+
+        subject_objqs = Subject.objects.filter(sub=exam_str)
+        if not subject_objqs.exists():
+            return Response({"Error": "Subject value is invalid"}, status=status.HTTP_400_BAD_REQUEST)
+        subject = subject_objqs.first()
+
+        marks_to_be_updated = []
+
+        for mark in marks_obj:
+            student_id = mark.get("studentId")
+            score = mark.get("score")
+            studentqs = Student.objects.filter(id=student_id)
+            if not studentqs.exists():
+                return Response({"Error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
+            student = studentqs.first()
+            mark_objqs = Mark.objects.filter(
+                student=student, exam=exam, subject=subject)
+            if not mark_objqs.exists():
+                return Response({"Error": "Mark not found."}, status=status.HTTP_404_NOT_FOUND)
+            mark_obj = mark_objqs.first()
+            mark_obj.score = score
+            marks_to_be_updated.append(mark_obj)
+
+        Mark.objects.bulk_update(marks_to_be_updated, ["score"])
