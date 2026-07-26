@@ -533,7 +533,7 @@ class UpdateMarkView(APIView):
             return Response({"Error": "Exam value is invalid"}, status=status.HTTP_400_BAD_REQUEST)
         exam = exam_objqs.first()
 
-        subject_objqs = Subject.objects.filter(sub=exam_str)
+        subject_objqs = Subject.objects.filter(sub=subject_str)
         if not subject_objqs.exists():
             return Response({"Error": "Subject value is invalid"}, status=status.HTTP_400_BAD_REQUEST)
         subject = subject_objqs.first()

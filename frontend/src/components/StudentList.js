@@ -82,6 +82,10 @@ const StudentListViewing = ({ students, exam, profile, class: classe }) => {
                         (mark) =>
                           mark.exam.abbreviation == exam &&
                           mark.subject.sub == profile.subjects[0].subject.sub,
+                      )[0].score == "1000" ? "✅" : student.marks.filter(
+                        (mark) =>
+                          mark.exam.abbreviation == exam &&
+                          mark.subject.sub == profile.subjects[0].subject.sub,
                       )[0].score}
                 </TableCell>
               )}
@@ -185,6 +189,7 @@ const StudentListEditing = ({
       exam,
       subject: profile.subjects[0].subject,
     });
+    location.reload();
 
     if (handleSubmit) handleSubmit();
   };
@@ -228,6 +233,7 @@ const StudentListEditing = ({
 
                   <TableCell>
                     <TextField
+                      size="small"
                       max={20}
                       placeholder={
                         current.score == 1000
