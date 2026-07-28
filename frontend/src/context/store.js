@@ -5,6 +5,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import examReducer from "./slices/examSlice";
+import subjectReducer from "./slices/subjectSlice";
 import classReducer from "./slices/classSlice";
 import marksheetReducer from "./slices/marksheetSlice";
 import formatReducer from "./slices/formatSlice";
@@ -23,6 +24,7 @@ const examPersistConfig = {
 const rootReducer = combineReducers({
   exam: persistReducer(examPersistConfig, examReducer),
   class: classReducer,
+  subject: subjectReducer,
   marksheet: marksheetReducer,
   format: persistReducer(formatPersistConfig, formatReducer),
 

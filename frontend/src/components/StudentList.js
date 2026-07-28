@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonGroup,
   Checkbox,
   Paper,
   Table,
@@ -11,12 +12,16 @@ import {
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRequest } from "../hooks/useRequest";
 import NumberField from "./NumberField";
 import { Edit } from "@mui/icons-material";
+import { setMarksheetData } from "../context/slices/marksheetSlice";
+import { setFormatValue } from "../context/slices/formatSlice";
+import SubjectSelectModal from "./SubjectSelectModal";
 
 const StudentListViewing = ({ students, exam, profile, class: classe }) => {
+  const profSubject = useSelector(state => state.subject.subject)
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -50,7 +55,7 @@ const StudentListViewing = ({ students, exam, profile, class: classe }) => {
                       student.marks.filter(
                         (mark) =>
                           mark.exam.abbreviation == exam &&
-                          mark.subject.sub == profile.subjects[0].subject.sub,
+                          mark.subject.sub == profSubject.subject.sub,
                       )[0].score != -1000,
                   )) &&
               (exam == "INT"
@@ -63,7 +68,7 @@ const StudentListViewing = ({ students, exam, profile, class: classe }) => {
                       student.marks.filter(
                         (mark) =>
                           mark.exam.abbreviation == exam &&
-                          mark.subject.sub == profile.subjects[0].subject.sub,
+                          mark.subject.sub == profSubject.subject.sub,
                       )[0].score != -1000,
                   ))
           ).map((student) => (
@@ -79,14 +84,16 @@ const StudentListViewing = ({ students, exam, profile, class: classe }) => {
                   {exam == "INT"
                     ? 0
                     : student.marks.filter(
-                        (mark) =>
-                          mark.exam.abbreviation == exam &&
-                          mark.subject.sub == profile.subjects[0].subject.sub,
-                      )[0].score == "1000" ? "✅" : student.marks.filter(
-                        (mark) =>
-                          mark.exam.abbreviation == exam &&
-                          mark.subject.sub == profile.subjects[0].subject.sub,
-                      )[0].score}
+                          (mark) =>
+                            mark.exam.abbreviation == exam &&
+                            mark.subject.sub == profSubject.subject.sub,
+                        )[0].score == "1000"
+                      ? "✅"
+                      : student.marks.filter(
+                          (mark) =>
+                            mark.exam.abbreviation == exam &&
+                            mark.subject.sub == profSubject.subject.sub,
+                        )[0].score}
                 </TableCell>
               )}
             </TableRow>
@@ -101,12 +108,14 @@ const StudentListEditing = ({
   students,
   exam,
   profile,
+  editing,
   class: classe,
   handleSubmit,
 }) => {
   const { request } = useRequest();
 
   const [editedMarks, setEditedMarks] = useState({});
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const data = {};
@@ -115,7 +124,7 @@ const StudentListEditing = ({
       const mark = student.marks.find(
         (m) =>
           m.exam.abbreviation === exam &&
-          m.subject.sub === profile.subjects[0].subject.sub,
+          m.subject.sub === profSubject.subject.sub,
       );
 
       if (mark) {
@@ -139,7 +148,7 @@ const StudentListEditing = ({
             const mark = student.marks.find(
               (m) =>
                 m.exam.abbreviation === exam &&
-                m.subject.sub === profile.subjects[0].subject.sub,
+                m.subject.sub === profSubject.subject.sub,
             );
 
             return (
@@ -184,18 +193,37 @@ const StudentListEditing = ({
 
     if (!changed.length) return;
 
+    dispatch(
+      setMarksheetData({
+        students,
+        subjects:
+          profile?.subjects?.map((sub) =>
+            sub && sub.subject ? sub.subject.sub : null,
+          ) ?? [].filter((a) => a),
+      }),
+    );
+
     await request("post", "/api/mark/update", {
       marks: changed,
       exam,
-      subject: profile.subjects[0].subject,
+      subject: profSubject.subject,
     });
     location.reload();
 
     if (handleSubmit) handleSubmit();
   };
+  const [openSubjectModal, setOpenSubjectModal] = useState(false);
+  const handleOpenSubjectModal = () => {
+    setOpenSubjectModal(true);
+  };
+
+  const handleCloseSubjectModal = () => {
+    setOpenSubjectModal(false);
+  };
 
   return (
     <>
+      
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -260,7 +288,11 @@ const StudentListEditing = ({
                           : {}
                       }
                       inputMode="numeric"
-                      disabled={current.score === 500}
+                      disabled={
+                        editing
+                          ? current.score === 500
+                          : ![1000, -1000].includes(current.score)
+                      }
                       onChange={(e) =>
                         handleMarkChange(student.id, e.target.value)
                       }
@@ -272,7 +304,10 @@ const StudentListEditing = ({
           </TableBody>
         </Table>
       </TableContainer>
-
+      <SubjectSelectModal
+        open={openSubjectModal}
+        onClose={handleCloseSubjectModal}
+      />
       <Button variant="contained" sx={{ mt: 2 }} onClick={saveChanges}>
         Save Changes
       </Button>
@@ -305,7 +340,7 @@ const StudentList = () => {
       //     student.marks.filter(
       //       (mark) =>
       //         mark.exam.abbreviation == exam &&
-      //         mark.subject.sub == profile.subjects[0].subject.sub,
+      //         mark.subject.sub == profSubject.subject.sub,
       //     )[0].score != -1000,
       // );
       // }
@@ -326,7 +361,9 @@ const StudentList = () => {
         Edit
       </Button>
       {editing ? (
-        <StudentListEditing {...{ students, exam, profile, class: classe }} />
+        <StudentListEditing
+          {...{ students, exam, profile, class: classe, editing }}
+        />
       ) : (
         <StudentListViewing {...{ students, exam, profile, class: classe }} />
       )}

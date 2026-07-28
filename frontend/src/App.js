@@ -21,6 +21,7 @@ import { setProfileValue } from "./context/slices/profileSlice";
 import { useDispatch } from "react-redux";
 import { setStudentsValue } from "./context/slices/studentSlice";
 import { useRequest } from "./hooks/useRequest";
+import { setSubjectData } from "./context/slices/subjectSlice";
 
 const App = () => {
   const navigate = useNavigate();
@@ -29,7 +30,12 @@ const App = () => {
 
   useEffect(() => {
     if (!localStorage.getItem("profile")) navigate("/login");
-    else dispatch(setProfileValue(JSON.parse(localStorage.getItem("profile"))));
+    else {
+      const profileValue = JSON.parse(localStorage.getItem("profile"));
+      dispatch(setProfileValue(profileValue));
+      const { subjects } = profileValue;
+      dispatch(setSubjectData(subjects[0]));
+    }
 
     (async () => {
       const studentres = await request("get", "/api/student");
@@ -41,7 +47,7 @@ const App = () => {
   console.log(location, "sofi");
 
   return (
-    <div style={{position: "relative"}}>
+    <div style={{ position: "relative" }}>
       {location.pathname != "/mk-ta" && <Header />}
       <Container sx={{ marginTop: 3, position: "relative" }}>
         <Routes>
