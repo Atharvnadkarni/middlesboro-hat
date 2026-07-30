@@ -20,22 +20,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearProfile, setProfileValue } from "../context/slices/profileSlice";
 
 const HelloTr = () => {
-  const profile = useSelector(state => state.profile)
+  const profile = useSelector((state) => state.profile);
   const [anchorEl, setAnchorEl] = useState(null);
   const handleOpen = (e) => setAnchorEl(e.currentTarget);
   const handleClose = (e) => setAnchorEl(null);
   const { request, isLoading, error } = useRequest();
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const logout = async () => {
-    await request("post", "/api/logout");
-    localStorage.removeItem("profile");
-    dispatch(clearProfile())
-    handleClose();
-    location.reload();
-    navigate("/login");
+    try {
+      await request("post", "/api/logout");
+    } finally {
+      localStorage.removeItem("profile");
+      dispatch(clearProfile());
+      handleClose();
+      location.reload();
+      navigate("/login");
+    }
   };
-  
+
   function stringToColor(string) {
     let hash = 0;
     let i;
@@ -87,9 +90,9 @@ const HelloTr = () => {
         <Divider />
         <MenuItem onClick={logout}>
           <ListItemIcon>
-            {isLoading ? <CircularProgress size={20} /> :<Logout />}
+            {isLoading ? <CircularProgress size={20} /> : <Logout />}
           </ListItemIcon>
-         <ListItemText>{isLoading? "Logging out..." : "Logout"}</ListItemText>
+          <ListItemText>{isLoading ? "Logging out..." : "Logout"}</ListItemText>
         </MenuItem>
       </Menu>
     </>
