@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router";
+import html2pdf from "html2pdf.js";
+import { useNavigate } from "react-router";
 
 const QuickTable = ({
   subject,
@@ -18,7 +19,8 @@ const QuickTable = ({
         </tr>
         <tr>
           <th colSpan={colspan}>
-            {subject} {exam} Marklist Of Class {classe.toUpperCase()}
+            {subject} {exam} Marklist Of Class{" "}
+            {classe.toUpperCase()}
           </th>
         </tr>
       </thead>
@@ -41,19 +43,17 @@ const MarksheetTemplate = () => {
     "AI",
     "IT",
   ];
-  const params = useSearchParams();
-
-  const { class: classe, format, subject } = Object.fromEntries(params[0]);
   const {
+    class: classe,
     exam: { exam },
     marksheet: { rows, columns },
+    format: { format, subject: formatSubject, class: formatClass },
     student: allStudents,
   } = useSelector((state) => state);
   console.log(exam, "ytqat");
-  console.log(rows,columns, "pupee")
 
   const students = allStudents.filter(
-    (stu) => `${stu.class_div.grade}${stu.class_div.division}` == classe,
+    (stu) => `${stu.class_div.grade}${stu.class_div.division}` == formatClass,
   );
   console.log(students, 9991);
 
@@ -63,17 +63,9 @@ const MarksheetTemplate = () => {
     setProfile(JSON.parse(profileStr));
   }, []);
 
-  const PtIndividualSubject = () => {
-    console.log(
-      classe,
-      subject,
-      exam,
-      Object.fromEntries(params[0]),
-      191199,
-      params,
-    );
+  const ptIndividualSubject = () => {
     return (
-      <QuickTable subject={subject} exam={exam} class={classe}>
+      <QuickTable subject={formatSubject} exam={exam} class={formatClass}>
         <thead>
           <tr>
             <th>Roll No</th>
@@ -104,12 +96,12 @@ const MarksheetTemplate = () => {
       </QuickTable>
     );
   };
-  const MidTermsPBIndividualSubject = () => {
+  const midTermsPBIndividualSubject = () => {
     return (
       <QuickTable
         subject={formatSubject}
         exam={exam}
-        class={classe}
+        class={formatClass}
         colspan={6}
       >
         <thead>
@@ -159,7 +151,7 @@ const MarksheetTemplate = () => {
       </QuickTable>
     );
   };
-  const PtConsolidatedSubject = () => {
+  const ptConsolidatedSubject = () => {
     const uniqueSubjects = [];
     console.log(140, { hee: "hee" });
     console.table(students);
@@ -180,17 +172,14 @@ const MarksheetTemplate = () => {
     uniqueSubjects.sort(
       (a, b) => subjectList.indexOf(a) - subjectList.indexOf(b),
     );
-    if (classe == "A")
-      uniqueSubjects = uniqueSubjects.filter((a) => a != "French");
-    if (classe == "B")
-      uniqueSubjects = uniqueSubjects.filter((a) => a != "Hindi");
-    if (classe == "C")
-      uniqueSubjects = uniqueSubjects.filter((a) => a != "Hindi");
+    if (classe == "A") uniqueSubjects = uniqueSubjects.filter(a => a != "French")
+    if (classe == "B") uniqueSubjects = uniqueSubjects.filter(a => a != "Hindi")
+    if (classe == "C") uniqueSubjects = uniqueSubjects.filter(a => a != "Hindi")
     return (
       <QuickTable
         subject={formatSubject}
         exam={exam}
-        class={classe}
+        class={formatClass}
         colspan={uniqueSubjects.length + 3}
       >
         <thead>
@@ -228,22 +217,22 @@ const MarksheetTemplate = () => {
   };
   const formatTable = {
     individual: {
-      PT1: <PtIndividualSubject />,
-      PT2: <PtIndividualSubject />,
-      PT3: <PtIndividualSubject />,
-      MT: MidTermsPBIndividualSubject,
-      PB1: MidTermsPBIndividualSubject,
-      PB2: MidTermsPBIndividualSubject,
-      PB3: MidTermsPBIndividualSubject,
+      PT1: ptIndividualSubject,
+      PT2: ptIndividualSubject,
+      PT3: ptIndividualSubject,
+      MT: midTermsPBIndividualSubject,
+      PB1: midTermsPBIndividualSubject,
+      PB2: midTermsPBIndividualSubject,
+      PB3: midTermsPBIndividualSubject,
     },
     consolidated: {
-      PT1: PtConsolidatedSubject,
-      PT2: PtConsolidatedSubject,
-      PT3: PtConsolidatedSubject,
-      MT: MidTermsPBIndividualSubject,
-      PB1: MidTermsPBIndividualSubject,
-      PB2: MidTermsPBIndividualSubject,
-      PB3: MidTermsPBIndividualSubject,
+      PT1: ptConsolidatedSubject,
+      PT2: ptConsolidatedSubject,
+      PT3: ptConsolidatedSubject,
+      MT: midTermsPBIndividualSubject,
+      PB1: midTermsPBIndividualSubject,
+      PB2: midTermsPBIndividualSubject,
+      PB3: midTermsPBIndividualSubject,
     },
   };
 
@@ -274,5 +263,4 @@ const MarksheetTemplate = () => {
     </div>
   );
 };
-
 export default MarksheetTemplate;

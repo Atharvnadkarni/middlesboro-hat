@@ -15,92 +15,119 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRequest } from "../hooks/useRequest";
 import NumberField from "./NumberField";
-import { Edit } from "@mui/icons-material";
+import { Edit, Newspaper } from "@mui/icons-material";
 import { setMarksheetData } from "../context/slices/marksheetSlice";
 import { setFormatValue } from "../context/slices/formatSlice";
 import SubjectSelectModal from "./SubjectSelectModal";
+import { useNavigate } from "react-router";
 
 const StudentListViewing = ({ students, exam, profile, class: classe }) => {
-  const profSubject = useSelector(state => state.subject.subject)
-  return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="center">R No</TableCell>
-            <TableCell align="left">Surname</TableCell>
-            <TableCell align="left">First Name</TableCell>
-            {profile.role == "Administrator" || (
-              <TableCell align="left">Marks</TableCell>
-            )}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {console.log(
-            profile.role,
-            exam,
-            classe,
-            students.filter((student) => student.class_div.division == classe),
-          )}
+  const profSubject = useSelector((state) => state.subject.subject);
+  const navigate = useNavigate();
+  const [openSubjectModal, setOpenSubjectModal] = useState(false);
+  const handleOpenSubjectModal = () => {
+    const format =
+      profSubject.subject.sub == "All" ? "consolidated" : "individual";
+    const subject = profSubject.subject.sub;
+    const classeData = classe;
+    navigate(`/mk-ta?format=${format}&subject=${subject}&class=${classeData}`)
+  };
 
-          {(profile.role == "Administrator"
-            ? students.filter((st) => st.class_div.division == classe)
-            : (exam == "INT"
-                ? students.filter(
-                    (student) => student.class_div.division == classe,
-                  )
-                : students.filter(
-                    (student) =>
-                      student.class_div.division == classe &&
-                      student.marks.filter(
-                        (mark) =>
-                          mark.exam.abbreviation == exam &&
-                          mark.subject.sub == profSubject.subject.sub,
-                      )[0].score != -1000,
-                  )) &&
-              (exam == "INT"
-                ? students.filter(
-                    (student) => student.class_div.division == classe,
-                  )
-                : students.filter(
-                    (student) =>
-                      student.class_div.division == classe &&
-                      student.marks.filter(
-                        (mark) =>
-                          mark.exam.abbreviation == exam &&
-                          mark.subject.sub == profSubject.subject.sub,
-                      )[0].score != -1000,
-                  ))
-          ).map((student) => (
-            <TableRow
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell align="center">{student.roll_no}</TableCell>
-              <TableCell align="left">{student.first_name}</TableCell>
-              <TableCell align="left">{student.surname}</TableCell>
+  const handleCloseSubjectModal = () => {
+    setOpenSubjectModal(false);
+  };
+  return (
+    <>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell align="center">R No</TableCell>
+              <TableCell align="left">Surname</TableCell>
+              <TableCell align="left">First Name</TableCell>
               {profile.role == "Administrator" || (
-                <TableCell align="left">
-                  {/* {console.log("Shacri", exam)}0 */}
-                  {exam == "INT"
-                    ? 0
-                    : student.marks.filter(
-                          (mark) =>
-                            mark.exam.abbreviation == exam &&
-                            mark.subject.sub == profSubject.subject.sub,
-                        )[0].score == "1000"
-                      ? "✅"
-                      : student.marks.filter(
-                          (mark) =>
-                            mark.exam.abbreviation == exam &&
-                            mark.subject.sub == profSubject.subject.sub,
-                        )[0].score}
-                </TableCell>
+                <TableCell align="left">Marks</TableCell>
               )}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {console.log(
+              profile.role,
+              exam,
+              classe,
+              students.filter(
+                (student) => student.class_div.division == classe,
+              ),
+            )}
+
+            {(profile.role == "Administrator"
+              ? students.filter((st) => st.class_div.division == classe)
+              : (exam == "INT"
+                  ? students.filter(
+                      (student) => student.class_div.division == classe,
+                    )
+                  : students.filter(
+                      (student) =>
+                        student.class_div.division == classe &&
+                        student.marks.filter(
+                          (mark) =>
+                            mark.exam.abbreviation == exam &&
+                            mark.subject.sub == profSubject.subject.sub,
+                        )[0].score != -1000,
+                    )) &&
+                (exam == "INT"
+                  ? students.filter(
+                      (student) => student.class_div.division == classe,
+                    )
+                  : students.filter(
+                      (student) =>
+                        student.class_div.division == classe &&
+                        student.marks.filter(
+                          (mark) =>
+                            mark.exam.abbreviation == exam &&
+                            mark.subject.sub == profSubject.subject.sub,
+                        )[0].score != -1000,
+                    ))
+            ).map((student) => (
+              <TableRow
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell align="center">{student.roll_no}</TableCell>
+                <TableCell align="left">{student.first_name}</TableCell>
+                <TableCell align="left">{student.surname}</TableCell>
+                {profile.role == "Administrator" || (
+                  <TableCell align="left">
+                    {/* {console.log("Shacri", exam)}0 */}
+                    {exam == "INT"
+                      ? 0
+                      : student.marks.filter(
+                            (mark) =>
+                              mark.exam.abbreviation == exam &&
+                              mark.subject.sub == profSubject.subject.sub,
+                          )[0].score == "1000"
+                        ? "✅"
+                        : student.marks.filter(
+                            (mark) =>
+                              mark.exam.abbreviation == exam &&
+                              mark.subject.sub == profSubject.subject.sub,
+                          )[0].score}
+                  </TableCell>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Button
+        startIcon={<Newspaper />}
+        sx={{ marginTop: 2 }}
+        variant="contained"
+        color="error"
+        onClick={handleOpenSubjectModal}
+      >
+        Generate Report
+      </Button>
+    </>
   );
 };
 
@@ -113,6 +140,7 @@ const StudentListEditing = ({
   handleSubmit,
 }) => {
   const { request } = useRequest();
+  const profSubject = useSelector((state) => state.subject.subject);
 
   const [editedMarks, setEditedMarks] = useState({});
   const dispatch = useDispatch();
@@ -212,18 +240,9 @@ const StudentListEditing = ({
 
     if (handleSubmit) handleSubmit();
   };
-  const [openSubjectModal, setOpenSubjectModal] = useState(false);
-  const handleOpenSubjectModal = () => {
-    setOpenSubjectModal(true);
-  };
-
-  const handleCloseSubjectModal = () => {
-    setOpenSubjectModal(false);
-  };
 
   return (
     <>
-      
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -304,10 +323,7 @@ const StudentListEditing = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <SubjectSelectModal
-        open={openSubjectModal}
-        onClose={handleCloseSubjectModal}
-      />
+
       <Button variant="contained" sx={{ mt: 2 }} onClick={saveChanges}>
         Save Changes
       </Button>

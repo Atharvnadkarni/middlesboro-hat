@@ -21,11 +21,16 @@ const examPersistConfig = {
   storage,
 };
 
+const marksheetPersistConfig = {
+  key: "marksheet",
+  storage,
+};
+
 const rootReducer = combineReducers({
   exam: persistReducer(examPersistConfig, examReducer),
   class: classReducer,
   subject: subjectReducer,
-  marksheet: marksheetReducer,
+  marksheet: persistReducer(marksheetPersistConfig, marksheetReducer),
   format: persistReducer(formatPersistConfig, formatReducer),
 
   // only this slice persists
