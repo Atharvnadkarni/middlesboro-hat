@@ -30,7 +30,7 @@ const StudentListViewing = ({ students, exam, profile, class: classe }) => {
       profSubject.subject.sub == "All" ? "consolidated" : "individual";
     const subject = profSubject.subject.sub;
     const classeData = classe;
-    navigate(`/mk-ta?format=${format}&subject=${subject}&class=${classeData}`)
+    navigate(`/mk-ta?format=${format}&subject=${subject}&class=${classeData}`);
   };
 
   const handleCloseSubjectModal = () => {
@@ -96,8 +96,17 @@ const StudentListViewing = ({ students, exam, profile, class: classe }) => {
                 <TableCell align="left">{student.first_name}</TableCell>
                 <TableCell align="left">{student.surname}</TableCell>
                 {profile.role == "Administrator" || (
-                  <TableCell align="left">
+                  <TableCell
+                    align="left"
+                    sx={{ fontFamily: "Geist Mono, monospace !important" }}
+                  >
                     {/* {console.log("Shacri", exam)}0 */}
+                    {exam != "INT" &&
+                      student.marks.filter(
+                        (mark) =>
+                          mark.exam.abbreviation == exam &&
+                          mark.subject.sub == profSubject.subject.sub,
+                      )[0].score < 10 && <span style={{visibility: "hidden"}}>{"a"}</span>}
                     {exam == "INT"
                       ? 0
                       : student.marks.filter(
@@ -107,10 +116,16 @@ const StudentListViewing = ({ students, exam, profile, class: classe }) => {
                           )[0].score == "1000"
                         ? "✅"
                         : student.marks.filter(
-                            (mark) =>
-                              mark.exam.abbreviation == exam &&
-                              mark.subject.sub == profSubject.subject.sub,
-                          )[0].score}
+                              (mark) =>
+                                mark.exam.abbreviation == exam &&
+                                mark.subject.sub == profSubject.subject.sub,
+                            )[0].score == "500"
+                          ? "Ab"
+                          : student.marks.filter(
+                              (mark) =>
+                                mark.exam.abbreviation == exam &&
+                                mark.subject.sub == profSubject.subject.sub,
+                            )[0].score}
                   </TableCell>
                 )}
               </TableRow>
