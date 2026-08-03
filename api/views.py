@@ -556,3 +556,4 @@ class UpdateMarkView(APIView):
             marks_to_be_updated.append(mark_obj)
 
         Mark.objects.bulk_update(marks_to_be_updated, ["score"])
+        return Response({"Message": "Updated"}, status=status.HTTP_200_OK)

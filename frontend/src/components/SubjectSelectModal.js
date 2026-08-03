@@ -33,6 +33,7 @@ const style = {
 
 export default function SubjectSelectModal({ open, onClose }) {
   const profile = useSelector(state => state.profile)
+  const exam = useSelector(state => state.exam)
   const {subjects:profileSubjects} = profile;
   const dispatch = useDispatch();
 
@@ -58,7 +59,7 @@ export default function SubjectSelectModal({ open, onClose }) {
     dispatch(setFormatValue(selectedFormat))
     dispatch(setFormatSubject(selectedSubject));
     dispatch(setFormatClass(selectedClass));
-    navigate(`/mk-ta/?class=${selectedClass}&subject=${selectedSubject}`)
+    navigate(`/mk-ta/?class=${selectedClass}&subject=${selectedSubject}&exam=${exam}`)
     onClose();
   };
 

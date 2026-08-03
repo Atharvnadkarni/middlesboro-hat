@@ -1,77 +1,94 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router";
+import { useRequest } from "../hooks/useRequest";
+
+const subjectList = [
+  "Math",
+  "English",
+  "Hindi",
+  "Sci",
+  "French",
+  "SS",
+  "HS",
+  "Painting",
+  "HC",
+  "AI",
+  "IT",
+];
 
 const QuickTable = ({
   subject,
   exam,
   class: classe,
   colspan = 4,
-  rowspan = 4,
   children,
-}) => {
-  return (
-    <table className="quickTable">
-      <thead>
-        <tr>
-          <th colSpan={colspan}>VIDYA VIKAS ACADEMY</th>
-        </tr>
-        <tr>
-          <th colSpan={colspan}>
-            {subject} {exam} Marklist Of Class {classe.toUpperCase()}
-          </th>
-        </tr>
-      </thead>
-      {children}
-    </table>
+}) => (
+  <table className="quickTable">
+    <thead>
+      <tr>
+        <th colSpan={colspan}>VIDYA VIKAS ACADEMY</th>
+      </tr>
+      <tr>
+        <th colSpan={colspan}>
+          {subject} {exam} Marklist Of Class {classe.toUpperCase()}
+        </th>
+      </tr>
+    </thead>
+    {children}
+  </table>
+);
+
+export default function MarksheetTemplate() {
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+
+  const classe = params.get("class");
+  const exam = params.get("exam");
+  const subject = params.get("subject");
+  const format = params.get("format");
+
+  const { request, isLoading, error } = useRequest();
+  const [allStudents, setAllStudents] = useState([]);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const res = await request("get", "/api/student");
+        setAllStudents(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchStudents();
+  }, [request]);
+
+  console.log(
+    "antandec",
+    allStudents.map((s) =>
+      s.marks.filter(
+        (m) => m.exam.abbreviation === exam && m.subject.sub === subject,
+      )[0],
+    ),
   );
-};
-
-const MarksheetTemplate = () => {
-  const subjectList = [
-    "Math",
-    "English",
-    "Hindi",
-    "Sci",
-    "French",
-    "SS",
-    "HS",
-    "Painting",
-    "HC",
-    "AI",
-    "IT",
-  ];
-  const params = useSearchParams();
-
-  const { class: classe, format, subject } = Object.fromEntries(params[0]);
-  const {
-    exam: { exam },
-    marksheet: { rows, columns },
-    student: allStudents,
-  } = useSelector((state) => state);
-  console.log(exam, "ytqat");
-  console.log(rows,columns, "pupee")
 
   const students = allStudents.filter(
-    (stu) => `${stu.class_div.grade}${stu.class_div.division}` == classe,
+    (s) =>
+      s.class_div.division == classe &&
+      s.marks.filter(
+        (m) => m.exam.abbreviation === exam && m.subject.sub === subject,
+      )[0].score != -1000,
   );
-  console.log(students, 9991);
 
-  const [profile, setProfile] = useState({});
-  useEffect(() => {
-    const profileStr = localStorage.getItem("profile");
-    setProfile(JSON.parse(profileStr));
-  }, []);
-
-  const PtIndividualSubject = () => {
-    console.log(
-      classe,
-      subject,
-      exam,
-      Object.fromEntries(params[0]),
-      191199,
-      params,
+  const getMark = (student, sub) => {
+    const mark = student.marks.find(
+      (m) => m.exam.abbreviation === exam && m.subject.sub === sub,
     );
+
+    return mark?.score == 500 ? "Ab" : mark?.score == 1000 ? "Not done" : mark?.score;
+  };
+
+  function PtIndividualSubject() {
     return (
       <QuickTable subject={subject} exam={exam} class={classe}>
         <thead>
@@ -82,40 +99,28 @@ const MarksheetTemplate = () => {
             <th>Marks/20</th>
           </tr>
         </thead>
+
         <tbody>
-          {students &&
-            students.map((student) => (
-              <tr>
-                <td>{student.roll_no}</td>
-                <td>{student.surname}</td>
-                <td>{student.first_name}</td>
-                <td>
-                  {
-                    student.marks.filter(
-                      (m) =>
-                        m.exam.abbreviation == exam &&
-                        m.subject.sub == formatSubject,
-                    )[0].score
-                  }
-                </td>
-              </tr>
-            ))}
+          {students.map((student) => (
+            <tr key={student.id}>
+              <td>{student.roll_no}</td>
+              <td>{student.surname}</td>
+              <td>{student.first_name}</td>
+              <td>{getMark(student, subject)}</td>
+            </tr>
+          ))}
         </tbody>
       </QuickTable>
     );
-  };
-  const MidTermsPBIndividualSubject = () => {
+  }
+
+  function MidTermsPBIndividualSubject() {
     return (
-      <QuickTable
-        subject={formatSubject}
-        exam={exam}
-        class={classe}
-        colspan={6}
-      >
+      <QuickTable subject={subject} exam={exam} class={classe} colspan={6}>
         <thead>
           <tr>
             <th colSpan={3}></th>
-            <th colSpan={3}>{formatSubject}</th>
+            <th colSpan={3}>{subject}</th>
           </tr>
           <tr>
             <th>Roll No</th>
@@ -126,69 +131,53 @@ const MarksheetTemplate = () => {
             <th>GRADE</th>
           </tr>
         </thead>
+
         <tbody>
-          {students &&
-            students.map((student) => (
-              <tr>
+          {students.map((student) => {
+            const score = getMark(student, subject);
+
+            return (
+              <tr key={student.id}>
                 <td>{student.roll_no}</td>
                 <td>{student.surname}</td>
                 <td>{student.first_name}</td>
-                <td>
-                  {
-                    student.marks.filter(
-                      (m) =>
-                        m.exam.abbreviation == exam &&
-                        m.subject.sub == formatSubject,
-                    )[0].score
-                  }
-                </td>
-                <td>
-                  {(
-                    (student.marks.filter(
-                      (m) =>
-                        m.exam.abbreviation == exam &&
-                        m.subject.sub == formatSubject,
-                    )[0].score *
-                      5) /
-                    4
-                  ).toFixed(2)}
-                </td>
+                <td>{score}</td>
+                <td>{((score * 5) / 4).toFixed(2)}</td>
+                <td></td>
               </tr>
-            ))}
+            );
+          })}
         </tbody>
       </QuickTable>
     );
-  };
-  const PtConsolidatedSubject = () => {
-    const uniqueSubjects = [];
-    console.log(140, { hee: "hee" });
-    console.table(students);
-    if (students.length > 0)
-      students[0].marks.forEach((mark) => {
-        const {
-          subject: { sub },
-        } = mark;
-        console.log(140, { hee: "hee" });
-        console.dir(mark);
-        console.dir(mark.subject);
-        console.dir(mark.subject.sub);
-        console.dir(sub);
-        if (mark.exam.abbreviation == exam && !uniqueSubjects.includes(sub))
-          uniqueSubjects.push(sub);
-        console.dir(uniqueSubjects);
-      });
+  }
+
+  function PtConsolidatedSubject() {
+    let uniqueSubjects = [];
+
+    if (students.length) {
+      uniqueSubjects = [
+        ...new Set(
+          students[0].marks
+            .filter((m) => m.exam.abbreviation === exam)
+            .map((m) => m.subject.sub),
+        ),
+      ];
+    }
+
     uniqueSubjects.sort(
       (a, b) => subjectList.indexOf(a) - subjectList.indexOf(b),
     );
-    if (classe == "A")
-      uniqueSubjects = uniqueSubjects.filter((a) => a != "French");
-    if (classe == "B")
-      uniqueSubjects = uniqueSubjects.filter((a) => a != "Hindi");
-    if (classe == "C")
-      uniqueSubjects = uniqueSubjects.filter((a) => a != "Hindi");
+
+    if (classe.endsWith("A"))
+      uniqueSubjects = uniqueSubjects.filter((s) => s !== "French");
+
+    if (classe.endsWith("B") || classe.endsWith("C"))
+      uniqueSubjects = uniqueSubjects.filter((s) => s !== "Hindi");
+
     return (
       <QuickTable
-        subject={formatSubject}
+        subject="Consolidated"
         exam={exam}
         class={classe}
         colspan={uniqueSubjects.length + 3}
@@ -198,81 +187,73 @@ const MarksheetTemplate = () => {
             <th>Roll No</th>
             <th>Surname</th>
             <th>First Name</th>
-            {/* {JSON.stringify(students)} */}
+
             {uniqueSubjects.map((sub) => (
-              <th>{sub}/20</th>
+              <th key={sub}>{sub}/20</th>
             ))}
           </tr>
         </thead>
+
         <tbody>
-          {students &&
-            students.map((student) => (
-              <tr>
-                <td>{student.roll_no}</td>
-                <td>{student.surname}</td>
-                <td>{student.first_name}</td>
-                {uniqueSubjects.map((sub) => {
-                  const mark = student.marks.filter(
-                    (mk) =>
-                      mk.subject.sub == sub && mk.exam.abbreviation == exam,
-                  )[0].score;
-                  return (
-                    <td>{mark == 1000 ? "✅" : mark == -1000 ? "NA" : mark}</td>
-                  );
-                })}
-              </tr>
-            ))}
+          {students.map((student) => (
+            <tr key={student.id}>
+              <td>{student.roll_no}</td>
+              <td>{student.surname}</td>
+              <td>{student.first_name}</td>
+
+              {uniqueSubjects.map((sub) => {
+                const mark = getMark(student, sub);
+
+                return (
+                  <td key={sub}>
+                    {mark === 1000 ? "✅" : mark === -1000 ? "NA" : mark}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
         </tbody>
       </QuickTable>
     );
-  };
+  }
+
+  useEffect(() => {
+    if (students.length) {
+      window.print();
+      // navigate("/");
+    }
+  }, [students]);
+
+  if (isLoading) return <p>Loading...</p>;
+
+  if (error) return <p>{String(error)}</p>;
+
   const formatTable = {
     individual: {
       PT1: <PtIndividualSubject />,
       PT2: <PtIndividualSubject />,
       PT3: <PtIndividualSubject />,
-      MT: MidTermsPBIndividualSubject,
-      PB1: MidTermsPBIndividualSubject,
-      PB2: MidTermsPBIndividualSubject,
-      PB3: MidTermsPBIndividualSubject,
+      MT: <MidTermsPBIndividualSubject />,
+      PB1: <MidTermsPBIndividualSubject />,
+      PB2: <MidTermsPBIndividualSubject />,
+      PB3: <MidTermsPBIndividualSubject />,
     },
     consolidated: {
-      PT1: PtConsolidatedSubject,
-      PT2: PtConsolidatedSubject,
-      PT3: PtConsolidatedSubject,
-      MT: MidTermsPBIndividualSubject,
-      PB1: MidTermsPBIndividualSubject,
-      PB2: MidTermsPBIndividualSubject,
-      PB3: MidTermsPBIndividualSubject,
+      PT1: <PtConsolidatedSubject />,
+      PT2: <PtConsolidatedSubject />,
+      PT3: <PtConsolidatedSubject />,
+      MT: <MidTermsPBIndividualSubject />,
+      PB1: <MidTermsPBIndividualSubject />,
+      PB2: <MidTermsPBIndividualSubject />,
+      PB3: <MidTermsPBIndividualSubject />,
     },
   };
-
-  const downloadPDF = () => {
-    const element = document.getElementById("pdf-content");
-
-    html2pdf()
-      .from(element)
-      .set({
-        margin: 10,
-        filename: "report.pdf",
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      })
-      .save();
-  };
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (students.length > 0) window.print();
-    // navigate("/");
-  }, [students]);
 
   return (
     <div id="pdf-content">
-      {formatTable.individual[exam]}
+      {console.log(format, formatTable[format])}
+      {formatTable[format]?.[exam]}
       <p>Generated by Marksheet</p>
     </div>
   );
-};
-
-export default MarksheetTemplate;
+}

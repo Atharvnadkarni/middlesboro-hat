@@ -1,7 +1,9 @@
 import {
+  Alert,
   Button,
   ButtonGroup,
   Checkbox,
+  Collapse,
   Paper,
   Table,
   TableBody,
@@ -106,7 +108,9 @@ const StudentListViewing = ({ students, exam, profile, class: classe }) => {
                         (mark) =>
                           mark.exam.abbreviation == exam &&
                           mark.subject.sub == profSubject.subject.sub,
-                      )[0].score < 10 && <span style={{visibility: "hidden"}}>{"a"}</span>}
+                      )[0].score < 10 && (
+                        <span style={{ visibility: "hidden" }}>{"a"}</span>
+                      )}
                     {exam == "INT"
                       ? 0
                       : student.marks.filter(
@@ -148,6 +152,8 @@ const StudentListViewing = ({ students, exam, profile, class: classe }) => {
 
 const StudentListEditing = ({
   students,
+  setStudents,
+  setEditing,
   exam,
   profile,
   editing,
@@ -224,6 +230,7 @@ const StudentListEditing = ({
       },
     }));
   };
+  const [alertOpen, setAlertOpen] = useState("");
 
   const saveChanges = async () => {
     const changed = Object.entries(editedMarks)
@@ -234,7 +241,25 @@ const StudentListEditing = ({
         score: m.score,
       }));
 
-    if (!changed.length) return;
+    console.log(editedMarks);
+
+    const errorChanged = Object.entries(editedMarks).filter(
+      ([id, a]) => a.score > 20 && ![500, -500, 1000, -1000].includes(a.score),
+    );
+
+    console.log(changed, errorChanged, errorChanged.length);
+    if (errorChanged.length) {
+      console.log("Oi");
+      setAlertOpen("Some marks are above 20. Check the ones marked in red.");
+      return;
+    }
+    if (!changed.length) {
+      console.log("In the Juengle")
+      setEditing(false);
+      return;
+    }
+
+    setAlertOpen("");
 
     dispatch(
       setMarksheetData({
@@ -251,13 +276,20 @@ const StudentListEditing = ({
       exam,
       subject: profSubject.subject,
     });
-    location.reload();
+    const newStudents = await request("get", "/api/student").students;
+    setStudents(newStudents);
+    setEditing(false);
 
     if (handleSubmit) handleSubmit();
   };
 
   return (
     <>
+      <Collapse in={alertOpen} sx={{ position: "fixed", top: 0 }}>
+        <Alert severity="error" variant="filled">
+          There is an error: {alertOpen}
+        </Alert>
+      </Collapse>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -380,6 +412,9 @@ const StudentList = () => {
   }, [exam, profile]);
 
   const [editing, setEditing] = useState(false);
+  useEffect(() => {
+    console.log("lion ceccah", editing)
+  }, [editing])
 
   return (
     <div>
@@ -393,7 +428,15 @@ const StudentList = () => {
       </Button>
       {editing ? (
         <StudentListEditing
-          {...{ students, exam, profile, class: classe, editing }}
+          {...{
+            students,
+            exam,
+            profile,
+            class: classe,
+            editing,
+            setStudents,
+            setEditing,
+          }}
         />
       ) : (
         <StudentListViewing {...{ students, exam, profile, class: classe }} />
