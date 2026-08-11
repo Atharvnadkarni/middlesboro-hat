@@ -32,12 +32,13 @@ const StudentListViewing = ({ students, exam, profile, class: classe }) => {
       profSubject.subject.sub == "All" ? "consolidated" : "individual";
     const subject = profSubject.subject.sub;
     const classeData = classe;
-    navigate(`/mk-ta?format=${format}&subject=${subject}&class=${classeData}`);
+    navigate(`/mk-ta?format=${format}&subject=${subject}&class=${classeData}&exam=${exam}`);
   };
 
   const handleCloseSubjectModal = () => {
     setOpenSubjectModal(false);
   };
+  console.log("dlbaa", students);
   return (
     <>
       <TableContainer component={Paper}>
@@ -254,7 +255,7 @@ const StudentListEditing = ({
       return;
     }
     if (!changed.length) {
-      console.log("In the Juengle")
+      console.log("In the Juengle");
       setEditing(false);
       return;
     }
@@ -276,7 +277,12 @@ const StudentListEditing = ({
       exam,
       subject: profSubject.subject,
     });
-    const newStudents = await request("get", "/api/student").students;
+    const newStudentsReq = (await request("get", "/api/student"));
+    const newStudents = newStudentsReq.data;
+    console.log(
+      newStudentsReq, newStudents,
+      "daatta",
+    );
     setStudents(newStudents);
     setEditing(false);
 
@@ -413,8 +419,8 @@ const StudentList = () => {
 
   const [editing, setEditing] = useState(false);
   useEffect(() => {
-    console.log("lion ceccah", editing)
-  }, [editing])
+    console.log("lion ceccah", editing);
+  }, [editing]);
 
   return (
     <div>

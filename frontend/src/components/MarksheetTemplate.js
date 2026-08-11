@@ -23,17 +23,14 @@ const QuickTable = ({
   colspan = 4,
   children,
 }) => (
-  <table className="quickTable">
-    <thead>
-      <tr>
-        <th colSpan={colspan}>VIDYA VIKAS ACADEMY</th>
-      </tr>
-      <tr>
-        <th colSpan={colspan}>
-          {subject} {exam} Marklist Of Class {classe.toUpperCase()}
-        </th>
-      </tr>
-    </thead>
+  <table className="quickTable" style={{width: "100%"}}>
+    <caption className="printTitle">
+      <div>VIDYA VIKAS ACADEMY</div>
+      <div>
+        {subject} {exam} Marklist Of Class {classe.toUpperCase()}
+      </div>
+    </caption>
+
     {children}
   </table>
 );
@@ -65,10 +62,11 @@ export default function MarksheetTemplate() {
 
   console.log(
     "antandec",
-    allStudents.map((s) =>
-      s.marks.filter(
-        (m) => m.exam.abbreviation === exam && m.subject.sub === subject,
-      )[0],
+    allStudents.map(
+      (s) =>
+        s.marks.filter(
+          (m) => m.exam.abbreviation === exam && m.subject.sub === subject,
+        )[0],
     ),
   );
 
@@ -85,7 +83,11 @@ export default function MarksheetTemplate() {
       (m) => m.exam.abbreviation === exam && m.subject.sub === sub,
     );
 
-    return mark?.score == 500 ? "Ab" : mark?.score == 1000 ? "Not done" : mark?.score;
+    return mark?.score == 500
+      ? "Ab"
+      : mark?.score == 1000
+        ? "Not done"
+        : mark?.score;
   };
 
   function PtIndividualSubject() {
