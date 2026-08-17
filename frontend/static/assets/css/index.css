@@ -4,6 +4,10 @@ body {
     margin: 0;
     padding: 0;
 }
+.signatureLine {
+  width: 90%;
+  border-top: 5px solid black;
+}
 * {
     font-family: Geist, "Google Sans", sans-serif !important;
 }
@@ -13,4 +17,4 @@ body {
 }
 .quickTable thead {
     outline: 1px solid black;
-}
+} 

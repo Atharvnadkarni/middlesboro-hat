@@ -158,7 +158,7 @@ const Dropdown = () => {
             {console.log(
               profile?.subjects && profile?.subjects.map((sub) => sub),
             )}
-            {profile?.subjects.map((sub) => (
+            {profile?.subjects.filter(a => a).map((sub) => (
               <MenuItem value={JSON.stringify(sub)}>{sub.subject.sub}</MenuItem>
             ))}
           </Select>

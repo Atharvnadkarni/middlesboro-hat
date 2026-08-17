@@ -364,7 +364,7 @@ const AddEditTeacher = ({ mode: { mode, teacher }, open, setOpen }) => {
           variant="contained"
           onClick={mode == "edit" ? handleUpdateSubmit : handleSubmit}
         >
-          {mode == "edit" ? "Edit Teacher" : "Add Teacher"}
+          {mode == "edit" ? "Save Changes" : "Add Teacher"}
         </Button>
       </DialogActions>
     </Dialog>
