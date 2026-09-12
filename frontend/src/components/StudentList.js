@@ -25,14 +25,26 @@ import { useNavigate } from "react-router";
 
 const StudentListViewing = ({ students, exam, profile, class: classe }) => {
   const profSubject = useSelector((state) => state.subject.subject);
+  
+
   const navigate = useNavigate();
   const [openSubjectModal, setOpenSubjectModal] = useState(false);
+  console.log(profSubject, "pr str", profSubject);
+  // console.log(
+  //   JSON.parse(profSubjectStr),
+  //   JSON.parse(
+  //     '{"id":51,"subject":{"id":2,"sub":"English"},"classes":[{"id":1,"grade":10,"division":"A"}]}',
+  //   ),
+  //   9997,
+  // );
   const handleOpenSubjectModal = () => {
     const format =
       profSubject.subject.sub == "All" ? "consolidated" : "individual";
     const subject = profSubject.subject.sub;
     const classeData = classe;
-    navigate(`/mk-ta?format=${format}&subject=${subject}&class=${classeData}&exam=${exam}`);
+    navigate(
+      `/mk-ta?format=${format}&subject=${subject}&class=${classeData}&exam=${exam}`,
+    );
   };
 
   const handleCloseSubjectModal = () => {
@@ -163,6 +175,15 @@ const StudentListEditing = ({
 }) => {
   const { request } = useRequest();
   const profSubject = useSelector((state) => state.subject.subject);
+  
+  console.log(
+    profSubject,
+    JSON.parse(profSubject),
+    JSON.parse(
+      '{"id":51,"subject":{"id":2,"sub":"English"},"classes":[{"id":1,"grade":10,"division":"A"}]}',
+    ),
+    9997,
+  );
 
   const [editedMarks, setEditedMarks] = useState({});
   const dispatch = useDispatch();
@@ -277,12 +298,9 @@ const StudentListEditing = ({
       exam,
       subject: profSubject.subject,
     });
-    const newStudentsReq = (await request("get", "/api/student"));
+    const newStudentsReq = await request("get", "/api/student");
     const newStudents = newStudentsReq.data;
-    console.log(
-      newStudentsReq, newStudents,
-      "daatta",
-    );
+    console.log(newStudentsReq, newStudents, "daatta");
     setStudents(newStudents);
     setEditing(false);
 

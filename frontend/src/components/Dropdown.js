@@ -52,7 +52,7 @@ const Dropdown = () => {
       sub.classes?.some((cls) => cls.division === classValue),
     ) || [];
     useEffect(() => {
-      setSubject(JSON.stringify(filteredSubjects[0]))
+      setSubject(filteredSubjects[0])
     }, [filteredSubjects])
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];

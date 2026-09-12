@@ -6,7 +6,7 @@ const subjectSlice = createSlice({
   name: "subject",
 
   initialState: {
-    subject: "",
+    subject: "{}",
   },
 
   reducers: {
