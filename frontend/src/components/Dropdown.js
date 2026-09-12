@@ -46,11 +46,14 @@ const Dropdown = () => {
     }
   }, [profile]);
 
-  const classValue = useSelector((store) => store.class.class);
+  const classValue = useSelector((store) => store.class);
   const filteredSubjects =
     profile?.subjects?.filter((sub) =>
       sub.classes?.some((cls) => cls.division === classValue),
     ) || [];
+    useEffect(() => {
+      setSubject(JSON.stringify(filteredSubjects[0]))
+    }, [filteredSubjects])
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -156,9 +159,10 @@ const Dropdown = () => {
             onChange={(e) => setSubject(JSON.parse(e.target.value))}
           >
             {console.log(
-              profile?.subjects && profile?.subjects.map((sub) => sub),
+              profile?.subjects,classValue, profile?.subjects.map((sub) => sub.classes.some(a => a.division == classValue)),
+              997
             )}
-            {profile?.subjects.filter(a => a).map((sub) => (
+            {filteredSubjects.map((sub) => (
               <MenuItem value={JSON.stringify(sub)}>{sub.subject.sub}</MenuItem>
             ))}
           </Select>
