@@ -63,6 +63,7 @@ const Dropdown = () => {
     "AI",
     "IT",
   ];
+
   const classValue = useSelector((store) => store.class);
   const filteredSubjects =
     profile?.subjects?.filter((sub) =>
@@ -189,14 +190,12 @@ const Dropdown = () => {
           <InputLabel id="demo-simple-select-label">Subject</InputLabel>
           {profile.role == "Administrator" ? (
             <Select
-              value={JSON.stringify(subject)}
+              value={subjects[0]}
               label="Administrator"
               onChange={(e) => setSubject(JSON.parse(e.target.value))}
             >
               {subjects.map((sub) => (
-                <MenuItem value={JSON.stringify(sub)}>
-                  {sub}
-                </MenuItem>
+                <MenuItem value={JSON.stringify(sub)}>{sub}</MenuItem>
               ))}
             </Select>
           ) : (
