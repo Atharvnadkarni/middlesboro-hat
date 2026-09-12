@@ -25,7 +25,6 @@ import { useNavigate } from "react-router";
 
 const StudentListViewing = ({ students, exam, profile, class: classe }) => {
   const profSubject = useSelector((state) => state.subject.subject);
-  
 
   const navigate = useNavigate();
   const [openSubjectModal, setOpenSubjectModal] = useState(false);
@@ -175,15 +174,9 @@ const StudentListEditing = ({
 }) => {
   const { request } = useRequest();
   const profSubject = useSelector((state) => state.subject.subject);
-  
-  console.log(
-    profSubject,
-    JSON.parse(profSubject),
-    JSON.parse(
-      '{"id":51,"subject":{"id":2,"sub":"English"},"classes":[{"id":1,"grade":10,"division":"A"}]}',
-    ),
-    9997,
-  );
+
+  const navigate = useNavigate();
+  const [openSubjectModal, setOpenSubjectModal] = useState(false);
 
   const [editedMarks, setEditedMarks] = useState({});
   const dispatch = useDispatch();
