@@ -358,6 +358,8 @@ class HandleStudentsData(APIView):
                         subjects.add("Math")
                     elif subject == "Science":
                         subjects.add("Sci")
+                    elif subject == "Social Science":
+                        subjects.add("SS")
                     elif "instead" in subject.lower():
                         subjects.add(subject.split("instead")[0].strip())
                     else:

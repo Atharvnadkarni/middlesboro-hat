@@ -18,3 +18,8 @@ body {
 .quickTable thead {
     outline: 1px solid black;
 } 
+@media print {
+    .remove-print {
+        display: none;
+    }
+}

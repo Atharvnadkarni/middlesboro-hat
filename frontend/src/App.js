@@ -59,6 +59,7 @@ const App = () => {
       </Container>
       <Box
         component="footer"
+        className="remove-print"
         sx={{
           py: 2,
           mt: 4,
