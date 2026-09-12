@@ -25,6 +25,11 @@ const Dropdown = () => {
   const { request, isLoading, error } = useRequest();
   const [data, setData] = useState([]);
   const inputref = useRef();
+  const classes = profile.subjects.flatMap((item) =>
+    item.classes.map((cls) => `${cls.grade}${cls.division}`),
+  );
+
+  console.log(classes);
   useEffect(() => {
     if (!profile) return;
     const mapsubs = (profile?.subjects || [null]).map((sub) => sub.subject.sub);
@@ -51,9 +56,9 @@ const Dropdown = () => {
     profile?.subjects?.filter((sub) =>
       sub.classes?.some((cls) => cls.division === classValue),
     ) || [];
-    useEffect(() => {
-      setSubject(filteredSubjects[0])
-    }, [filteredSubjects])
+  useEffect(() => {
+    setSubject(filteredSubjects[0]);
+  }, [filteredSubjects]);
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -128,9 +133,15 @@ const Dropdown = () => {
               setClass(e.target.value);
             }}
           >
-            <MenuItem value={"A"}>10A</MenuItem>
-            <MenuItem value={"B"}>10B</MenuItem>
-            <MenuItem value={"C"}>10C</MenuItem>
+            {[
+              ["A", "10A"],
+              ["B", "10B"],
+              ["C", "10C"],
+            ]
+              .filter(([val, data]) => classes.includes(data))
+              .map(([val, data]) => (
+                <MenuItem value={val}>{data}</MenuItem>
+              ))}
           </Select>
         </FormControl>
         <FormControl sx={{ right: 0 }}>
@@ -159,8 +170,12 @@ const Dropdown = () => {
             onChange={(e) => setSubject(JSON.parse(e.target.value))}
           >
             {console.log(
-              profile?.subjects,classValue, profile?.subjects.map((sub) => sub.classes.some(a => a.division == classValue)),
-              997
+              profile?.subjects,
+              classValue,
+              profile?.subjects.map((sub) =>
+                sub.classes.some((a) => a.division == classValue),
+              ),
+              997,
             )}
             {filteredSubjects.map((sub) => (
               <MenuItem value={JSON.stringify(sub)}>{sub.subject.sub}</MenuItem>
