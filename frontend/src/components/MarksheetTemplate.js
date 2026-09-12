@@ -139,6 +139,8 @@ export default function MarksheetTemplate() {
     ),
   );
 
+  console.log(exam, subject,allStudents.map(s => s.marks.filter(m => m.exam.abbreviation == exam && m.subject.sub == subject)), "hall of fame")
+
   const students = allStudents.filter(
     (s) =>
       s.class_div.division == classe &&
