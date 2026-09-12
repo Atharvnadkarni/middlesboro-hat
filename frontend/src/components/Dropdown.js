@@ -50,7 +50,19 @@ const Dropdown = () => {
       setExam("SE");
     }
   }, [profile]);
-
+  const subjects = [
+    "Math",
+    "English",
+    "Hindi",
+    "Sci",
+    "French",
+    "SS",
+    "HS",
+    "Painting",
+    "HC",
+    "AI",
+    "IT",
+  ];
   const classValue = useSelector((store) => store.class);
   const filteredSubjects =
     profile?.subjects?.filter((sub) =>
@@ -124,24 +136,35 @@ const Dropdown = () => {
       <div>
         <FormControl sx={{ right: 0 }}>
           <InputLabel id="demo-simple-select-label">Class</InputLabel>
+          {console.log(classValue, "ab")}
           <Select
             defaultValue={"A"}
-            // value={age}
+            value={classValue}
             label="Class"
             onChange={(e) => {
               console.log("NEW CLASS", e.target.value);
               setClass(e.target.value);
             }}
           >
-            {[
-              ["A", "10A"],
-              ["B", "10B"],
-              ["C", "10C"],
-            ]
-              .filter(([val, data]) => classes.includes(data))
-              .map(([val, data]) => (
-                <MenuItem value={val}>{data}</MenuItem>
-              ))}
+            {profile.role == "Administrator"
+              ? [
+                  ["A", "10A"],
+                  ["B", "10B"],
+                  ["C", "10C"],
+                ].map(([val, data]) => <MenuItem value={val}>{data}</MenuItem>)
+              : [
+                  ["A", "10A"],
+                  ["B", "10B"],
+                  ["C", "10C"],
+                ]
+                  .filter(([val, data]) =>
+                    profile.role == "Administrator"
+                      ? true
+                      : classes.includes(data),
+                  )
+                  .map(([val, data]) => (
+                    <MenuItem value={val}>{data}</MenuItem>
+                  ))}
           </Select>
         </FormControl>
         <FormControl sx={{ right: 0 }}>
@@ -164,23 +187,39 @@ const Dropdown = () => {
         </FormControl>
         <FormControl sx={{ right: 0 }}>
           <InputLabel id="demo-simple-select-label">Subject</InputLabel>
-          <Select
-            value={JSON.stringify(subject)}
-            label="Subject"
-            onChange={(e) => setSubject(JSON.parse(e.target.value))}
-          >
-            {console.log(
-              profile?.subjects,
-              classValue,
-              profile?.subjects.map((sub) =>
-                sub.classes.some((a) => a.division == classValue),
-              ),
-              997,
-            )}
-            {filteredSubjects.map((sub) => (
-              <MenuItem value={JSON.stringify(sub)}>{sub.subject.sub}</MenuItem>
-            ))}
-          </Select>
+          {profile.role == "Administrator" ? (
+            <Select
+              value={JSON.stringify(subject)}
+              label="Administrator"
+              onChange={(e) => setSubject(JSON.parse(e.target.value))}
+            >
+              {subjects.map((sub) => (
+                <MenuItem value={JSON.stringify(sub)}>
+                  {sub}
+                </MenuItem>
+              ))}
+            </Select>
+          ) : (
+            <Select
+              value={JSON.stringify(subject)}
+              label="Subject"
+              onChange={(e) => setSubject(JSON.parse(e.target.value))}
+            >
+              {console.log(
+                profile?.subjects,
+                classValue,
+                profile?.subjects.map((sub) =>
+                  sub.classes.some((a) => a.division == classValue),
+                ),
+                997,
+              )}
+              {filteredSubjects.map((sub) => (
+                <MenuItem value={JSON.stringify(sub)}>
+                  {sub.subject.sub}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
         </FormControl>
       </div>
       <>
